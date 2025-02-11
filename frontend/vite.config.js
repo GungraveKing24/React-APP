@@ -6,13 +6,13 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 4173
+    port: process.env.PORT || 4173
   },
   preview: {
     host: '0.0.0.0',
-    port: 4173,
+    port: process.env.PORT || 4173,
     proxy: {
-      '/games': 'https://fastapi-app-production-f08f.up.railway.app/games' // Proxy para producción
+      '/games': 'https://fastapi-app-production-f08f.up.railway.app/games'
     }
   }
 })
