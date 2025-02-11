@@ -1,37 +1,35 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-
-const API_URL = import.meta.env.VITE_API_URL || "https://fastapi-app-production-f08f.up.railway.app/games";
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
 
 function App() {
-  const [games, setGames] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    axios
-      .get(API_URL)
-      .then((response) => {
-        setGames(response.data);
-      })
-      .catch((err) => {
-        setError("Error al cargar los juegos.");
-        console.error(err);
-      });
-  }, []);
+  const [count, setCount] = useState(0)
 
   return (
-    <div>
-      <h1>Lista de Juegos</h1>
-      {error && <p>{error}</p>}
-      <ul>
-        {games.map((game) => (
-          <li key={game.id}>
-            {game.name} - {game.platform}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    <>
+      <div>
+        <a href="https://vite.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
+        </a>
+        <a href="https://react.dev" target="_blank">
+          <img src={reactLogo} className="logo react" alt="React logo" />
+        </a>
+      </div>
+      <h1>Vite + React</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>
+          count is {count}
+        </button>
+        <p>
+          Edit <code>src/App.jsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and React logos to learn more
+      </p>
+    </>
+  )
 }
 
-export default App;
+export default App
