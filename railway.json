@@ -4,7 +4,6 @@
       "builder": "NIXPACKS"
     },
     "deploy": {
-      "startCommand": "cd REACTAPP/frontend && npm run build && npm run preview"
+      "startCommand": "cd 'frontend' && npm run build && npm run preview"
     }
-  }
-  
+}
