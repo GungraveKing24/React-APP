@@ -4,6 +4,6 @@
       "builder": "NIXPACKS"
     },
     "deploy": {
-      "startCommand": "cd 'frontend' && npm run build && npm run preview"
+      "startCommand": "npm run build && npm run preview"
     }
 }
