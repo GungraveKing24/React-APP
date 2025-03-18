@@ -5,6 +5,7 @@ import About from "./pages/About";
 import Error from "./pages/Error";
 import Login from "./pages/Both/Login.jsx"
 import SignIn from "./pages/Both/Sign_in.jsx"
+import AboutUs from "./pages/Clients/About_us"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/error" element={<Error />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/aboutus" element={<AboutUs />} />
       </Routes>
     </Router>
   );
