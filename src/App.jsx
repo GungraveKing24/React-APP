@@ -6,6 +6,7 @@ import Error from "./pages/Error";
 import Login from "./pages/Both/Login.jsx"
 import SignIn from "./pages/Both/Sign_in.jsx"
 import AboutUs from "./pages/Clients/About_us"
+import Homepage from "./pages/Clients/Homepage.jsx"
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/homepage" element={<Homepage />} />
       </Routes>
     </Router>
   );
