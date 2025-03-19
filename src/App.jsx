@@ -7,6 +7,7 @@ import AboutUs from "./pages/Clients/About_us"
 import Homepage from "./pages/Clients/Homepage.jsx"
 import Navbar from './pages/Both/Navbar.jsx';
 import Footer from './pages/Both/Footer.jsx';
+import Contact from "./pages/Clients/Contact";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/aboutus" element={<AboutUs />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
 
       <Footer />

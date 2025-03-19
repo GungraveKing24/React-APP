@@ -91,19 +91,7 @@ const Homepage = () => {
           </div>
         </section>
 
-        {/* Testimonios */}
-        <section className="mt-10 text-center">
-          <h2 className="text-2xl font-semibold text-gray-800">Testimonios de Clientes</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            {["Beatriz M.", "Juan R.", "Andrea T."].map((name, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
-                <img src={`/images/testimonial${index + 1}.jpg`} alt={`Testimonio ${name}`} className="w-full h-48 object-cover rounded" />
-                <p className="text-gray-600 italic mt-2">“Excelente calidad y servicio.”</p>
-                <p className="text-gray-700 font-semibold mt-2">- {name}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+       
 
         {/* Testimonios: Propuesta -> FERNANDO */}
         <section className="bg-white">

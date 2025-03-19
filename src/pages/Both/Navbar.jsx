@@ -11,7 +11,7 @@ export default function Navbar(){
               <li><a href="/" className="text-gray-700 hover:text-gray-900">Inicio</a></li>
               <li><a href="/Catalogo" className="text-gray-700 hover:text-gray-900">Catalogo</a></li>
               <li><a href="/aboutus" className="text-gray-700 hover:text-gray-900">Nosotros</a></li>
-              <li><a href="/....." className="text-gray-700 hover:text-gray-900">Contactanos</a></li>
+              <li><a href="/contact" className="text-gray-700 hover:text-gray-900">Contactanos</a></li>
             </ul>
           </div>
 
