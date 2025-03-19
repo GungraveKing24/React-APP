@@ -8,6 +8,8 @@ import Homepage from "./pages/Clients/Homepage.jsx"
 import Navbar from './pages/Both/Navbar.jsx';
 import Footer from './pages/Both/Footer.jsx';
 import Contact from "./pages/Clients/Contact";
+import Policiaes from "./pages/Clients/Policies_conditions.jsx"
+
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/policies" element={<Policiaes />} />
       </Routes>
 
       <Footer />
