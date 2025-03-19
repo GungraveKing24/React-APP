@@ -9,7 +9,7 @@ export default function AboutUs() {
       <header className="bg-[#FAEED1] py-10 px-6 text-center">
         <img src={Logo} alt="ArreglitosSV" className="mx-auto w-40" />
         <h1 className="text-3xl font-bold text-gray-900 mt-3">
-          UNA FLORISTERÍA EN LÍNEA
+          "ALEGRIA EN FORMA DE FLORES"
         </h1>
         <button className="mt-4 px-6 py-2 bg-red-300 text-white font-semibold rounded-md hover:bg-red-400">
           Comprar ahora
