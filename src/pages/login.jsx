@@ -11,7 +11,7 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:8000/login", {
+            const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
@@ -48,7 +48,7 @@ function Login() {
     }
 
     const handleGoogleLogin = async () => {
-        window.location.href = "http://localhost:8000/google/login";
+        window.location.href = "https://fastapi-app-production-f08f.up.railway.app/google/login";
     };
 
     return (
