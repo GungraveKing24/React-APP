@@ -40,14 +40,9 @@ export default function Contact() {
           <img src="/images/flores.png" alt="Flores" className="rounded-lg shadow-md" />
         </div>
   
-        {/* Sección inferior */}
-        <div className="text-center mt-10">
-          <h3 className="text-2xl font-bold">Somos una floristería en línea</h3>
-          <p className="text-gray-600 max-w-lg mx-auto mt-2">
-            "No hay aroma que exprese lo que sentimos como lo hacen las flores."
-          </p>
-        </div>
       </div>
+
+
     );
   }
   

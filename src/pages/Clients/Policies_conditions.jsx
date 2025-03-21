@@ -3,10 +3,10 @@ import React from "react";
 
 export default function Policies() {
     return (
-      <div className="bg-white p-10">
+      <div className="bg-white p-10  min-h-screen">
         {/* Título */}
         <h2 className="text-3xl font-bold text-center mb-6 text-yellow-700">
-          Políticas y Condiciones
+          Políticas de Privacidad
         </h2>
   
         {/* Primera sección de texto */}
@@ -31,12 +31,7 @@ export default function Policies() {
           Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
           totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
         </p>
-  
-        {/* Footer */}
-      <footer className="bg-[#D4A5A5] py-8 px-6 text-center text-white">
-        <p className="text-lg font-semibold">Somos una floristería en línea</p>
-        <p className="text-sm mt-2">Siguenos por medio de Instagram</p>
-      </footer>
+
     </div>
     );
   }

@@ -58,11 +58,7 @@ export default function AboutUs() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#D4A5A5] py-8 px-6 text-center text-white">
-        <p className="text-lg font-semibold">Somos una floristería en línea</p>
-        <p className="text-sm mt-2">Siguenos por medio de Instagram</p>
-      </footer>
+   
     </div>
   );
 }

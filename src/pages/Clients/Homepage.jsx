@@ -6,12 +6,12 @@ const Homepage = () => {
     <div className="bg-gray-100 min-h-screen">
       <main className="max-w-7xl mx-auto p-4">
         {/*  */}
-        <section className="bg-white p-6 rounded-lg shadow-md text-center relative overflow-hidden">
+        <section className="bg-[#FAF6F0] p-6 rounded-lg shadow-md text-center relative overflow-hidden">
           <img src="/images/hero.jpg" alt="Hero" className="w-full h-96 object-cover rounded-lg" />
           <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent flex flex-col justify-center items-start p-6">
             <h1 className="text-4xl font-bold text-gray-800">Ilumina tus días con flores</h1>
             <p className="text-gray-600 mt-2">Las mejores flores para cualquier ocasión</p>
-            <button className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-600 transition duration-300">Explorar</button>
+            <button className="mt-4 bg-[#EFB8C8] text-white px-6 py-2 rounded-lg hover:bg-pink-600 transition duration-300">Explorar</button>
           </div>
         </section>
 
@@ -66,18 +66,22 @@ const Homepage = () => {
           </div>
         </section>
         
-        {/* Frase destacada */}
-        <section className="mt-10 bg-pink-100 p-6 rounded-lg shadow-md align-middle">
-          <div className="flex">
-            <div className="text-4xl font-semibold text-gray-800 text-left flex-1">
-              <p>“Las Flores nos enseñan que siempre hay belleza en los nuevos comienzos”</p>
-            </div>
+       {/* Frase destacada */}
+        <section className="mt-10 bg-[#FAF6F0] p-12 rounded-2xl shadow-lg flex items-center justify-between">
+         
+          <div className="max-w-3xl">
+            <p className="text-5xl font-extrabold text-gray-800 leading-snug">
+              “Las Flores nos enseñan que siempre hay belleza en los nuevos comienzos”
+            </p>
+          </div>
 
-            <div className="text-right">
-              <button className="mt-4 bg-pink-500 text-white px-6 py-2 rounded-lg hover:bg-pink-600 transition duration-300">Ver Catalogo</button>
-            </div>
+          <div>
+            <button className="mt-5 bg-[#EFB8C8] text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-md hover:bg-pink-600 hover:scale-105 transition duration-300">
+              Ver Catálogo
+            </button>
           </div>
         </section>
+
 
         {/* Categorías */}
         <section className="mt-10 text-center">
@@ -138,8 +142,14 @@ const Homepage = () => {
           </div>
         </section>
       </main>
+
+
+    
     </div>
+
   );
 };
+
+
 
 export default Homepage;
