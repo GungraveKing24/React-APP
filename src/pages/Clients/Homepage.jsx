@@ -7,7 +7,7 @@ const Homepage = () => {
       <main className="max-w-7xl mx-auto p-4">
         {/*  */}
         <section className="bg-[#FAF6F0] p-6 rounded-lg shadow-md text-center relative overflow-hidden">
-          <img src="/images/hero.jpg" alt="Hero" className="w-full h-96 object-cover rounded-lg" />
+          <img src="/images/hero.jpg" className="w-full h-96 object-cover rounded-lg" />
           <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent flex flex-col justify-center items-start p-6">
             <h1 className="text-4xl font-bold text-gray-800">Ilumina tus días con flores</h1>
             <p className="text-gray-600 mt-2">Las mejores flores para cualquier ocasión</p>
