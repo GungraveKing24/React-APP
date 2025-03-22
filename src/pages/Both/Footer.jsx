@@ -33,7 +33,7 @@ export default function Footer() {
             <div>
               <h3 className="text-lg font-semibold">Contacto</h3>
               <ul className="mt-4 space-y-2">
-                <li><a href="#" className="text-white-400 hover:text-white">(503) XXX_XXX</a></li>
+                <li><a href="#" className="text-white-400 hover:text-white">(+503) 7513 5986</a></li>
                 <li><a href="#" className="text-white-400 hover:text-white">Mi cuenta</a></li>
                 <li><a href="#" className="text-white-400 hover:text-white">Carrito de compras</a></li>
               </ul>
