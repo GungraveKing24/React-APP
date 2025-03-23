@@ -1,1 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Vidaloka&display=swap');
 @import "tailwindcss";
+@theme {
+    --font-*: initial;
+    --font-sans: "Montserrat";
+    --font-serif: "Montserrat";
+    --font-mono: "Montserrat";
+    --font-Title: "Vidaloka", "sans-serif";
+}

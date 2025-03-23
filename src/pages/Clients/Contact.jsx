@@ -1,4 +1,7 @@
 import React from "react";
+import Girasoles from "../../assets/GIRASOLES.jpeg"
+import FLoresAzules from "../../assets/Flores Azules.jpeg"
+import Ramos from "../../assets/Ramos.jpeg"
 
 export default function Contact() {
   const phoneNumber = "+50375135986"; // Número de teléfono
@@ -6,7 +9,7 @@ export default function Contact() {
 
   return (
     <div className="bg-white p-10">
-      <h2 className="text-3xl font-bold text-center mb-8">Contáctanos</h2>
+      <h2 className="text-3xl font-bold text-center mb-8 font-Title">Contáctanos</h2>
 
       {/* Sección principal */}
       <div className="flex flex-wrap justify-center gap-6">
@@ -60,22 +63,26 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* Sección de imágenes */}
-      <div className="mt-10 grid grid-cols-3 gap-4">
+      {/* Sección de imágenes 
+          Parameters before changes
+          w-90
+          h-150
+      */}
+      <div className="mt-10 grid grid-cols-3 gap-2">
         <img
-          src="/assetsGIRASOLES.jpeg"
+          src={Girasoles}
           alt="Febrero"
-          className="rounded-lg shadow-md"
+          className="rounded-lg shadow-md mx-auto w-[250px] h-[350px] object-cover"
         />
         <img
-          src="/images/agenda.png"
+          src={FLoresAzules}
           alt="Agenda"
-          className="rounded-lg shadow-md"
+          className="rounded-lg shadow-md mx-auto w-[250px] h-[350px] object-cover"
         />
         <img
-          src="/images/flores.png"
+          src={Ramos}
           alt="Flores"
-          className="rounded-lg shadow-md"
+          className="rounded-lg shadow-md mx-auto w-[250px] h-[350px] object-cover"
         />
       </div>
     </div>
