@@ -1,38 +1,57 @@
 import React from "react";
 
+const policies = () => {
+  return (
+    <div className="bg-[#FAF6F0] min-h-screen p-10 text-gray-800">
+      <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+        <h1 className="text-4xl font-Title text-center text-[#bb8052] mb-6">
+        Políticas de Privacidad
+        </h1>
+        <p className="text-gray-600 text-justify mb-4">
+        En Arreglitosv, valoramos tu privacidad. Esta política explica cómo recopilamos, usamos y protegemos tu información.        </p>
+        
+        <div className="space-y-6">
+          <section>
+            <h2 className="text-xl font-Title text-[#bb8052]">1. Información que Recopilamos</h2>
+            <p className="text-gray-600">Datos personales: Nombre, correo, teléfono, dirección y detalles de pago.</p>
+          </section>
+          
+          <section>
+            <h2 className="text-xl font-Title text-[#bb8052]">2. Uso de la Información</h2>
+            <ul className="list-disc ml-6 text-gray-600">
+              <li>Procesar pedidos y mejorar nuestros servicios.</li>
+              <li>Cumplir con obligaciones legales.</li>
+            </ul>
+          </section>
+          <section>
+            <h2 className="text-xl font-Title text-[#bb8052]">3. Protección de Datos</h2>
+            <p>Usamos medidas de seguridad avanzadas para proteger tu información.</p>
+          </section>
+          
+          <section>
+            <h2 className="text-xl font-Title text-[#bb8052]">4. Compartir Información</h2>
+            <p className="text-gray-600">No vendemos tus datos. Solo los compartimos con proveedores necesarios (logística, pagos) o por requerimientos legales.</p>
+          </section>
+          
+          <section>
+            <h2 className="text-xl font-Title text-[#bb8052]">5. Tus Derechos</h2>
+            <p className="text-gray-600">Acceder, corregir o eliminar tus datos.</p>
+          </section>
+          <section>
+            <h2 className="text-xl font-Title text-[#bb8052]">6. Cambios en la Política</h2>
+            <p className="text-gray-600">Acceder, corregir o eliminar tus datos.</p>
+          </section>
+        </div>
 
-export default function Policies() {
-    return (
-      <div className="bg-white p-10  min-h-screen">
-        {/* Título */}
-        <h2 className="text-3xl font-bold text-center mb-6 text-yellow-700">
-          Políticas de Privacidad
-        </h2>
-  
-        {/* Primera sección de texto */}
-        <p className="text-gray-700 text-justify max-w-3xl mx-auto leading-relaxed">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dictum metus vel augue egestas, 
-          sed bibendum magna vestibulum. Donec nec augue at risus molestie convallis. Cras venenatis dui 
-          nec sapien aliquet tincidunt.
-        </p>
-  
         {/* Separador */}
         <div className="w-full h-10 bg-yellow-100 mt-8"></div>
   
-        {/* Sección de imágenes */}
-        <div className="mt-6 grid grid-cols-3 gap-4 max-w-4xl mx-auto">
-          <img src="/images/pic1.png" alt="Flores 1" className="rounded-lg shadow-md" />
-          <img src="/images/pic2.png" alt="Tarjeta" className="rounded-lg shadow-md" />
-          <img src="/images/pic3.png" alt="Flores 2" className="rounded-lg shadow-md" />
-        </div>
-  
-        {/* Segunda sección de texto */}
-        <p className="text-gray-700 text-justify max-w-3xl mx-auto mt-8 leading-relaxed">
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-          totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-        </p>
-
+       
+      </div>
     </div>
-    );
-  }
-  
+  );
+};
+
+export default policies;
+
+

@@ -13,6 +13,8 @@ import Policiaes from "./pages/Clients/Policies_conditions.jsx"
 import Terms from "./pages/Clients/terms.jsx"
 import Catalog from "./pages/Clients/Catalog.jsx"
 import User_Dashboard from "./pages/Clients/User_Dashboard.jsx"
+import Dashboard from "./pages/Admin/Dashboard.jsx"
+
 
 function App() {
   return (
@@ -31,6 +33,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/profile" element={<User_Dashboard />} />
+        <Route path="/AdminDashboard" element={<Dashboard/>} />
       </Routes>
 
       <Footer />

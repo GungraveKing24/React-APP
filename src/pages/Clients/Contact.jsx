@@ -1,7 +1,7 @@
 import React from "react";
-import Girasoles from "../../assets/GIRASOLES.jpeg"
-import FLoresAzules from "../../assets/Flores Azules.jpeg"
-import Ramos from "../../assets/Ramos.jpeg"
+import Girasoles from "../../assets/GIRASOLES.jpeg";
+import FLoresAzules from "../../assets/Flores Azules.jpeg";
+import Ramos from "../../assets/Ramos.jpeg";
 
 export default function Contact() {
   const phoneNumber = "+50375135986"; // Número de teléfono
@@ -16,11 +16,11 @@ export default function Contact() {
         {/* Tarjeta de contacto */}
         <div className="bg-white shadow-md p-6 rounded-lg w-80 text-center">
           <p className="text-gray-600 mb-2">
-            <span className="font-bold">📍 Dirección: </span>
+            <span className="font-Title">📍 Dirección: </span>
             Santa Ana, El Salvador
           </p>
           <p className="text-gray-600 mb-2">
-            <span className="font-bold">✉️ Correo Electrónico: </span>
+            <span className="font-Title">✉️ Correo Electrónico: </span>
             <a
               href="mailto:cruzgissela5@gmail.com"
               className="text-blue-500 hover:underline"
@@ -29,7 +29,7 @@ export default function Contact() {
             </a>
           </p>
           <p className="text-gray-600 mb-2">
-            <span className="font-bold">📞 Teléfono: </span>
+            <span className="font-Title">📞 Teléfono: </span>
             <a
               href={`tel:${phoneNumber}`}
               className="text-blue-500 hover:underline"
@@ -38,7 +38,7 @@ export default function Contact() {
             </a>
           </p>
           <p className="text-gray-600">
-            <span className="font-bold">💬 WhatsApp: </span>
+            <span className="font-Title">💬 WhatsApp: </span>
             <a
               href={whatsappLink}
               target="_blank"
@@ -53,7 +53,7 @@ export default function Contact() {
         {/* Tarjeta de cotización */}
         <div className="bg-white shadow-md p-6 rounded-lg w-96 flex items-center">
           <div className="flex-1">
-            <h3 className="text-xl font-bold">Puedes Cotizar tus Diseños</h3>
+            <h3 className="text-xl font-Title">Puedes Cotizar tus Diseños</h3>
             <p className="text-gray-600 text-sm mt-2">
               Si tienes un evento y quieres cotizar o hacer un arreglo personalizado,
               envíanos un mensaje a nuestros distintos números o por nuestro correo.
@@ -63,26 +63,22 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* Sección de imágenes 
-          Parameters before changes
-          w-90
-          h-150
-      */}
-      <div className="mt-10 grid grid-cols-3 gap-2">
+      {/* Sección de imágenes */}
+      <div className="mt-10 flex justify-center gap-1"> {/* Cambiado a flex y gap-0 */}
         <img
           src={Girasoles}
-          alt="Febrero"
-          className="rounded-lg shadow-md mx-auto w-[250px] h-[350px] object-cover"
+          alt="Girasol"
+          className="rounded-lg shadow-md w-[150px] h-[150px] object-cover"
         />
         <img
           src={FLoresAzules}
-          alt="Agenda"
-          className="rounded-lg shadow-md mx-auto w-[250px] h-[350px] object-cover"
+          alt="Azul"
+          className="rounded-lg shadow-md w-[150px] h-[150px] object-cover"
         />
         <img
           src={Ramos}
-          alt="Flores"
-          className="rounded-lg shadow-md mx-auto w-[250px] h-[350px] object-cover"
+          alt="Ramo"
+          className="rounded-lg shadow-md w-[150px] h-[150px] object-cover"
         />
       </div>
     </div>
