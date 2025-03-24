@@ -10,7 +10,6 @@ export default function Footer() {
       {/* Footer Principal */}
       <footer className="bg-[#B9A387] text-white p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Sección superior */}
           <div className="text-center mb-8">
             <h2 className="text-2xl font-Title">Arreglitosv</h2>
             <p className="text-white-400 mt-2">
@@ -18,9 +17,7 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Sección de enlaces */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {/* Columna 1 */}
             <div>
               <h3 className="text-lg font-Title">For every occasion</h3>
               <ul className="mt-4 space-y-2">
@@ -29,7 +26,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Columna 2 */}
             <div>
               <h3 className="text-lg font-Title">Contacto</h3>
               <ul className="mt-4 space-y-2">
@@ -39,7 +35,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Columna 3 */}
             <div>
               <h3 className="text-lg font-Title">Información</h3>
               <ul className="mt-4 space-y-2">
@@ -49,7 +44,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Columna 4 */}
             <div>
               <h3 className="text-lg font-Title">Legal</h3>
               <ul className="mt-4 space-y-2">
@@ -59,10 +53,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Derechos reservados */}
           <div className="text-center mt-8 border-t border-b-orange-100 pt-6">
             <p className="text-white-400">
-              Arreglitosv SmortEnterprise® 2025. All Rights Reserved
+              Arreglitosv SmartEnterprise® 2025. All Rights Reserved
             </p>
           </div>
         </div>

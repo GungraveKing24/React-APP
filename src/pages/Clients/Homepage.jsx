@@ -13,10 +13,8 @@ const Homepage = () => {
   return (
     <div className="bg-gray-100 min-h-screen">
       <main className="max-w-7xl mx-auto p-4">
-        {/*  */}
         <section className="bg-[#FAF6F0] p-6 rounded-lg shadow-md text-center relative overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-            {/* Sección de la izquierda con imagen y texto */}
             <div className="relative">
               <img src={Insta1} alt="Ramo de rosas" className="w-full h-96 object-cover rounded-lg" />
               <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent flex flex-col justify-center p-6">
@@ -24,7 +22,6 @@ const Homepage = () => {
               </div>
             </div>
 
-            {/* Sección de la derecha con imágenes apiladas */}
             <div className="grid grid-cols-1 gap-4">
               <img src={lluvia} alt="Flores variadas" className="w-full h-48 object-cover rounded-lg shadow-lg" />
               <div className="relative">
@@ -80,7 +77,6 @@ const Homepage = () => {
         
        {/* Frase destacada */}
        <section className="relative mt-10 bg-gradient-to-r from-[#FAF6F0] to-[#FDECEF] p-12 rounded-2xl shadow-2xl flex items-center justify-between overflow-hidden">
-          {/* Decoración con círculo borroso */}
           <div className="absolute top-0 left-0 w-32 h-32 bg-pink-300 opacity-30 blur-3xl"></div>
           <div className="absolute bottom-0 right-0 w-40 h-40 bg-[#EFB8C8] opacity-20 blur-3xl"></div>
 

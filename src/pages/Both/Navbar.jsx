@@ -4,7 +4,6 @@ export default function Navbar(){
     return (
       <nav className="bg-white shadow-md p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          {/* Logo y enlaces */}
           <div className="flex items-center space-x-8">
             <a href="/" className="text-xl font-bold text-gray-800">Arreglitosv</a>
             <ul className="flex space-x-6">
@@ -15,7 +14,6 @@ export default function Navbar(){
             </ul>
           </div>
 
-          {/* Search bar */}
           <div className="relative mt-4 md:mt-0">
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                     <svg className="w-5 h-5 text-gray-400" viewBox="0 0 24 24" fill="none">
@@ -26,7 +24,6 @@ export default function Navbar(){
                 <input type="text" className="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300" placeholder="Search"/>
           </div>
 
-          {/* Cart logo */}
           <div className="flex justify-center md:block">
                 <a className="relative text-gray-700 transition-colors duration-300 transform hover:text-gray-600" href="#">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -37,7 +34,6 @@ export default function Navbar(){
                 </a>
             </div>
   
-          {/* Botones de acción */}
           <div className="flex items-center space-x-4">
             <Link to="/login">
               <button className="text-gray-700 hover:text-gray-900">Login</button>
