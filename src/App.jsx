@@ -14,6 +14,12 @@ import Terms from "./pages/Clients/terms.jsx"
 import Catalog from "./pages/Clients/Catalog.jsx"
 import User_Dashboard from "./pages/Clients/User_Dashboard.jsx"
 import Dashboard from "./pages/Admin/Dashboard.jsx"
+import Cars from "./pages/Clients/Cars.jsx"
+import Checkout from "./pages/Clients/Checkout.jsx"
+
+import Product_Detail from "./pages/Clients/Product_Detail.jsx"
+
+
 
 
 function App() {
@@ -33,6 +39,9 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/profile" element={<User_Dashboard />} />
+        <Route path="/CheckoutForm" element={<Checkout/>} /> 
+        <Route path="/ShoppingCart" element={<Cars/>} /> 
+        <Route path="/details" element={<Product_Detail/>} />
         <Route path="/AdminDashboard" element={<Dashboard/>} />
       </Routes>
 
