@@ -5,8 +5,6 @@ import corte from "../../assets/corte.jpeg";
 import insta4 from "../../assets/insta4.jpeg";
 
 export default function AboutUs() {
-  console.log("AboutUs.jsx cargado"); // Verifica que el componente se ejecuta
-
   return (
     <div className="bg-[#F8F9FB] font-sans">
       {/* Encabezado */}
