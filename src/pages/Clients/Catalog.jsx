@@ -35,7 +35,7 @@ export default function Catalog() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/arrangements/")
+    fetch("https://fastapi-app-production-f08f.up.railway.app/arrangements/")
       .then((response) => response.json())
       .then((data) => setProducts(data))
       .catch((error) => console.error("Error al obtener los arreglos:", error));
