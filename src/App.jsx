@@ -19,8 +19,7 @@ import Checkout from "./pages/Clients/Checkout.jsx"
 
 import Product_Detail from "./pages/Clients/Product_Detail.jsx"
 
-
-
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -28,6 +27,7 @@ function App() {
       <Navbar />
 
       <Routes>
+        {/* Both */}
         <Route path="/" element={<Homepage />} />
         <Route path="/error" element={<Error />} />
         <Route path="*" element={<Bug/>} />
@@ -38,11 +38,21 @@ function App() {
         <Route path="/policies" element={<Policiaes />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/catalog" element={<Catalog />} />
-        <Route path="/profile" element={<User_Dashboard />} />
+        
+        {/* Client */}
+        
+        <Route element={<ProtectedRoute allowedRoles={["Administrador"]} />}>
+        </Route>
+          <Route path="/profile" element={<User_Dashboard />} />
+
         <Route path="/CheckoutForm" element={<Checkout/>} /> 
         <Route path="/ShoppingCart" element={<Cars/>} /> 
         <Route path="/details" element={<Product_Detail/>} />
-        <Route path="/AdminDashboard" element={<Dashboard/>} />
+        
+        {/* Admin */}
+        <Route element={<ProtectedRoute allowedRoles={["Administrador"]} />}>
+          <Route path="/AdminDashboard" element={<Dashboard/>} />
+        </Route>
       </Routes>
 
       <Footer />

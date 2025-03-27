@@ -23,23 +23,38 @@ async function handleGoogleLogin(){
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  if (form.user_password.length < 8) {
+    toast.error("La contraseña debe tener al menos 8 caracteres");
+    return;
+  }
+
   try {
-    const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/register", {
+    let url = "https://fastapi-app-production-f08f.up.railway.app/register";
+    let dev_url = "http://127.0.0.1:8000/register"; 
+
+    const response = await fetch(dev_url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
     });
-    const data = await response.json();
-    toast.success(data.message);
 
-    {/* In the case the backend returns the token when you register, put this code 
-        localStorage.setItem("token", data.token)
-        setTimeout(() => {
-          window.location.href = "/profile"
-        }, 500)
-      */}
+    const data = await response.json(); // Obtener la respuesta en JSON
+
+    if (!response.ok) {
+      toast.error(data.detail || "Error al registrar usuario"); // Muestra el mensaje del backend
+      console.error("Error:", data);
+      return;
+    }
+
+    toast.success("Registro exitoso!");
+    setTimeout(() => {
+      window.location.href = "/login";
+    }, 500);
+
   } catch (error) {
-    console.log(":(")
+    toast.error("Ocurrió un error inesperado");
+    console.error("Error en la solicitud:", error);
   }
 };
 

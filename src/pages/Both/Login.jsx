@@ -12,7 +12,9 @@ export default function Login() {
   async function handleSubmit(e){
     e.preventDefault()
     try {
-      const res = await fetch("https://fastapi-app-production-f08f.up.railway.app/login", {
+      let url = "https://fastapi-app-production-f08f.up.railway.app/login"
+      let dev_url = "http://127.0.0.1:8000/login"
+      const res = await fetch(dev_url, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(form),
@@ -21,6 +23,10 @@ export default function Login() {
       if(!res.ok){
         toast.error("Contraseña o correo incorrecto");
         return
+      } else {
+        setTimeout(() => {
+          window.location.href = "/profile"
+        }, 500);
       }
 
       const fetchData = await res.json()
@@ -47,7 +53,9 @@ export default function Login() {
   }
 
   async function handleGoogleLogin(){
-    window.location.href = "https://fastapi-app-production-f08f.up.railway.app/google/login"
+    let url = "https://fastapi-app-production-f08f.up.railway.app/google/login"
+    let dev_url = "http://127.0.0.1:8000/google/login"
+    window.location.href = dev_url
   }
 
   return (
