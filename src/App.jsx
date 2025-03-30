@@ -22,10 +22,10 @@ import User_Dashboard from './pages/Clients/Users/User_Dashboard.jsx';
 import Order_History from './pages/Clients/Users/Order_History.jsx';
 import Order_Details from './pages/Clients/Users/Order_Deatils.jsx';
 import Settings from './pages/Clients/Users/Setting.jsx';
-import EditProfile from './pages/Clients/Users/editProfile.jsx'
 
 {/* Admin */}
 import Dashboard from "./pages/Admin/Dashboard.jsx"
+import Categories from './pages/Admin/Categories/Categories.jsx';
 
 function App() {
   return (
@@ -48,13 +48,13 @@ function App() {
 
           {/* Auth Users */}
           <Route path="/profile" element={<User_Dashboard />} />
-          <Route path='/editProfile' element={<EditProfile />} />
-          <Route path='/order_Details/:id' element={<Order_Details />} />
+          <Route path='/order_Details' element={<Order_Details />} />
           <Route path='/order_History' element={<Order_History />} />
           <Route path='/settings' element={<Settings />} />
 
           {/* Admin */}
           <Route path="/AdminDashboard" element={<Dashboard/>} />
+          <Route path='/categories' element={<Categories />} />
         </Routes>
         <Footer />
       </Layout>

@@ -65,7 +65,7 @@ function User_Dashboard(){
             <li className="mt-3">📍 {user.user_direction}</li>
           </ul>
           <div className="flex space-x-4 mt-4">
-            <Link to="/editProfile">
+            <Link to="/settings">
               <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-600">
                 Editar Perfil
               </button>
@@ -94,7 +94,7 @@ function User_Dashboard(){
                   <td className="border border-gray-300 px-4 py-2">{order.date}</td>
                   <td className="border border-gray-300 px-4 py-2">${order.total}</td>
                   <td className="border border-gray-300 px-4 py-2">{order.status}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-[#B9A387]"><Link to={`/order_Details/${order.id}`}>Detalles</Link></td>
+                  <td className="border border-gray-300 px-4 py-2 text-[#B9A387]"><Link to="/order_Details">Detalles</Link></td>
                 </tr>
               ))}
             </tbody>

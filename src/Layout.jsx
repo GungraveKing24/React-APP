@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
     <>
       <Navbar />
       {showUserNavBar && <NavBarUsersAuth />}
-      <main className="container mx-auto p-4">{children}</main>
+      <main className="container mx-auto">{children}</main>
     </>
   );
 };

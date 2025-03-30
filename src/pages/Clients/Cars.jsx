@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function ShoppingCart() {
   const [cart, setCart] = useState([
@@ -94,9 +95,11 @@ export default function ShoppingCart() {
                 <span className="text-gray-800 font-bold">${subtotal.toFixed(2)}</span>
               </div>
             </div>
-            <button className="w-full bg-[#EFB8C8] text-white px-4 py-3 rounded-lg hover:bg-pink-500 font-medium">
-              Procesar Compra
-            </button>
+            <Link to="/CheckoutForm">
+              <button className="w-full bg-[#EFB8C8] text-white px-4 py-3 rounded-lg hover:bg-pink-500 font-medium">
+                Procesar Compra
+              </button>
+            </Link>
           </div>
         </div>
       </div>

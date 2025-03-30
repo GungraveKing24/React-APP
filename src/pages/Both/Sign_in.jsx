@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Logo from '../../assets/ArreglitosSV.png'
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
   const [form, setForm] = useState({
@@ -10,8 +11,20 @@ export default function SignIn() {
     user_number: "",
     user_direction: "",
 });
+const token = localStorage.getItem("token")
+const navigate = useNavigate()
 
-console.log(form)
+  useEffect(() => {
+    if(token){
+      try {
+        const userInfo = JSON.parse(atob(token.split(".")[1]))
+        console.log("Usuario autenticado con exito", userInfo)
+        navigate("/profile")
+      } catch (error) {
+        console.error("Error")
+      }
+    }
+  }, [])
 
 const handleChange = (e) => {
   setForm({ ...form, [e.target.name]: e.target.value });
@@ -42,10 +55,6 @@ const handleSubmit = async (e) => {
     console.log(":(")
   }
 };
-
-if (localStorage.getItem("token")) {
-  window.location.href = "/profile";
-}
   
   return (
     <>
