@@ -3,6 +3,7 @@ import gisse from "../../assets/gisse.jpeg";
 import todo from "../../assets/todo.jpeg";
 import corte from "../../assets/corte.jpeg";
 import insta4 from "../../assets/insta4.jpeg";
+import { Link } from "react-router-dom";
 
 export default function AboutUs() {
   return (
@@ -12,9 +13,11 @@ export default function AboutUs() {
         <img src={Logo} alt="ArreglitosSV" className="mx-auto w-48 mb-6" />
         <h1 className="text-5xl font-Title text-[#2D3436] mt-3 tracking-wide">"Arreglitosv"</h1>
         <p className="text-xl text-[#4B4B4B] mt-2 mb-4">Detalles con amor y pasión</p>
-        <button className="mt-6 px-10 py-4 bg-[#EFB8C8] text-white font-semibold rounded-full shadow-lg transform hover:scale-105 hover:bg-[#F28D7E] transition-all duration-300">
-          Comprar ahora
-        </button>
+        <Link to="/catalog">
+          <button className="mt-6 px-10 py-4 bg-[#EFB8C8] text-white font-semibold rounded-full shadow-lg transform hover:scale-105 hover:bg-[#F28D7E] transition-all duration-300">
+            Comprar ahora
+          </button>
+        </Link>
       </header>
 
       {/* Sección: Historia */}

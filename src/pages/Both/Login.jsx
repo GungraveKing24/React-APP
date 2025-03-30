@@ -1,9 +1,24 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Logo from '../../assets/ArreglitosSV.png'
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   const [form, setForm] = useState({user_email: "", user_password: ""})
+  const token = localStorage.getItem("token")
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(token){
+      try {
+        const userInfo = JSON.parse(atob(token.split(".")[1]))
+        console.log("Usuario autenticado con exito", userInfo)
+        navigate("/profile")
+      } catch (error) {
+        console.error("Error")
+      }
+    }
+  }, [])
 
   function handleChange(e){
     setForm({...form, [e.target.name]: e.target.value})
@@ -35,31 +50,12 @@ export default function Login() {
     }
   }
 
-  const token = localStorage.getItem("token")
-
-  if(token){
-    try {
-      const userInfo = JSON.parse(atob(token.split(".")[1]))
-      console.log("Usuario autenticado con exito", userInfo)
-    } catch (error) {
-      console.error("Error")
-    }
-  }
-
   async function handleGoogleLogin(){
     window.location.href = "https://fastapi-app-production-f08f.up.railway.app/google/login"
   }
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-white">
-        <body class="h-full">
-        ```
-      */}
       <div className="flex min-h-fit flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <Toaster
             position="top-center"
@@ -129,19 +125,6 @@ export default function Login() {
                 </button>
               </div>
             </form>
-{/* 
-            <div className="px-6 sm:px-0 max-w-sm py-5">
-                <button 
-                  type="button"
-                  onClick={handleGoogleLogin}
-                  className="text-white w-full  bg-red-600 hover:bg-red-500/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between mr-2 mb-2">
-                    <svg className="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                        <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"/>
-                    </svg>
-                    Accede con Google
-                    <div></div>
-                </button>
-            </div> */}
 
               {/* CAMBIE COLOR SOLAMENTE  */}
             <div className="px-6 sm:px-0 max-w-sm py-5">

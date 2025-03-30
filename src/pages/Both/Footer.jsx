@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   return (
     <>
@@ -21,34 +23,34 @@ export default function Footer() {
             <div>
               <h3 className="text-lg font-Title">For every occasion</h3>
               <ul className="mt-4 space-y-2">
-                <li><a href="/" className="text-white-400 hover:text-white">Arreglitos</a></li>
-                <li><a href="/contact" className="text-white-400 hover:text-white">Ayuda</a></li>
+                <li><Link to="/" className="text-white-400 hover:text-white">Arreglitos</Link></li>
+                <li><Link to="/contact" className="text-white-400 hover:text-white">Ayuda</Link></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-lg font-Title">Contacto</h3>
               <ul className="mt-4 space-y-2">
-                <li><a href="/contact" className="text-white-400 hover:text-white">(+503) 7513 5986</a></li>
-                <li><a href="#" className="text-white-400 hover:text-white">Mi cuenta</a></li>
-                <li><a href="#" className="text-white-400 hover:text-white">Carrito de compras</a></li>
+                <li><Link to="/contact" className="text-white-400 hover:text-white">(+503) 7513 5986</Link></li>
+                <li><Link to="/profile" className="text-white-400 hover:text-white">Mi cuenta</Link></li>
+                <li><Link to="/ShoppingCart" className="text-white-400 hover:text-white">Carrito de compras</Link></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-lg font-Title">Información</h3>
               <ul className="mt-4 space-y-2">
-                <li><a href="/aboutus" className="text-white-400 hover:text-white">Sobre Nosotros</a></li>
-                <li><a href="/contact" className="text-white-400 hover:text-white">Contáctanos</a></li>
-                <li><a href="/catalog" className="text-white-400 hover:text-white">Catálogo</a></li>
+                <li><Link to="/aboutus" className="text-white-400 hover:text-white">Sobre Nosotros</Link></li>
+                <li><Link to="/contact" className="text-white-400 hover:text-white">Contáctanos</Link></li>
+                <li><Link to="/catalog" className="text-white-400 hover:text-white">Catálogo</Link></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-lg font-Title">Legal</h3>
               <ul className="mt-4 space-y-2">
-                <li><a href="/terms" className="text-white-400 hover:text-white">Términos y Condiciones</a></li>
-                <li><a href="/policies" className="text-white-400 hover:text-white">Políticas de Privacidad</a></li>
+                <li><Link to="/terms" className="text-white-400 hover:text-white">Términos y Condiciones</Link></li>
+                <li><Link to="/policies" className="text-white-400 hover:text-white">Políticas de Privacidad</Link></li>
               </ul>
             </div>
           </div>
