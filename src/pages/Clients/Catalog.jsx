@@ -3,6 +3,7 @@ import SmartSpinner from "../Both/SmartSpinner";
 import ProductCard from "./ProductCard";
 import { FaLeaf } from "react-icons/fa";
 
+
 export default function Catalog() {
   const [products, setProducts] = useState([]);
   const [cartCount, setCartCount] = useState(0);
