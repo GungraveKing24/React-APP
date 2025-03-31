@@ -71,7 +71,7 @@ const handleSubmit = async (e) => {
               src={Logo}
               className="mx-auto h-50 w-auto"
             />
-            <h2 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+            <h2 className="mt-3 text-center text-2xl/9 font-Title tracking-tight text-gray-900">
               Crea tu cuenta
             </h2>
           </div>
@@ -81,7 +81,7 @@ const handleSubmit = async (e) => {
             
             {/* Username */}
             <div>
-                <label htmlFor="username" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="username" className="block text-sm/6 font-Title text-gray-900">
                     Nombre
                 </label>
                 <div className="mt-2">
@@ -100,7 +100,7 @@ const handleSubmit = async (e) => {
 
             {/* Email */}
             <div>
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="email" className="block text-sm/6 font-Title text-gray-900">
                     Correo
                 </label>
                 <div className="mt-2">
@@ -119,7 +119,7 @@ const handleSubmit = async (e) => {
 
             {/* Password */} 
             <div>
-                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="password" className="block text-sm/6 font-Title text-gray-900">
                   Contraseña
                 </label>
 
@@ -137,7 +137,7 @@ const handleSubmit = async (e) => {
 
             {/* Number */}
             <div>
-                <label htmlFor="Cellphone" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="Cellphone" className="block text-sm/6 font-Title text-gray-900">
                   Teléfono
                 </label>
                 <div className="mt-2">
@@ -156,8 +156,8 @@ const handleSubmit = async (e) => {
 
             {/* Direction */}
             <div>
-                <label htmlFor="direction" className="block text-sm/6 font-medium text-gray-900">
-                    Direction
+                <label htmlFor="direction" className="block text-sm/6 font-Title text-gray-900">
+                    Dirección
                 </label>
                 <div className="mt-2">
                     <input
@@ -176,19 +176,19 @@ const handleSubmit = async (e) => {
             <div>
                 <button
                     type="submit"
-                    className="flex w-full justify-center rounded-md bg-[#EFB8C8] px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-red-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    className="flex w-full justify-center rounded-md bg-[#EFB8C8] px-3 py-1.5 text-sm/6 font-Title text-white shadow-xs hover:bg-red-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Registrate
                 </button>
             </div>
         </form>
 
             {/* Cambiee color */}
-            <div className="px-6 sm:px-0 max-w-sm py-5">
+            <div className="px-6 sm:px-0 max-w-sm py-5 font-Title">
               <button
                type="button"
                onClick={handleGoogleLogin} className="w-full bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center">
                <svg
-                 className="mr-2 w-5 h-5"
+                 className="mr-2 w-5 h-5 "
                  aria-hidden="true"
                  focusable="false"
                  data-prefix="fab"
@@ -204,9 +204,9 @@ const handleSubmit = async (e) => {
             </div>
 
 
-            <p className="mt-10 text-center text-sm/6 text-gray-500">
+            <p className="mt-10 text-center  font-Title text-sm/6 text-gray-500">
               Ya tienes cuenta?{' '}
-              <a href="/login" className="font-semibold text-gray-950 hover:text-gray-800">
+              <a href="/login" className="font-Title text-gray-950 hover:text-gray-800">
                 Accede
               </a>
             </p>

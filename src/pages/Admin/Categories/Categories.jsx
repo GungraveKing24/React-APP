@@ -19,7 +19,7 @@ function CategoryCard({ category }){
                     </button>
                 </Link>
                 <Link to="/">
-                    <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-600">
+                    <button className="rounded-md bg-[#EFB8C8] px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-red-600">
                         Deshabilitar
                     </button>
                 </Link>

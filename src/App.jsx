@@ -26,6 +26,17 @@ import Settings from './pages/Clients/Users/Setting.jsx';
 {/* Admin */}
 import Dashboard from "./pages/Admin/Dashboard.jsx"
 import Categories from './pages/Admin/Categories/Categories.jsx';
+import CreateProduct from './pages/Admin/Products/addproduct.jsx'
+import EditProduct from './pages/Admin/Products/editproduct.jsx'
+import Catalog2 from './pages/Admin/Products/Products.jsx'
+import AddCate from './pages/Admin/Categories/addcate.jsx'
+import Statistics from './pages/Admin/Statistics.jsx'
+import Notifications from './pages/Admin/Notification.jsx'
+import OrderDetails from './pages/Admin/DetailsOrder.jsx'
+import UserManagement from './pages/Admin/Users.jsx'
+
+
+
 
 function App() {
   return (
@@ -55,6 +66,21 @@ function App() {
           {/* Admin */}
           <Route path="/AdminDashboard" element={<Dashboard/>} />
           <Route path='/categories' element={<Categories />} />
+          <Route path='/CreateProduct' element={<CreateProduct />} />
+          <Route path='/EditProduct' element={<EditProduct />} />
+          <Route path='/Catalog2' element={<Catalog2 />} />
+          <Route path='/AddCate' element={<AddCate />} />
+          <Route path='/Statistics' element={<Statistics />} />
+          <Route path='/Notifications' element={<Notifications />} />
+          <Route path='/OrderDetails' element={<OrderDetails />} />
+          <Route path='/UserManagement' element={<UserManagement />} />
+
+
+
+          
+
+
+
         </Routes>
         <Footer />
       </Layout>

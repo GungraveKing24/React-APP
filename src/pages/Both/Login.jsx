@@ -68,7 +68,7 @@ export default function Login() {
               src={Logo}
               className="mx-auto h-50 w-auto"
             />
-            <h2 className="mt-3 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+            <h2 className="mt-3 text-center font-Title text-2xl/9 font-bold tracking-tight text-gray-900">
               Accede a tu cuenta
             </h2>
           </div>
@@ -76,7 +76,7 @@ export default function Login() {
           <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm shadow-lg p-5">
             <form onSubmit={handleSubmit} method="POST" className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="email" className="block text-sm/6  font-Title font-medium text-gray-900">
                   Correo Electronico
                 </label>
                 <div className="mt-2">
@@ -93,12 +93,12 @@ export default function Login() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center font-Title justify-between">
                   <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
                     Contraseña
                   </label>
                   <div className="text-sm">
-                    <a href="#" className="font-semibold text-gray-950 hover:text-gray-800">
+                    <a href="#" className="font-Title text-gray-950 hover:text-gray-800">
                       Olvidaste tu contraseña?
                     </a>
                   </div>
@@ -119,7 +119,7 @@ export default function Login() {
               <div>
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-md bg-[#EFB8C8] px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-red-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-300"
+                  className="flex w-full justify-center rounded-md bg-[#EFB8C8] px-3 py-1.5 text-sm/6 font-Title text-white shadow-xs hover:bg-red-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-300"
                 >
                   Acceder
                 </button>
@@ -131,7 +131,7 @@ export default function Login() {
               <button
                   type="button"
                   onClick={handleGoogleLogin}
-                  className="w-full bg-white text-gray-900 border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center">
+                  className="w-full bg-white font-Title text-gray-900 border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-center">
                   <svg
                     className="mr-2 w-5 h-5"
                     aria-hidden="true"
@@ -150,9 +150,9 @@ export default function Login() {
             </div>
 
 
-            <p className="mt-10 text-center text-sm/6 text-gray-500">
+            <p className="mt-10 text-center  font-Title text-sm/6 text-gray-500">
               No tienes cuenta?{' '}
-              <a href="/signin" className="font-semibold text-gray-950 hover:text-gray-800">
+              <a href="/signin" className="font-Title text-gray-950 hover:text-gray-800">
                 Crea una cuenta
               </a>
             </p>

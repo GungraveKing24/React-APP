@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-md p-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="text-xl font-bold text-gray-800">
+        <Link to="/" className="text-xl font-Title text-gray-800">
           Arreglitosv
         </Link>
 
@@ -26,7 +26,7 @@ export default function Navbar() {
         <div className={`flex-col md:flex md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-8 ${isOpen ? "flex" : "hidden"} md:flex absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none p-4 md:p-0 z-10`}>
           
           {/* Links */}
-          <ul className="flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-6 text-center md:text-left">
+          <ul className="flex flex-col font-Title md:flex-row space-y-3 md:space-y-0 md:space-x-6 text-center md:text-left">
             <li><Link to="/" className="text-gray-700 hover:text-gray-900">Inicio</Link></li>
             <li><Link to="/catalog" className="text-gray-700 hover:text-gray-900">Catálogo</Link></li>
             <li><Link to="/aboutus" className="text-gray-700 hover:text-gray-900">Nosotros</Link></li>
@@ -42,7 +42,7 @@ export default function Navbar() {
             </span>
             <input
               type="text"
-              className="w-full py-2 pl-10 pr-4 text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300"
+              className="w-full py-2 pl-10 pr-4 font-Title text-gray-700 bg-white border border-gray-300 rounded-lg focus:border-blue-400 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300"
               placeholder="Buscar..."
             />
           </div>
@@ -63,12 +63,12 @@ export default function Navbar() {
           {/* Botones de Login y Sign Up */}
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
             <Link to="/login">
-              <button className="text-gray-700 hover:text-gray-900 w-full md:w-auto px-4 py-2 text-center">
+              <button className="text-gray-700 font-Title hover:text-gray-900 w-full md:w-auto px-4 py-2 text-center">
                 Accede
               </button>
             </Link>
             <Link to="/signin">
-              <button className="bg-blue-500 text-white w-auto md:w-auto px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 text-center">
+              <button className="bg-blue-500 text-white w-auto font-Title md:w-auto px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 text-center">
                 Registrate
               </button>
             </Link>

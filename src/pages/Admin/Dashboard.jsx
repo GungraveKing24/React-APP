@@ -36,11 +36,11 @@ export default function AdminDashboard() {
         <ul className="space-y-4">
           <li>
             <Link
-              to="/dashboard"
+              to="/Catalog2"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#6C5CE7] transition-all duration-300"
             >
               <FaHome size={24} className="text-white" />
-              <span className="font-semibold">Dashboard</span>
+              <span className="font-Title">Dashboard</span>
             </Link>
           </li>
           <li>
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#e75cad] transition-all duration-300"
             >
               <FaBox size={24} className="text-white" />
-              <span className="font-semibold">Órdenes</span>
+              <span className="font-Title">Órdenes</span>
             </Link>
           </li>
           <li>
@@ -58,25 +58,25 @@ export default function AdminDashboard() {
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#e75cad] transition-all duration-300"
             >
               <FaBell size={24} className="text-white" />
-              <span className="font-semibold">Notificaciones</span>
+              <span className="font-Title">Notificaciones</span>
             </Link>
           </li>
           <li>
             <Link
-              to="/inventory"
+              to="/catalog2"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#e75cad] transition-all duration-300"
             >
               <FaBox size={24} className="text-white" />
-              <span className="font-semibold">Inventario</span>
+              <span className="font-Title">Inventario</span>
             </Link>
           </li>
           <li>
             <Link
-              to="/reports"
+              to="/Statistics"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#6C5CE7] transition-all duration-300"
             >
               <FaChartLine size={24} className="text-white" />
-              <span className="font-semibold">Reportes</span>
+              <span className="font-Title">Reportes</span>
             </Link>
           </li>
           <li>
@@ -85,14 +85,14 @@ export default function AdminDashboard() {
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#6C5CE7] transition-all duration-300"
             >
               <FaSignOutAlt size={24} className="text-white" />
-              <span className="font-semibold">Log-out</span>
+              <span className="font-Title">Log-out</span>
             </Link>
           </li>
         </ul>
       </div>
 
       <div className="flex-1 flex flex-col items-center p-10 mt-16">
-        <h1 className="text-4xl font-extrabold text-[#2D3436] mb-8">ADMINISTRACIÓN</h1>
+        <h1 className="text-4xl font-Title text-[#2D3436] mb-8">ADMINISTRACIÓN</h1>
         <div className="grid grid-cols-3 gap-8 p-8 bg-white rounded-3xl shadow-2xl border border-gray-200">
           {menuItems.map((item, index) => (
             <div

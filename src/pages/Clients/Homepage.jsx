@@ -5,6 +5,7 @@ import insta2 from "../../assets/insta2.jpeg"
 import insta3 from "../../assets/insta3.jpeg"
 import insta from "../../assets/insta.jpeg"
 import lluvia from "../../assets/lluvia.jpeg"
+import { Link } from "react-router-dom";
 
 
 
@@ -87,9 +88,11 @@ const Homepage = () => {
           </div>
 
           <div className="relative z-10">
-            <button className="mt-5 bg-gradient-to-r from-[#EFB8C8] to-[#F48FB1] text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transform transition duration-500 ease-in-out hover:scale-110 hover:shadow-2xl">
-              Ver Catálogo
-            </button>
+            <Link to="/catalog">
+              <button className="mt-5 bg-gradient-to-r from-[#EFB8C8] to-[#F48FB1] text-white text-xl font-semibold px-8 py-4 rounded-lg shadow-lg transform transition duration-500 ease-in-out hover:scale-110 hover:shadow-2xl">
+                Ver Catálogo
+              </button>
+            </Link>
           </div>
         </section>
 

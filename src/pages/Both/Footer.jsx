@@ -5,7 +5,7 @@ export default function Footer() {
     <>
       {/* Footer Secundario */}
       <footer className="bg-[#EFB8C8] py-8 px-6 text-center text-white">
-        <p className="text-lg font-semibold">Somos una floristería en línea</p>
+        <p className="text-lg font-Title">Somos una floristería en línea</p>
         <p className="text-sm mt-2">Síguenos por medio de Instagram</p>
       </footer>
 
