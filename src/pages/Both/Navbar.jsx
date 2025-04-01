@@ -1,8 +1,51 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setUser(payload);
+        fetchCartDetails();
+      } catch (error) {
+        console.error("Error al procesar el token:", error);
+        localStorage.removeItem("token");
+      }
+    }
+  }, []);
+
+  async function fetchCartDetails() {
+    try {
+      const res = await axios.get("https://fastapi-app-production-f08f.up.railway.app/orders/cart/details/quantity", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      // Si la respuesta es un número, actualiza el estado
+      if (typeof res.data === 'number') {
+        setCartCount(res.data); // Si el backend devuelve el número de artículos directamente
+      } else {
+        setCartCount(res.data.length); // Si el backend devuelve un array de artículos
+      }
+    } catch (error) {
+      console.error("Error al obtener el carrito:", error);
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/");
+  }
 
   return (
     <nav className="bg-white shadow-md p-4">
@@ -49,30 +92,41 @@ export default function Navbar() {
 
           {/* Carrito de compras */}
           <div className="relative flex justify-center md:justify-start">
-            <Link to="/ShoppingCart" className="relative text-gray-700 hover:text-gray-600 flex items-center" >
+            <Link to="/ShoppingCart" className="relative text-gray-700 hover:text-gray-600 flex items-center">
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.70711 15.2929C4.07714 15.9229 4.52331 17 5.41421 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM9 19C9 20.1046 8.10457 21 7 21C5.89543 21 5 20.1046 5 19C5 17.8954 5.89543 17 7 17C8.10457 17 9 17.8954 9 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-
-              <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
-                 
-              </span>
+                <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
+                  {cartCount}
+                </span>
             </Link>
           </div>
 
-          {/* Botones de Login y Sign Up */}
-          <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
-            <Link to="/login">
-              <button className="text-gray-700 font-Title hover:text-gray-900 w-full md:w-auto px-4 py-2 text-center">
-                Accede
+          {/* Botones de Login y Sign Up o User */}
+          {user ? (
+            <div className="flex items-center space-x-4">
+              <Link to="/profile" className="flex items-center space-x-4">
+                <img src={user.user_url_photo} alt="Perfil" className="w-10 h-10 rounded-full border border-gray-300" />
+                <span className="text-gray-700 font-semibold">{user.user_name}</span>
+              </Link>
+              <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">
+                Logout
               </button>
-            </Link>
-            <Link to="/signin">
-              <button className="bg-blue-500 text-white w-auto font-Title md:w-auto px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 text-center">
-                Registrate
-              </button>
-            </Link>
-          </div>
+            </div>
+          ) : (
+            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4 mt-4 md:mt-0">
+              <Link to="/login">
+                <button className="text-gray-700 hover:text-gray-900 w-full md:w-auto px-4 py-2 text-center">
+                  Accede
+                </button>
+              </Link>
+              <Link to="/signin">
+                <button className="bg-blue-500 text-white w-auto md:w-auto px-6 py-2 rounded-lg hover:bg-blue-600 transition duration-300 text-center">
+                  Registrate
+                </button>
+              </Link>
+            </div>
+          )}
 
         </div>
       </div>

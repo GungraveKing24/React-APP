@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaRegEnvelope, FaPhone, FaRegCalendarAlt, FaSearch } from 'react-icons/fa';
+import { FaRegEnvelope, FaPhone, FaRegCalendarAlt } from 'react-icons/fa';
 import { CgDetailsMore } from "react-icons/cg";
 import { Link, useLocation } from 'react-router-dom';
 
@@ -51,7 +51,7 @@ export default function SalesHistory(){
     const location = useLocation()
     const [statusFilter, setStatusFilter] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 5;
+    const ordersPerPage = 10;
 
     useEffect(() => {
         if (location.pathname !== "/orders") {
@@ -231,6 +231,25 @@ export default function SalesHistory(){
                     </div>
                 )}
             </div>
+          
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+              <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
+              <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
+            </div>
+            <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+              <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>
+              <p className="text-2xl font-Title text-yellow-600">
+                {orders.filter(o => o.status === "Procesando").length}
+              </p>
+            </div>
+            <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+              <h3 className="text-gray-500 font-Title text-sm">En Camino</h3>
+              <p className="text-2xl font-Title text-blue-600">
+                {orders.filter(o => o.status === "En camino").length}
+              </p>
+            </div>
+          </div>
         </div>
     </div>
     </>

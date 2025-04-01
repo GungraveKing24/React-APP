@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { FaCheckCircle, FaTruck, FaInfoCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
 
 export default function OrderDetails() {
+  const location = useLocation()
+  const isDisabled = location.pathname.includes("/order_Details"); // Desactiva en "/order_Details"
   const [orderDetails, setOrderDetails] = useState({
     orderId: "#738",
     date: "8 Sep, 2023",
@@ -69,20 +72,23 @@ export default function OrderDetails() {
         </div>
 
         <div className="relative mb-8">
-          <div className={`flex items-center justify-between p-4 rounded-lg ${getStatusColor(orderDetails.status)}`}>
+          <div 
+            className={`flex items-center justify-between p-4 rounded-lg ${getStatusColor(orderDetails.status)} 
+            ${isDisabled ? 'cursor-default' : 'cursor-pointer'}`}
+            onClick={isDisabled ? undefined : () => setShowStatusDropdown(!showStatusDropdown)}
+          >
             <div className="flex items-center">
               {getStatusIcon(orderDetails.status)}
               <span className="ml-2 font-semibold">{orderDetails.status}</span>
             </div>
-            <button 
-              onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              {showStatusDropdown ? <FaChevronUp /> : <FaChevronDown />}
-            </button>
+            {!isDisabled && (
+              <button className="text-gray-700 hover:text-gray-900">
+                {showStatusDropdown ? <FaChevronUp /> : <FaChevronDown />}
+              </button>
+            )}
           </div>
           
-          {showStatusDropdown && (
+          {!isDisabled && showStatusDropdown && (
             <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
               {statusOptions.map((status) => (
                 <div
@@ -154,15 +160,17 @@ export default function OrderDetails() {
         </div>
 
         <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <a 
-            href="/Notifications" 
+          <Link
+            to={isDisabled ? "/order_History" : "/Notifications"}
             className="px-6 py-3 bg-rose-100 text-rose-800 rounded-lg hover:bg-rose-200 transition-colors text-center font-Title"
           >
-            Volver a Notificaciones
-          </a>
-          <button className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title">
+            Volver
+          </Link>
+          {!isDisabled ? (
+            <button className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title">
             Contactar al Cliente
           </button>
+          ) : <></>}
         </div>
       </div>
     </div>

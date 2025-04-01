@@ -13,12 +13,18 @@ export default function Login() {
       try {
         const userInfo = JSON.parse(atob(token.split(".")[1]))
         console.log("Usuario autenticado con exito", userInfo)
-        navigate("/profile")
+        // Redirigir según el rol del usuario
+        if (userInfo.role === 'Administrador') {
+          navigate("/AdminDashboard");
+        } else {
+          navigate("/profile");
+        }
       } catch (error) {
-        console.error("Error")
+        console.error("Error decodificando el token", error)
+        localStorage.removeItem("token");
       }
     }
-  }, [])
+  }, [token, navigate])
 
   function handleChange(e){
     setForm({...form, [e.target.name]: e.target.value})
@@ -42,16 +48,31 @@ export default function Login() {
 
       localStorage.setItem("token", fetchData.token)
       toast.success("Inicio de sesión exitoso!");
+      const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
+      
+      // Redirigir según el rol
+      if (payload.role === 'Administrador') {
+        navigate("/AdminDashboard");
+      } else {
+        navigate("/profile");
+      }
       setTimeout(() => {
         window.location.href = "/profile"
       }, 500)
     } catch (error) {
-      toast.error("Error");
+      toast.error("Error al iniciar sesión");
     }
   }
 
   async function handleGoogleLogin(){
-    window.location.href = "https://fastapi-app-production-f08f.up.railway.app/google/login"
+    const frontendUrl = window.location.origin;
+    const callbackUrl = `${frontendUrl}/google/callback`;
+
+    // Codifica la URL de callback dos veces para evitar problemas
+    const encodedCallback = encodeURIComponent(encodeURIComponent(callbackUrl));
+    let url = `https://fastapi-app-production-f08f.up.railway.app/google/login?callback_url=${encodedCallback}`;
+
+    window.location.href = url;
   }
 
   return (
