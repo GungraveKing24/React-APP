@@ -3,12 +3,12 @@ import { FaDatabase, FaShoppingCart, FaBell, FaUser, FaChartBar, FaDollarSign, F
 import { Link } from "react-router-dom";
 
 const menuItems = [
-    { icon: <FaDatabase size={24} className="text-[#6C5CE7]" />, label: "Productos y Stock", bg: "bg-[#F2EFFD]" },
-    { icon: <FaDollarSign size={24} className="text-[#00B894]" />, label: "Órdenes", bg: "bg-[#E8F8F5]" },
-    { icon: <FaBell size={24} className="text-[#FDCB6E]" />, label: "Notificaciones", bg: "bg-[#FFF3E6]" },
-    { icon: <FaShoppingCart size={24} className="text-[#E84393]" />, label: "Historial de Venta", bg: "bg-[#FCE4EC]" },
-    { icon: <FaUser size={24} className="text-[#0984E3]" />, label: "Usuarios", bg: "bg-[#E3F2FD]" },
-    { icon: <FaChartBar size={24} className="text-[#D63031]" />, label: "Estadísticas", bg: "bg-[#FFE6E6]" }
+    { icon: <FaDatabase size={24} className="text-[#6C5CE7]" />, label: "Productos y Stock", bg: "bg-[#F2EFFD]", link: "/Catalog2" },
+    { icon: <FaDollarSign size={24} className="text-[#00B894]" />, label: "Órdenes", bg: "bg-[#E8F8F5]", link: "/orders" },
+    { icon: <FaBell size={24} className="text-[#FDCB6E]" />, label: "Notificaciones", bg: "bg-[#FFF3E6]", link: "/Notifications" },
+    { icon: <FaShoppingCart size={24} className="text-[#E84393]" />, label: "Historial de Venta", bg: "bg-[#FCE4EC]", link: "/SalesHistory" },
+    { icon: <FaUser size={24} className="text-[#0984E3]" />, label: "Usuarios", bg: "bg-[#E3F2FD]", link: "/UserManagement" },
+    { icon: <FaChartBar size={24} className="text-[#D63031]" />, label: "Estadísticas", bg: "bg-[#FFE6E6]", link: "/Statistics" }
 ];
 
 export default function AdminDashboard() {
@@ -16,6 +16,11 @@ export default function AdminDashboard() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
   };
 
   return (
@@ -36,7 +41,7 @@ export default function AdminDashboard() {
         <ul className="space-y-4">
           <li>
             <Link
-              to="/Catalog2"
+              to="/AdminDashboard"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#6C5CE7] transition-all duration-300"
             >
               <FaHome size={24} className="text-white" />
@@ -54,7 +59,7 @@ export default function AdminDashboard() {
           </li>
           <li>
             <Link
-              to="/notifications"
+              to="/Notifications"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#e75cad] transition-all duration-300"
             >
               <FaBell size={24} className="text-white" />
@@ -63,7 +68,7 @@ export default function AdminDashboard() {
           </li>
           <li>
             <Link
-              to="/catalog2"
+              to="/Catalog2"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#e75cad] transition-all duration-300"
             >
               <FaBox size={24} className="text-white" />
@@ -80,13 +85,12 @@ export default function AdminDashboard() {
             </Link>
           </li>
           <li>
-            <Link
-              to="/logout"
-              className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#6C5CE7] transition-all duration-300"
-            >
-              <FaSignOutAlt size={24} className="text-white" />
-              <span className="font-Title">Log-out</span>
-            </Link>
+            <button 
+                onClick={handleLogout} 
+                className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#6C5CE7] transition-all duration-300">
+                  <FaSignOutAlt size={24} className="text-white" />
+                  <span className="font-Title">Cerrar Sesion</span>
+            </button>
           </li>
         </ul>
       </div>
@@ -95,13 +99,14 @@ export default function AdminDashboard() {
         <h1 className="text-4xl font-Title text-[#2D3436] mb-8">ADMINISTRACIÓN</h1>
         <div className="grid grid-cols-3 gap-8 p-8 bg-white rounded-3xl shadow-2xl border border-gray-200">
           {menuItems.map((item, index) => (
-            <div
-              key={index}
-              className={`flex flex-col items-center justify-center w-60 h-60 ${item.bg} rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer p-6 border border-gray-200 hover:scale-105`}
-            >
-              <div className="mb-4">{item.icon}</div>
-              <span className="text-[#2D3436] font-semibold text-lg text-center">{item.label}</span>
-            </div>
+            <Link to={item.link} key={index}>
+              <div
+                className={`flex flex-col items-center justify-center w-60 h-60 ${item.bg} rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer p-6 border border-gray-200 hover:scale-105`}
+              >
+                <div className="mb-4">{item.icon}</div>
+                <span className="text-[#2D3436] font-semibold text-lg text-center">{item.label}</span>
+              </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -34,9 +34,7 @@ import Statistics from './pages/Admin/Statistics.jsx'
 import Notifications from './pages/Admin/Notification.jsx'
 import OrderDetails from './pages/Admin/DetailsOrder.jsx'
 import UserManagement from './pages/Admin/Users.jsx'
-
-
-
+import SalesHistory from './pages/Admin/Sales_history.jsx';
 
 function App() {
   return (
@@ -70,17 +68,14 @@ function App() {
           <Route path='/EditProduct' element={<EditProduct />} />
           <Route path='/Catalog2' element={<Catalog2 />} />
           <Route path='/AddCate' element={<AddCate />} />
+            {/* EditCate? */}
           <Route path='/Statistics' element={<Statistics />} />
           <Route path='/Notifications' element={<Notifications />} />
           <Route path='/OrderDetails' element={<OrderDetails />} />
+            {/* orders y SalesHistory solo se diferencian por los filtros */}
+          <Route path='/orders' element={<SalesHistory />} />
+          <Route path='/SalesHistory' element={<SalesHistory />} />
           <Route path='/UserManagement' element={<UserManagement />} />
-
-
-
-          
-
-
-
         </Routes>
         <Footer />
       </Layout>

@@ -36,6 +36,12 @@ async function handleGoogleLogin(){
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+
+  if(form.user_password.length < 8){
+    toast.error("La contraseña debe tener al menos 8 caracteres");
+    return;
+  }
+
   try {
     const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/register", {
         method: "POST",

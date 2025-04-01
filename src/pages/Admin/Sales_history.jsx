@@ -1,0 +1,237 @@
+import { useEffect, useState } from 'react';
+import { FaRegEnvelope, FaPhone, FaRegCalendarAlt, FaSearch } from 'react-icons/fa';
+import { CgDetailsMore } from "react-icons/cg";
+import { Link, useLocation } from 'react-router-dom';
+
+const initialOrders = [
+    {
+      id: 1,
+      name: "María González",
+      email: "maria@example.com",
+      phone: "+1 234 567 8901",
+      Date: "15/03/2023",
+      orders: 5,
+      totalSpent: "450.00",
+      status: "Completado"
+    },
+    {
+      id: 2,
+      name: "Juan Pérez",
+      email: "juan@example.com",
+      phone: "+1 345 678 9012",
+      Date: "22/05/2023",
+      orders: 2,
+      totalSpent: "180.50",
+      status: "Procesando"
+    },
+    {
+      id: 3,
+      name: "Ana Rodríguez",
+      email: "ana@example.com",
+      phone: "+1 456 789 0123",
+      Date: "10/07/2023",
+      orders: 8,
+      totalSpent: "720.25",
+      status: "En camino"
+    },
+    {
+      id: 4,
+      name: "Carlos Sánchez",
+      email: "carlos@example.com",
+      phone: "+1 567 890 1234",
+      Date: "03/09/2023",
+      orders: 1,
+      totalSpent: "75.80",
+      status: "Cancelado"
+    },
+  ];
+
+export default function SalesHistory(){
+    const [orders, setOrders] = useState(initialOrders);
+    const location = useLocation()
+    const [statusFilter, setStatusFilter] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const ordersPerPage = 5;
+
+    useEffect(() => {
+        if (location.pathname !== "/orders") {
+          setStatusFilter(["Completado", "En camino", "Procesando"]);
+        }
+    }, [location.pathname]);
+
+    // Filtrar Ordenes
+    const filteredOrders = orders.filter(order =>
+        statusFilter.length === 0 || statusFilter.includes(order.status)
+    );
+
+    // Paginación
+    const indexOfLastOrder = currentPage * ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+    const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+
+    const getStatusColor = (status) => {
+        switch (status) {
+          case "Procesando":
+            return "bg-yellow-100 text-yellow-800";
+          case "En camino":
+            return "bg-blue-100 text-blue-800";
+          case "Completado":
+            return "bg-green-100 text-green-800";
+          case "Cancelado":
+            return "bg-red-100 text-red-800";
+          default:
+            return "bg-gray-100 text-gray-800";
+        }
+    };
+
+    const handleStatusChange = (status) => {
+        setStatusFilter((prev) =>
+          prev.includes(status)
+            ? prev.filter((s) => s !== status) // Si ya estaba, lo quitamos
+            : [...prev, status] // Si no estaba, lo agregamos
+        );
+    };
+
+    return<>
+    <div className="min-h-screen bg-white p-6 font-title">
+        <div className="max-w-6xl mx-auto">
+            <Link to="/AdminDashboard" className="flex items-center text-[#B9A387] hover:text-[#9c8568] transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span className="ml-1 font-Title">Volver</span>
+            </Link>
+
+            <div className="flex flex-wrap gap-2 mb-5 mt-3 font-Title">
+                {["Procesando", "En camino", "Completado", "Cancelado"].map(filter => (
+                    <button
+                    key={filter}
+                    onClick={() => handleStatusChange(filter)}
+                    className={`px-4 py-2 rounded-full ${statusFilter.includes(filter) 
+                        ? 'bg-[#EFB8C8] text-white' 
+                        : 'bg-white text-rose-800 border border-rose-200 hover:bg-rose-50'}`}
+                    >
+                    {filter}
+                    </button>
+                ))}
+            </div>
+
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-rose-50">
+                            <tr>
+                            <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Orden</th>
+                            <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Contacto</th>
+                            <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Total</th>
+                            <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Estado</th>
+                            <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-100">
+                            {currentOrders.length > 0 ? (
+                            currentOrders.map((order) => (
+                                <tr key={order.id} className="hover:bg-rose-50 transition-colors">
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex items-center">
+                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-800">
+                                        #{order.id}
+                                    </div>
+                                    <div className="ml-4">
+                                        <div className="text-sm font-Title text-gray-900">{order.name}</div>
+                                        <div className="text-sm text-gray-500 flex items-center">
+                                        <FaRegCalendarAlt className="mr-1" />
+                                        {order.Date}
+                                        </div>
+                                    </div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="text-sm text-gray-900 flex items-center">
+                                    <FaRegEnvelope className="mr-2 text-rose-500" />
+                                    {order.email}
+                                    </div>
+                                    <div className="text-sm text-gray-500 flex items-center mt-1">
+                                    <FaPhone className="mr-2 text-rose-500" />
+                                    {order.phone}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="text-sm text-gray-500">
+                                    ${order.totalSpent}
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    ${getStatusColor(order.status)}`}>
+                                        {order.status}
+                                    </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <Link to={`/OrderDetails`} className="flex space-x-3">
+                                        <CgDetailsMore size={24}/>
+                                    </Link>
+                                </td>
+                                </tr>
+                            ))
+                            ) : (
+                            <tr>
+                                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                No se encontraron ordenes
+                                </td>
+                            </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                {filteredOrders.length > ordersPerPage && (
+                    <div className="bg-rose-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p className="text-sm text-gray-700">
+                                    Mostrando <span className="font-medium">{indexOfFirstOrder + 1}</span> a{' '}
+                                    <span className="font-medium">
+                                    {Math.min(indexOfLastOrder, filteredOrders.length)}
+                                    </span>{' '}
+                                    de <span className="font-medium">{filteredOrders.length}</span> ordenes
+                                </p>
+                            </div>
+                            <div>
+                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                                        >
+                                        &larr; Anterior
+                                    </button>
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                        <button
+                                            key={page}
+                                            onClick={() => setCurrentPage(page)}
+                                            className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium 
+                                            ${currentPage === page 
+                                                ? 'bg-rose-600 text-white border-rose-600' 
+                                                : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                    <button
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                    disabled={currentPage === totalPages}
+                                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                                    >
+                                    Siguiente &rarr;
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    </div>
+    </>
+}
