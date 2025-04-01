@@ -108,7 +108,7 @@ function ProductCard({ product, onCartUpdate }) {
                     className={`mt-4 w-full py-2 rounded-md transition-all ${
                         loading 
                             ? "bg-gray-300 cursor-not-allowed" 
-                            : "bg-red-500 hover:bg-red-600 text-white"
+                            : "bg-[#f0a5bb] hover:bg-[#e60076] text-white"
                     }`}
                     onClick={handleAddToCart}
                     disabled={loading}

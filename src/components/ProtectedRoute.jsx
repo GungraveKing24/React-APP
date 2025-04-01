@@ -1,35 +1,26 @@
-import { Navigate, Outlet } from "react-router-dom"; 
-import { Toaster, toast } from "react-hot-toast";
-
-const decodeToken = (token) => {
-    try {
-        const base64Url = token.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const payload = JSON.parse(decodeURIComponent(escape(atob(base64))));
-        return payload;
-    } catch (error) {
-        console.error("❌ Error al decodificar el token:", error);
-        return null;
-    }
-};
+// ProtectedRoute.jsx
+import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedRoute = ({ allowedRoles }) => {
-    const token = localStorage.getItem("token");
-
+    const token = localStorage.getItem('token');
+    
     if (!token) {
-        toast.error("Debes iniciar sesión");
         return <Navigate to="/login" replace />;
     }
 
-    const userData = decodeToken(token);
-    const role = userData?.user_role;
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userRole = payload.user_role; // Asume que el token tiene un campo 'role'
 
-    if (!allowedRoles.includes(role)) {
-        toast.error("No tienes permiso para acceder a esta página");
-        return <Navigate to="/bug" replace state={{ error: "Usuario no válido en esta página" }} />;
+        if (!allowedRoles.includes(userRole)) {
+        return <Navigate to="/" replace />; // O a una página de no autorizado
+        }   
+
+        return <Outlet />;
+    } catch (error) {
+        localStorage.removeItem('token');
+        return <Navigate to="/login" replace />;
     }
-
-    return <Outlet />;
 };
 
 export default ProtectedRoute;

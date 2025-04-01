@@ -13,12 +13,18 @@ export default function Login() {
       try {
         const userInfo = JSON.parse(atob(token.split(".")[1]))
         console.log("Usuario autenticado con exito", userInfo)
-        navigate("/profile")
+        // Redirigir según el rol del usuario
+        if (userInfo.role === 'Administrador') {
+          navigate("/AdminDashboard");
+        } else {
+          navigate("/profile");
+        }
       } catch (error) {
-        console.error("Error")
+        console.error("Error decodificando el token", error)
+        localStorage.removeItem("token");
       }
     }
-  }, [])
+  }, [token, navigate])
 
   function handleChange(e){
     setForm({...form, [e.target.name]: e.target.value})
@@ -36,30 +42,40 @@ export default function Login() {
       })
 
       if(!res.ok){
-        toast.error("Contraseña o correo incorrecto");
+        toast.error("Contraseña o correo incorrecto");
         return
-      } else {
-        setTimeout(() => {
-          window.location.href = "/profile"
-        }, 500);
       }
 
       const fetchData = await res.json()
-
       localStorage.setItem("token", fetchData.token)
       toast.success("Inicio de sesión exitoso!");
-      setTimeout(() => {
-        window.location.href = "/profile"
-      }, 500)
+      
+      // Decodificar el token para obtener el rol
+      const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
+      
+      // Redirigir según el rol
+      if (payload.role === 'Administrador') {
+        navigate("/AdminDashboard");
+      } else {
+        navigate("/profile");
+      }
+      
     } catch (error) {
-      toast.error("Error");
+      toast.error("Error al iniciar sesión");
+      console.error("Error:", error);
     }
   }
 
-  async function handleGoogleLogin(){
-    let url = "https://fastapi-app-production-f08f.up.railway.app/google/login"
-    let dev_url = "http://127.0.0.1:8000/google/login"
-    window.location.href = dev_url
+  async function handleGoogleLogin() {
+    const frontendUrl = window.location.origin;
+    const callbackUrl = `${frontendUrl}/google/callback`;
+    
+    // Codifica la URL de callback dos veces para evitar problemas
+    const encodedCallback = encodeURIComponent(encodeURIComponent(callbackUrl));
+    
+    let url = `http://127.0.0.1:8000/google/login?callback_url=${encodedCallback}`;
+    
+    window.location.href = url;
   }
 
   return (
@@ -134,7 +150,6 @@ export default function Login() {
               </div>
             </form>
 
-              {/* CAMBIE COLOR SOLAMENTE  */}
             <div className="px-6 sm:px-0 max-w-sm py-5">
               <button
                   type="button"
@@ -157,7 +172,6 @@ export default function Login() {
                 </button>
             </div>
 
-
             <p className="mt-10 text-center text-sm/6 text-gray-500">
               No tienes cuenta?{' '}
               <a href="/signin" className="font-semibold text-gray-950 hover:text-gray-800">
@@ -169,4 +183,3 @@ export default function Login() {
     </>
   )
 }
-
