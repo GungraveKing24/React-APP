@@ -49,6 +49,7 @@ export default function Login() {
       const fetchData = await res.json()
       localStorage.setItem("token", fetchData.token)
       toast.success("Inicio de sesión exitoso!");
+      localStorage.removeItem("guest_cart");
       
       // Decodificar el token para obtener el rol
       const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
@@ -69,11 +70,12 @@ export default function Login() {
   async function handleGoogleLogin() {
     const frontendUrl = window.location.origin;
     const callbackUrl = `${frontendUrl}/google/callback`;
+
+    localStorage.removeItem("guest_cart");
     
     // Codifica la URL de callback dos veces para evitar problemas
     const encodedCallback = encodeURIComponent(encodeURIComponent(callbackUrl));
     
-
     const url = import.meta.env.VITE_API_URL + `google/login?callback_url=${encodedCallback}`;
     
     window.location.href = url;

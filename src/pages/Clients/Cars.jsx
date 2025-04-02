@@ -1,42 +1,95 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 export default function ShoppingCart() {
+  const url = import.meta.env.VITE_API_URL
   const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const url = import.meta.env.VITE_API_URL + "orders/cart/details/"
-    axios
-      .get(url, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-      .then((response) => {
-        setCart(response.data);
-      })
-      .catch((error) => console.error("Error cargando el carrito:", error));
+    HandleVerify();
   }, []);
 
-  const updateQuantity = (id, amount) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, details_quantity: Math.max(1, item.details_quantity + amount) } : item
-      )
-    );
+  const HandleVerify = () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      HandleGetDetailsGuest();
+    } else if (token) {
+      HandleGetDetailsUser();
+    } else {
+      <div className="">  </div>
+    }
+  }
+
+  const HandleGetDetailsUser = async () => {
+    try {
+      const response = await axios.get(url + "orders/cart/details/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setCart(response.data);
+    } catch (error) {
+      console.error("Error al obtener detalles del carrito", error);
+    }
   };
+
+  const HandleGetDetailsGuest = () => {
+    const data = JSON.parse(localStorage.getItem("guest_cart")) || [];
+    setCart(data);
+  };
+
+  const updateQuantity = async (id, amount) => {
+    setLoading((prev) => ({ ...prev, [id]: true })); // Deshabilita el botón
+  
+    try {
+      if (amount === 1) {
+        await addItem(id);
+      } else {
+        await decreaseItem(id);
+      }
+    } catch (error) {
+      console.error("Error al actualizar cantidad", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, [id]: false })); // Habilita el botón después de la petición
+    }
+  };
+
+  async function addItem(id) {
+    try {
+      await axios.post(`${url}orders/cart/plus/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.id === id
+            ? { ...item, details_quantity: item.details_quantity + 1 }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error agregando al carrito", error);
+    }
+  }
 
   const removeItem = (id) => {
     setCart(cart.filter((item) => item.id !== id));
   };
 
-  const subtotal = cart.reduce((acc, item) => acc + item.details_price * item.details_quantity, 0);
+  const subtotal = cart.reduce((acc, item) => acc + (item.final_price * item.details_quantity), 0);
 
   return (
     <section className="flex justify-center items-center min-h-screen bg-white p-6">
       <div className="bg-white p-6 rounded-2xl shadow-xl max-w-6xl w-full">
         <h2 className="text-center text-2xl font-semibold text-[#EFB8C8] mb-4">Mi Carrito de Compras</h2>
         <div className="flex flex-col md:flex-row gap-6">
+          
           <div className="flex-1 overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -55,10 +108,11 @@ export default function ShoppingCart() {
                       <img src={item.arr_img_url} alt={item.arr_name} className="w-12 h-12 rounded-md mr-3" />
                       {item.arr_name}
                     </td>
-                    <td className="p-2 text-center">${item.details_price.toFixed(2)}</td>
+                    <td className="p-2 text-center">${(item.details_price * item.details_quantity).toFixed(2)}</td>
                     <td className="p-2 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
+                          id="remove-button"
                           className="p-1 bg-gray-200 rounded-md hover:bg-gray-300"
                           onClick={() => updateQuantity(item.id, -1)}
                         >
@@ -66,6 +120,7 @@ export default function ShoppingCart() {
                         </button>
                         <span className="font-medium">{item.details_quantity}</span>
                         <button
+                          id="add-button"
                           className="p-1 bg-gray-200 rounded-md hover:bg-gray-300"
                           onClick={() => updateQuantity(item.id, 1)}
                         >
@@ -73,7 +128,9 @@ export default function ShoppingCart() {
                         </button>
                       </div>
                     </td>
-                    <td className="p-2 text-center font-semibold">${(item.details_price * item.details_quantity).toFixed(2)}</td>
+                    <td className="p-2 text-center font-semibold">
+                      ${(item.final_price * item.details_quantity).toFixed(2)}
+                    </td>
                     <td className="p-2 text-center">
                       <button className="text-red-400 hover:text-red-600" onClick={() => removeItem(item.id)}>
                         <FaTrash />
