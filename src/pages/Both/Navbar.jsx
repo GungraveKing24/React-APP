@@ -24,7 +24,8 @@ export default function Navbar() {
 
   async function fetchCartDetails() {
     try {
-      const res = await axios.get("https://fastapi-app-production-f08f.up.railway.app/orders/cart/details/quantity", {
+      const url = import.meta.env.VITE_API_URL + "orders/cart/details/quantity";
+      const res = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

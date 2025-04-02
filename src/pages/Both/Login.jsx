@@ -33,7 +33,7 @@ export default function Login() {
   async function handleSubmit(e){
     e.preventDefault()
     try {
-      const url = process.env.URL
+      const url = import.meta.env.VITE_API_URL
 
       const res = await fetch(url + "login", {
         method: "POST",

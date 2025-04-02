@@ -1,17 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function ShoppingCart() {
-  const [cart, setCart] = useState([
-    { id: 1, name: "Flor Amarilla", price: 14.0, quantity: 1, image: "https://via.placeholder.com/80" },
-    { id: 2, name: "Flor Rosada", price: 18.0, quantity: 2, image: "https://via.placeholder.com/80" },
-  ]);
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const url = import.meta.env.VITE_API_URL + "orders/cart/details/"
+    axios
+      .get(url, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+      .then((response) => {
+        setCart(response.data);
+      })
+      .catch((error) => console.error("Error cargando el carrito:", error));
+  }, []);
 
   const updateQuantity = (id, amount) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
+        item.id === id ? { ...item, details_quantity: Math.max(1, item.details_quantity + amount) } : item
       )
     );
   };
@@ -20,14 +30,13 @@ export default function ShoppingCart() {
     setCart(cart.filter((item) => item.id !== id));
   };
 
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = cart.reduce((acc, item) => acc + item.details_price * item.details_quantity, 0);
 
   return (
     <section className="flex justify-center items-center min-h-screen bg-white p-6">
       <div className="bg-white p-6 rounded-2xl shadow-xl max-w-6xl w-full">
         <h2 className="text-center text-2xl font-semibold text-[#EFB8C8] mb-4">Mi Carrito de Compras</h2>
         <div className="flex flex-col md:flex-row gap-6">
-          
           <div className="flex-1 overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
@@ -43,10 +52,10 @@ export default function ShoppingCart() {
                 {cart.map((item) => (
                   <tr key={item.id} className="border-b text-gray-700">
                     <td className="p-2 flex items-center">
-                      <img src={item.image} alt={item.name} className="w-12 h-12 rounded-md mr-3" />
-                      {item.name}
+                      <img src={item.arr_img_url} alt={item.arr_name} className="w-12 h-12 rounded-md mr-3" />
+                      {item.arr_name}
                     </td>
-                    <td className="p-2 text-center">${item.price.toFixed(2)}</td>
+                    <td className="p-2 text-center">${item.details_price.toFixed(2)}</td>
                     <td className="p-2 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
@@ -55,7 +64,7 @@ export default function ShoppingCart() {
                         >
                           <FaMinus />
                         </button>
-                        <span className="font-medium">{item.quantity}</span>
+                        <span className="font-medium">{item.details_quantity}</span>
                         <button
                           className="p-1 bg-gray-200 rounded-md hover:bg-gray-300"
                           onClick={() => updateQuantity(item.id, 1)}
@@ -64,7 +73,7 @@ export default function ShoppingCart() {
                         </button>
                       </div>
                     </td>
-                    <td className="p-2 text-center font-semibold">${(item.price * item.quantity).toFixed(2)}</td>
+                    <td className="p-2 text-center font-semibold">${(item.details_price * item.details_quantity).toFixed(2)}</td>
                     <td className="p-2 text-center">
                       <button className="text-red-400 hover:text-red-600" onClick={() => removeItem(item.id)}>
                         <FaTrash />
@@ -106,6 +115,3 @@ export default function ShoppingCart() {
     </section>
   );
 }
-
-
-
