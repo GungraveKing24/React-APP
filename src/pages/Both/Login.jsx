@@ -33,9 +33,9 @@ export default function Login() {
   async function handleSubmit(e){
     e.preventDefault()
     try {
-      let url = "https://fastapi-app-production-f08f.up.railway.app/login"
-      let dev_url = "http://127.0.0.1:8000/login"
-      const res = await fetch(dev_url, {
+      const url = process.env.URL
+
+      const res = await fetch(url + "login", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(form),
@@ -73,7 +73,8 @@ export default function Login() {
     // Codifica la URL de callback dos veces para evitar problemas
     const encodedCallback = encodeURIComponent(encodeURIComponent(callbackUrl));
     
-    let url = `http://127.0.0.1:8000/google/login?callback_url=${encodedCallback}`;
+
+    const url = import.meta.env.VITE_API_URL + `google/login?callback_url=${encodedCallback}`;
     
     window.location.href = url;
   }
