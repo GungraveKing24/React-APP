@@ -42,11 +42,12 @@ export default function ProductCard({ product, onCartUpdate }) {
         } else {
             // Si no está en el carrito, agregarlo
             guestCart.push({
-                arrangements_id: product.id,
-                quantity: 1,  // Cambia `details_quantity` a `quantity`
-                price: parseFloat(finalPrice),  // Cambia `details_price` a `price`
-                name: product.arr_name, // Asegurar que tenga nombre
-                image: product.arr_img_url
+                id: product.id, // Usar 'id' en lugar de 'arrangements_id' para ser consistente
+                details_quantity: 1, 
+                details_price: parseFloat(finalPrice), // Asegurar que se usa 'details_price'
+                final_price: parseFloat(finalPrice),   // Asegurar que 'final_price' también existe
+                arr_name: product.arr_name, 
+                arr_img_url: product.arr_img_url
             });
         }
     

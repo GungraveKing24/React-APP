@@ -43,7 +43,31 @@ export default function ShoppingCart() {
   };
 
   const updateQuantity = async (id, amount) => {
-    setLoading((prev) => ({ ...prev, [id]: true })); // Deshabilita el botón
+    setLoading((prev) => ({ ...prev, [id]: true }));
+  
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
+      const itemIndex = guestCart.findIndex((item) => item.id === id);
+      
+      if (itemIndex !== -1) {
+        guestCart[itemIndex].details_quantity += amount;
+  
+        // Evitar cantidades negativas
+        if (guestCart[itemIndex].details_quantity <= 0) {
+          guestCart.splice(itemIndex, 1);
+        }
+  
+        localStorage.setItem("guest_cart", JSON.stringify(guestCart));
+  
+        // ACTUALIZAR EL ESTADO DEL CARRITO
+        setCart([...guestCart]);
+      }
+  
+      setLoading((prev) => ({ ...prev, [id]: false }));
+      return;
+    }
   
     try {
       if (amount === 1) {
@@ -51,10 +75,13 @@ export default function ShoppingCart() {
       } else {
         await decreaseItem(id);
       }
+  
+      // RECARGAR EL CARRITO DESDE EL BACKEND
+      await HandleGetDetailsUser();
     } catch (error) {
       console.error("Error al actualizar cantidad", error);
     } finally {
-      setLoading((prev) => ({ ...prev, [id]: false })); // Habilita el botón después de la petición
+      setLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -75,6 +102,26 @@ export default function ShoppingCart() {
       );
     } catch (error) {
       console.error("Error agregando al carrito", error);
+    }
+  }
+
+  async function decreaseItem(id) {
+    try {
+      await axios.post(`${url}orders/cart/minus/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.id === id
+            ? { ...item, details_quantity: item.details_quantity - 1 }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error quitando del carrito", error);
     }
   }
 
@@ -140,7 +187,7 @@ export default function ShoppingCart() {
                 ))}
               </tbody>
             </table>
-            <button className="mt-4 px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+            <button className="mt-4 px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300" onClick={() => navigate("/catalog")}>
               Regresar
             </button>
           </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaRegEnvelope, FaPhone, FaRegCalendarAlt } from 'react-icons/fa';
 import { CgDetailsMore } from "react-icons/cg";
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 const initialOrders = [
     {
@@ -47,7 +48,7 @@ const initialOrders = [
   ];
 
 export default function SalesHistory(){
-    const [orders, setOrders] = useState(initialOrders);
+    const [orders, setOrders] = useState([]);
     const location = useLocation()
     const [statusFilter, setStatusFilter] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,9 +56,20 @@ export default function SalesHistory(){
 
     useEffect(() => {
         if (location.pathname !== "/orders") {
-          setStatusFilter(["Completado", "En camino", "Procesando"]);
+            setStatusFilter(["Completado", "En camino", "Procesando"]);
         }
+        fetchOrders();
     }, [location.pathname]);
+
+    async function fetchOrders() {
+        const url = import.meta.env.VITE_API_URL + "orders/admin/cart"
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        setOrders(response.data)
+    }
 
     // Filtrar Ordenes
     const filteredOrders = orders.filter(order =>
@@ -234,8 +246,8 @@ export default function SalesHistory(){
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-              <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
-              <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
+                <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
+                <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
             </div>
             <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
               <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>
