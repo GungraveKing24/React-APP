@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaLeaf } from "react-icons/fa";
 import { axiosInstance } from "../../Axios/Axios";
 
-export default function ProductCard({ product, toast }) {
+export default function ProductCard({ product, toastEvent }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const url = "https://fastapi-app-production-f08f.up.railway.app/orders/cart/add";
     
     const finalPrice = product.arr_discount
       ? (product.arr_price * (1 - product.arr_discount / 100)).toFixed(2)
@@ -52,7 +51,8 @@ export default function ProductCard({ product, toast }) {
       localStorage.setItem("guest_cart", JSON.stringify(guestCart));
   
       // Notificar al usuario
-      toast.success("Producto agregado al carrito como invitado.");
+
+      toastEvent("Producto agregado al carrito como invitado.", "success")
   
       setLoading(false);
     };
@@ -89,9 +89,8 @@ export default function ProductCard({ product, toast }) {
           );
 
           // Manejar respuesta exitosa
-          if (response.status === 200 && response.status === 201) {
-              toast.success("Producto agregado correctamente.");
-              if (onCartUpdate) onCartUpdate();
+          if (response.status === 200 || response.status === 201) {
+              toastEvent("Producto agregado correctamente.", "success")
               setError(""); // Limpiar errores previos
           }
 
@@ -100,17 +99,21 @@ export default function ProductCard({ product, toast }) {
           if (error.response) {
               switch (error.response.status) {
                   case 401:
+                      toastEvent("Sesión expirada. Por favor, inicia sesión nuevamente.", "error")
                       setError("Sesión expirada. Por favor, inicia sesión nuevamente.");
                       localStorage.removeItem("token");
                       navigate("/login");
                       break;
                   case 404:
+                      toastEvent("Producto no encontrado", "error")
                       setError("Producto no encontrado.");
                       break;
                   default:
+                      toastEvent("Error al agregar al carrito. Por favor, inténtalo de nuevo.", "error")
                       setError("Error al agregar al carrito. Por favor, inténtalo de nuevo.");
               }
           } else {
+              toastEvent("Error de conexión. Verifica tu conexión a internet.", "error")
               setError("Error de conexión. Verifica tu conexión a internet.");
           }
       } finally {

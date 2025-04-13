@@ -6,7 +6,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { useFetch } from "../../Axios/useFetch";
 
 export default function Catalog() {
-  const {data, loading, error} = useFetch('/arrangements/')
+  const {data, loading} = useFetch('/arrangements/')
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -17,6 +17,17 @@ export default function Catalog() {
       setProducts(sortedProducts);
     }
   }, [data]);
+
+  function toastEvent(message, type) {
+    const types = {
+      success: toast.success,
+      error: toast.error,
+      info: toast.info,
+      warning: toast.warning,
+    };
+  
+    return types[type]?.(message);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -39,7 +50,7 @@ export default function Catalog() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} toast={toast} />
+              <ProductCard key={product.id} product={product} toastEvent={toastEvent} />
             ))}
           </div>
         ) : (
