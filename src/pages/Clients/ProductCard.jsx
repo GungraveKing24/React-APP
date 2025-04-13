@@ -1,12 +1,13 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaLeaf } from "react-icons/fa";
+import { axiosInstance } from "../../Axios/Axios";
 
-export default function ProductCard({ product, onCartUpdate }) {
+export default function ProductCard({ product, toast }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const url = "https://fastapi-app-production-f08f.up.railway.app/orders/cart/add";
     
     const finalPrice = product.arr_discount
       ? (product.arr_price * (1 - product.arr_discount / 100)).toFixed(2)
@@ -14,51 +15,88 @@ export default function ProductCard({ product, onCartUpdate }) {
   
     const savings = (product.arr_price - finalPrice).toFixed(2);
   
-    const handleAddToCart = async () => {
-      setLoading(true);
-      setError("");
-  
+    const handleAddToCart = () => {
       const token = localStorage.getItem("token");
       if (!token) {
-          setError("Debes iniciar sesión para agregar productos.");
-          setLoading(false);
-          navigate("/login");
-          return;
+          handleAddToCartGuest(); // Usuario sin sesión
+      } else {
+          handleAddToCartUser(); // Usuario con sesión
+      }
+    };
+
+    const handleAddToCartGuest = () => {
+      setLoading(true);
+      
+      // Obtener el carrito del localStorage o inicializarlo
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
+  
+      // Verificar si el producto ya está en el carrito
+      const existingItemIndex = guestCart.findIndex(item => item.arrangements_id === product.id);
+      
+      if (existingItemIndex !== -1) {
+          // Si ya está en el carrito, aumentar la cantidad
+          guestCart[existingItemIndex].details_quantity += 1;
+      } else {
+          // Si no está en el carrito, agregarlo
+          guestCart.push({
+              id: product.id, // Usar 'id' en lugar de 'arrangements_id' para ser consistente
+              details_quantity: 1, 
+              details_price: parseFloat(finalPrice), // Asegurar que se usa 'details_price'
+              final_price: parseFloat(finalPrice),   // Asegurar que 'final_price' también existe
+              arr_name: product.arr_name, 
+              arr_img_url: product.arr_img_url
+          });
       }
   
+      // Guardar en localStorage
+      localStorage.setItem("guest_cart", JSON.stringify(guestCart));
+  
+      // Notificar al usuario
+      toast.success("Producto agregado al carrito como invitado.");
+  
+      setLoading(false);
+    };
+
+    const handleAddToCartUser = async () => {
+      setLoading(true);
+      setError(""); // Resetear el error en cada intento de agregar al carrito
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+          // Si el usuario no ha iniciado sesión, redirigir al login
+          return;
+      }
+
       try {
           // Verificar y normalizar token
           const payload = JSON.parse(atob(token.split('.')[1]));
           if (typeof payload.sub !== 'string') {
               throw new Error("Formato de token inválido");
           }
-  
-          // Calcular precio con descuento
-          const finalPrice = product.arr_discount 
-              ? product.arr_price * (1 - product.arr_discount / 100)
-              : product.arr_price;
-  
-          await axios.post(
-              "https://your-production-api.com/orders/cart/add",
-              {
-                  arrangements_id: product.id,
-                  details_quantity: 1,
-                  details_price: finalPrice,
+
+          // Realizar la solicitud al backend
+          const response = await axiosInstance.post("/orders/cart/add",{
+              arrangements_id: product.id,
+              details_quantity: 1,
+              details_price: finalPrice,
+            },
+            {
+              headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
               },
-              {
-                  headers: { 
-                      Authorization: `Bearer ${token}`,
-                      "Content-Type": "application/json",
-                  },
-              }
+            }
           );
-  
-          // Notificar éxito
-          if (onCartUpdate) onCartUpdate();
-          
+
+          // Manejar respuesta exitosa
+          if (response.status === 200 && response.status === 201) {
+              toast.success("Producto agregado correctamente.");
+              if (onCartUpdate) onCartUpdate();
+              setError(""); // Limpiar errores previos
+          }
+
       } catch (error) {
           console.error("Error al agregar al carrito:", error);
-          
           if (error.response) {
               switch (error.response.status) {
                   case 401:

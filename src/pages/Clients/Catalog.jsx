@@ -2,39 +2,26 @@ import { useEffect, useState } from "react";
 import SmartSpinner from "../Both/SmartSpinner";
 import ProductCard from "./ProductCard";
 import { FaLeaf } from "react-icons/fa";
+import { toast, Toaster } from "react-hot-toast";
+import { useFetch } from "../../Axios/useFetch";
 
 export default function Catalog() {
+  const {data, loading, error} = useFetch('/arrangements/')
   const [products, setProducts] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    fetch("https://fastapi-app-production-f08f.up.railway.app/arrangements/")
-      .then((response) => {
-        if (!response.ok) throw new Error("Error en la respuesta");
-        return response.json();
-      })
-      .then((data) => {
-        // Ordenar productos con descuento primero
-        const sortedProducts = [...data].sort((a, b) => 
-          (b.arr_discount || 0) - (a.arr_discount || 0)
-        );
-        setProducts(sortedProducts);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error al obtener productos:", error);
-        setLoading(false);
-      });
-  }, []);
-
-  const handleCartUpdate = () => {
-    setCartCount((prevCount) => prevCount + 1); // Incrementar contador del carrito
-  };
+    if (data) {
+      const sortedProducts = [...data].sort((a, b) => 
+        (b.arr_discount || 0) - (a.arr_discount || 0)
+      );
+      setProducts(sortedProducts);
+    }
+  }, [data]);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Toaster position="top-center"/>
+
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-Title text-gray-900 sm:text-4xl">
@@ -52,7 +39,7 @@ export default function Catalog() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} onCartUpdate={handleCartUpdate} />
+              <ProductCard key={product.id} product={product} toast={toast} />
             ))}
           </div>
         ) : (

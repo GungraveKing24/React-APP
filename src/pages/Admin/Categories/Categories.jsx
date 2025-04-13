@@ -1,59 +1,87 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
+import Modal from 'react-modal'
+import { axiosInstance } from "../../../Axios/Axios";
 
-function CategoryCard({ category }){
-    return (
-        <div className="group relative block overflow-hidden border border-gray-200 rounded-lg shadow-md">
-          <img
-            src={category.img_url}
-            alt={category.name}
-            className="h-64 w-full object-cover transition duration-500 group-hover:scale-105 sm:h-72"
-          />
-          <div className="p-4">
-            <h3 className="text-lg font-medium text-gray-900">{category.name}</h3>
-            <p className="text-gray-700 mt-2">{category.description}</p>
-            
-            <div className="flex space-x-4 mt-4">
-                <Link to="/">
-                    <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-600">
-                        Editar
-                    </button>
-                </Link>
-                <Link to="/">
-                    <button className="rounded-md bg-[#EFB8C8] px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-red-600">
-                        Deshabilitar
-                    </button>
-                </Link>
-            </div>
-          </div>
+function CategoryCard({ category }) {
+  return (
+    <div className="group relative block overflow-hidden border border-gray-200 rounded-lg shadow-md">
+      <div className="p-4">
+        <h3 className="text-lg font-medium text-gray-900">{category.name_cat}</h3>
+
+        <div className="flex space-x-4 mt-4">
+          <Link to={`/edit/${category.id}`}>
+            <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-600">
+              Editar
+            </button>
+          </Link>
+          <button
+            className="rounded-md bg-pink-400 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-red-600"
+            onClick={() => handleDisable(category.id)}
+          >
+            Deshabilitar
+          </button>
         </div>
-      );
+      </div>
+    </div>
+  );
 }
 
-function Categories(){
-    const categories = [{id: 1, name: "categoria 1", description: "description 1"}, 
-        {id: 2, name: "categoria 2", description: "description 2"}, 
-        {id: 3, name: "categoria 3", description: "description 3"}, 
-        {id: 4, name: "categoria 4", description: "description 4"}]
+function Categories() {
+  const [categories, setCategories] = useState([]);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
-        console.log(categories)
+  useEffect(() => {
+    getCategories();
+  }, []);
 
-    return (
-        <>
-        <div>
-            <h2>Categorias</h2>
-            <button>+</button>
+  async function getCategories() {
+    try {
+      const response = await axiosInstance.get("/categories")
+      setCategories(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function handleDisable(categoryId) {
+    console.log(`Deshabilitar categoría con ID: ${categoryId}`);
+    // Aquí puedes llamar a una API para deshabilitar la categoría
+  }
+
+  function openModal(){
+    setIsOpen(true)
+  }
+
+  function closeModal(){
+    setIsOpen(false)
+  }
+
+  return (
+    <>
+      <div className="flex justify-between items-center p-4">
+        <h2 className="text-xl font-bold">Categorías</h2>
+        <button
+          onClick={openModal}
+          className="rounded-full bg-green-500 px-4 py-2 text-white text-lg shadow-md hover:bg-green-600">
+          +
+        </button>
+
+        <Modal  isOpen={modalIsOpen} onRequestClose={closeModal}>
+        </Modal>
+      </div>
+      {categories.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} />
+          ))}
         </div>
-          {categories.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-              {categories.map((category) => (
-                <CategoryCard key={category.id} category={category} />
-              ))}
-            </div>
-          ) : (
-            <SmartSpinner />
-          )}
-        </>
-      );  
+      ) : (
+        <p className="text-center text-gray-500">Cargando categorías...</p>
+      )}
+    </>
+  );
 }
 
-export default Categories
+export default Categories;

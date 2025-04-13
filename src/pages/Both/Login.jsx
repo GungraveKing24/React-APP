@@ -45,9 +45,9 @@ export default function Login() {
       }
 
       const fetchData = await res.json()
-
       localStorage.setItem("token", fetchData.token)
       toast.success("Inicio de sesión exitoso!");
+      localStorage.removeItem("guest_cart");
       const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
       
       // Redirigir según el rol
@@ -56,17 +56,17 @@ export default function Login() {
       } else {
         navigate("/profile");
       }
-      setTimeout(() => {
-        window.location.href = "/profile"
-      }, 500)
     } catch (error) {
       toast.error("Error al iniciar sesión");
+      console.error("Error:", error);
     }
   }
 
   async function handleGoogleLogin(){
     const frontendUrl = window.location.origin;
     const callbackUrl = `${frontendUrl}/google/callback`;
+
+    localStorage.removeItem("guest_cart");
 
     // Codifica la URL de callback dos veces para evitar problemas
     const encodedCallback = encodeURIComponent(encodeURIComponent(callbackUrl));

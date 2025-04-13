@@ -1,26 +1,135 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { axiosInstance } from "../../Axios/Axios";
 
 export default function ShoppingCart() {
-  const [cart, setCart] = useState([
-    { id: 1, name: "Flor Amarilla", price: 14.0, quantity: 1, image: "https://via.placeholder.com/80" },
-    { id: 2, name: "Flor Rosada", price: 18.0, quantity: 2, image: "https://via.placeholder.com/80" },
-  ]);
+  const url = "https://fastapi-app-production-f08f.up.railway.app/"
+  const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateQuantity = (id, amount) => {
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
-      )
-    );
+  useEffect(() => {
+    HandleVerify();
+  }, []);
+
+  const HandleVerify = () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      HandleGetDetailsGuest();
+    } else if (token) {
+      HandleGetDetailsUser();
+    } else {
+      <div className="">  </div>
+    }
+  }
+
+  const HandleGetDetailsUser = async () => {
+    try {
+      const response = await axiosInstance.get("/orders/cart/details/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      setCart(response.data);
+    } catch (error) {
+      console.error("Error al obtener detalles del carrito", error);
+    }
   };
+
+  const HandleGetDetailsGuest = () => {
+    const data = JSON.parse(localStorage.getItem("guest_cart")) || [];
+    setCart(data);
+  };
+
+  const updateQuantity = async (id, amount) => {
+    setLoading((prev) => ({ ...prev, [id]: true }));
+  
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
+      const itemIndex = guestCart.findIndex((item) => item.id === id);
+      
+      if (itemIndex !== -1) {
+        guestCart[itemIndex].details_quantity += amount;
+  
+        // Evitar cantidades negativas
+        if (guestCart[itemIndex].details_quantity <= 0) {
+          guestCart.splice(itemIndex, 1);
+        }
+  
+        localStorage.setItem("guest_cart", JSON.stringify(guestCart));
+  
+        // ACTUALIZAR EL ESTADO DEL CARRITO
+        setCart([...guestCart]);
+      }
+  
+      setLoading((prev) => ({ ...prev, [id]: false }));
+      return;
+    }
+  
+    try {
+      if (amount === 1) {
+        await addItem(id);
+      } else {
+        await decreaseItem(id);
+      }
+  
+      // RECARGAR EL CARRITO DESDE EL BACKEND
+      await HandleGetDetailsUser();
+    } catch (error) {
+      console.error("Error al actualizar cantidad", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, [id]: false }));
+    }
+  };
+
+  async function addItem(id) {
+    try {
+      await axiosInstance.post(`/orders/cart/plus/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+  
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.id === id
+            ? { ...item, details_quantity: item.details_quantity + 1 }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error agregando al carrito", error);
+    }
+  }
+
+  async function decreaseItem(id) {
+    try {
+      await axiosInstance.post(`/orders/cart/minus/${id}`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+  
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.id === id
+            ? { ...item, details_quantity: item.details_quantity - 1 }
+            : item
+        )
+      );
+    } catch (error) {
+      console.error("Error quitando del carrito", error);
+    }
+  }
 
   const removeItem = (id) => {
     setCart(cart.filter((item) => item.id !== id));
   };
 
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const subtotal = cart.reduce((acc, item) => acc + (item.final_price * item.details_quantity), 0);
 
   return (
     <section className="flex justify-center items-center min-h-screen bg-white p-6">
@@ -43,20 +152,22 @@ export default function ShoppingCart() {
                 {cart.map((item) => (
                   <tr key={item.id} className="border-b text-gray-700">
                     <td className="p-2 flex items-center">
-                      <img src={item.image} alt={item.name} className="w-12 h-12 rounded-md mr-3" />
-                      {item.name}
+                      <img src={item.arr_img_url} alt={item.arr_name} className="w-12 h-12 rounded-md mr-3" />
+                      {item.arr_name}
                     </td>
-                    <td className="p-2 text-center">${item.price.toFixed(2)}</td>
+                    <td className="p-2 text-center">${(item.details_price * item.details_quantity).toFixed(2)}</td>
                     <td className="p-2 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button
+                          id="remove-button"
                           className="p-1 bg-gray-200 rounded-md hover:bg-gray-300"
                           onClick={() => updateQuantity(item.id, -1)}
                         >
                           <FaMinus />
                         </button>
-                        <span className="font-medium">{item.quantity}</span>
+                        <span className="font-medium">{item.details_quantity}</span>
                         <button
+                          id="add-button"
                           className="p-1 bg-gray-200 rounded-md hover:bg-gray-300"
                           onClick={() => updateQuantity(item.id, 1)}
                         >
@@ -64,7 +175,9 @@ export default function ShoppingCart() {
                         </button>
                       </div>
                     </td>
-                    <td className="p-2 text-center font-semibold">${(item.price * item.quantity).toFixed(2)}</td>
+                    <td className="p-2 text-center font-semibold">
+                      ${(item.final_price * item.details_quantity).toFixed(2)}
+                    </td>
                     <td className="p-2 text-center">
                       <button className="text-red-400 hover:text-red-600" onClick={() => removeItem(item.id)}>
                         <FaTrash />
@@ -74,9 +187,11 @@ export default function ShoppingCart() {
                 ))}
               </tbody>
             </table>
-            <button className="mt-4 px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
-              Regresar
-            </button>
+            <Link to="/catalog">
+              <button className="mt-4 px-6 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+                Regresar
+              </button>
+            </Link>
           </div>
 
           <div className="md:w-80 bg-white shadow-md p-4 rounded-lg border h-fit">
@@ -106,6 +221,3 @@ export default function ShoppingCart() {
     </section>
   );
 }
-
-
-

@@ -2,52 +2,10 @@ import { useEffect, useState } from 'react';
 import { FaRegEnvelope, FaPhone, FaRegCalendarAlt } from 'react-icons/fa';
 import { CgDetailsMore } from "react-icons/cg";
 import { Link, useLocation } from 'react-router-dom';
-
-const initialOrders = [
-    {
-      id: 1,
-      name: "María González",
-      email: "maria@example.com",
-      phone: "+1 234 567 8901",
-      Date: "15/03/2023",
-      orders: 5,
-      totalSpent: "450.00",
-      status: "Completado"
-    },
-    {
-      id: 2,
-      name: "Juan Pérez",
-      email: "juan@example.com",
-      phone: "+1 345 678 9012",
-      Date: "22/05/2023",
-      orders: 2,
-      totalSpent: "180.50",
-      status: "Procesando"
-    },
-    {
-      id: 3,
-      name: "Ana Rodríguez",
-      email: "ana@example.com",
-      phone: "+1 456 789 0123",
-      Date: "10/07/2023",
-      orders: 8,
-      totalSpent: "720.25",
-      status: "En camino"
-    },
-    {
-      id: 4,
-      name: "Carlos Sánchez",
-      email: "carlos@example.com",
-      phone: "+1 567 890 1234",
-      Date: "03/09/2023",
-      orders: 1,
-      totalSpent: "75.80",
-      status: "Cancelado"
-    },
-  ];
+import { axiosInstance } from '../../Axios/Axios';
 
 export default function SalesHistory(){
-    const [orders, setOrders] = useState(initialOrders);
+    const [orders, setOrders] = useState([]);
     const location = useLocation()
     const [statusFilter, setStatusFilter] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,9 +13,19 @@ export default function SalesHistory(){
 
     useEffect(() => {
         if (location.pathname !== "/orders") {
-          setStatusFilter(["Completado", "En camino", "Procesando"]);
+            setStatusFilter(["Completado", "En camino", "Procesando"]);
         }
+        fetchOrders();
     }, [location.pathname]);
+
+    async function fetchOrders() {
+        const response = await axiosInstance.get("/orders/admin/cart", {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            }
+        })
+        setOrders(response.data)
+    }
 
     // Filtrar Ordenes
     const filteredOrders = orders.filter(order =>
@@ -92,6 +60,8 @@ export default function SalesHistory(){
             : [...prev, status] // Si no estaba, lo agregamos
         );
     };
+
+    console.log(orders)
 
     return<>
     <div className="min-h-screen bg-white p-6 font-title">
@@ -234,8 +204,8 @@ export default function SalesHistory(){
           
           <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-              <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
-              <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
+                <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
+                <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
             </div>
             <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
               <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>

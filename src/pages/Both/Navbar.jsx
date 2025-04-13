@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { axiosInstance } from "../../Axios/Axios";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,11 +24,11 @@ export default function Navbar() {
 
   async function fetchCartDetails() {
     try {
-      const res = await axios.get("https://fastapi-app-production-f08f.up.railway.app/orders/cart/details/quantity", {
+      const res = await axiosInstance.get("/orders/cart/details/quantity", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
+      })
   
       // Si la respuesta es un número, actualiza el estado
       if (typeof res.data === 'number') {
@@ -91,7 +91,7 @@ export default function Navbar() {
           </div>
 
           {/* Carrito de compras */}
-          <div className="relative flex justify-center md:justify-start">
+          <div className="relative flex justify-center md:justify-start items-center">
             <Link to="/ShoppingCart" className="relative text-gray-700 hover:text-gray-600 flex items-center">
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.70711 15.2929C4.07714 15.9229 4.52331 17 5.41421 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM9 19C9 20.1046 8.10457 21 7 21C5.89543 21 5 20.1046 5 19C5 17.8954 5.89543 17 7 17C8.10457 17 9 17.8954 9 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -105,9 +105,8 @@ export default function Navbar() {
           {/* Botones de Login y Sign Up o User */}
           {user ? (
             <div className="flex items-center space-x-4">
-              <Link to="/profile" className="flex items-center space-x-4">
+              <Link to="/profile" className="w-10 h-10">
                 <img src={user.user_url_photo} alt="Perfil" className="w-10 h-10 rounded-full border border-gray-300" />
-                <span className="text-gray-700 font-semibold">{user.user_name}</span>
               </Link>
               <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">
                 Logout
@@ -133,4 +132,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
