@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { axiosInstance } from "../../Axios/Axios";
+import { notifyCartChange } from "../../Axios/customHooks/useCartCount";
 
 export default function CheckoutForm() {
   const [cart, setCart] = useState([]);
@@ -131,6 +132,9 @@ export default function CheckoutForm() {
         notas: "",
         metodoPago: "Contra Entrega",
       });
+
+      //Notificar al carrito
+      notifyCartChange(0)
 
     } catch (error) {
       console.error("Error al enviar el pedido:", error);

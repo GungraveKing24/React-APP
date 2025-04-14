@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../Axios/Axios";
+import { useCartCount } from "../../Axios/customHooks/useCartCount";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [cartCount, setCartCount] = useState(0);
+  const cartCount = useCartCount();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -14,32 +15,12 @@ export default function Navbar() {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
         setUser(payload);
-        fetchCartDetails();
       } catch (error) {
         console.error("Error al procesar el token:", error);
         localStorage.removeItem("token");
       }
     }
   }, []);
-
-  async function fetchCartDetails() {
-    try {
-      const res = await axiosInstance.get("/orders/cart/details/quantity", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-  
-      // Si la respuesta es un número, actualiza el estado
-      if (typeof res.data === 'number') {
-        setCartCount(res.data); // Si el backend devuelve el número de artículos directamente
-      } else {
-        setCartCount(res.data.length); // Si el backend devuelve un array de artículos
-      }
-    } catch (error) {
-      console.error("Error al obtener el carrito:", error);
-    }
-  }
 
   function handleLogout() {
     localStorage.removeItem("token");

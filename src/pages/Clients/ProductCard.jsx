@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaLeaf } from "react-icons/fa";
 import { usePost } from "../../Axios/customHooks/usePost";
+import { notifyCartChange } from "../../Axios/customHooks/useCartCount";
+import { axiosInstance } from "../../Axios/Axios";
 
 export default function ProductCard({ product, toastEvent }) {
     const { postData, loading } = usePost();
@@ -24,45 +26,66 @@ export default function ProductCard({ product, toastEvent }) {
     };
 
     const handleAddToCartUser = async () => {
-      setError(""); // resetear error UI
-
+      setError("");
+    
       const token = localStorage.getItem("token");
       if (!token) {
         navigate("/login");
         return;
       }
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      if (typeof payload.sub !== 'string') {
-        throw new Error("Formato de token inválido");
-      }
     
-      const { data, status } = await postData("/orders/cart/add", {
-        arrangements_id: product.id,
-        details_quantity: 1,
-        details_price: finalPrice
-      }, true);
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (typeof payload.sub !== 'string') {
+          throw new Error("Formato de token inválido");
+        }
     
-      if (status === 200 || status === 201) {
-        toastEvent("Producto agregado correctamente.", "success");
-      } else if (status === 404) {
-        toastEvent("Producto no encontrado", "error");
-      } else if (status === 401) {
-        toastEvent("Sesión expirada. Por favor, inicia sesión nuevamente.", "error");
-        localStorage.removeItem("token");
-        navigate("/login");
-      } else if (!status) {
-        toastEvent("Error de conexión. Verifica tu conexión a internet.", "error");
-      } else {
-        toastEvent("Error al agregar al carrito. Por favor, inténtalo de nuevo.", "error");
+        const { status } = await postData("/orders/cart/add", {
+          arrangements_id: product.id,
+          details_quantity: 1,
+          details_price: finalPrice
+        }, true);
+    
+        if (status === 200 || status === 201) {
+          toastEvent("Producto agregado correctamente.", "success");
+    
+          const res = await axiosInstance.get("/orders/cart/details/quantity", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+    
+          if (typeof res.data === 'number') {
+            notifyCartChange(res.data);
+          } else {
+            notifyCartChange(res.data.length);
+          }
+    
+        } else if (status === 404) {
+          toastEvent("Producto no encontrado", "error");
+        } else if (status === 401) {
+          toastEvent("Sesión expirada. Por favor, inicia sesión nuevamente.", "error");
+          localStorage.removeItem("token");
+          navigate("/login");
+        } else if (!status) {
+          toastEvent("Error de conexión. Verifica tu conexión a internet.", "error");
+        } else {
+          toastEvent("Error al agregar al carrito. Por favor, inténtalo de nuevo.", "error");
+        }
+    
+      } catch (error) {
+        console.error("Error al agregar al carrito:", error);
+        toastEvent("Ocurrió un error inesperado.", "error");
       }
     };
+    
 
     const handleAddToCartGuest = () => {
       // Obtener el carrito del localStorage o inicializarlo
       const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
   
       // Verificar si el producto ya está en el carrito
-      const existingItemIndex = guestCart.findIndex(item => item.arrangements_id === product.id);
+      const existingItemIndex = guestCart.findIndex(item => item.id === product.id);
       
       if (existingItemIndex !== -1) {
           // Si ya está en el carrito, aumentar la cantidad
@@ -81,6 +104,8 @@ export default function ProductCard({ product, toastEvent }) {
   
       // Guardar en localStorage
       localStorage.setItem("guest_cart", JSON.stringify(guestCart));
+      // Notificar al carrito
+      notifyCartChange(guestCart.length)
   
       // Notificar al usuario
       toastEvent("Producto agregado al carrito como invitado.", "success")

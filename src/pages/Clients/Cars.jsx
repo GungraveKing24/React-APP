@@ -4,10 +4,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePost } from "../../Axios/customHooks/usePost";
 import { axiosInstance } from "../../Axios/Axios";
 import { Toaster, toast } from "react-hot-toast";
+import { notifyCartChange } from "../../Axios/customHooks/useCartCount";
 
 export default function ShoppingCart() {
   const [cart, setCart] = useState([]);
-  const { postData, loading } = usePost();
+  const { postData } = usePost();
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -114,7 +115,19 @@ export default function ShoppingCart() {
   }
 
   const removeItem = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
+    const token = localStorage.getItem('token');
+    //User no Auth
+    if (!token) {
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
+      const newCart = guestCart.filter(item => item.id !== id);
+  
+      localStorage.setItem("guest_cart", JSON.stringify(newCart));
+      setCart(newCart);
+      notifyCartChange(newCart.length);
+      return;
+    }
+
+    //User Auth
   };
 
   const NoCart = () => {
@@ -157,8 +170,9 @@ export default function ShoppingCart() {
                       <div className="flex items-center justify-center gap-2">
                         <button
                           id="remove-button"
-                          className="p-1 bg-gray-200 rounded-md hover:bg-gray-300"
+                          className={`p-1 bg-gray-200 rounded-md ${item.details_quantity < 2 ? null : "hover:bg-gray-300"}`}
                           onClick={() => updateQuantity(item.id, -1)}
+                          disabled={item.details_quantity < 2 ? true : false}
                         >
                           <FaMinus />
                         </button>
