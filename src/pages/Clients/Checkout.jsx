@@ -3,7 +3,6 @@ import { Toaster, toast } from "react-hot-toast";
 import { axiosInstance } from "../../Axios/Axios";
 
 export default function CheckoutForm() {
-  const url = "https://fastapi-app-production-f08f.up.railway.app/";
   const [cart, setCart] = useState([]);
   const [form, setForm] = useState({
     nombre: "",
@@ -77,6 +76,13 @@ export default function CheckoutForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //Validaciones
+    validateForm()
+    if(cart.length <= 0 ){
+      toast.error("No existe un carrito, agrega productos para comprar")
+      return
+    }
+    
     // Evitar el envío múltiple de pedidos
     if (isSubmitting) return;
 
@@ -99,14 +105,14 @@ export default function CheckoutForm() {
       const token = localStorage.getItem("token");
       if (token) {
         // Si el usuario está logueado, enviar el pedido al backend
-        const response = await axiosInstance.post("/orders/cart/complete/", orderData, {
+        const response = await axiosInstance.post("/orders/cart/complete/", {}, {
           headers: { Authorization: `Bearer ${token}` },
         })
         toast.success("Pedido procesado con éxito");
         console.log(response.data);
       } else {
         // Si es un invitado, envía los detalles del pedido al endpoint de invitado
-        const response = await axiosInstance.post("/orders/cart/complete/", orderData)
+        const response = await axiosInstance.post("orders/guest/checkout", orderData)
         toast.success("Pedido procesado con éxito como invitado");
         console.log(response.data);
       }
@@ -134,6 +140,19 @@ export default function CheckoutForm() {
     }
   };
 
+  function validateForm(){
+    if (!form.nombre || !form.email || !form.departamento || !form.direccion || !form.telefono) {
+      toast.error("Por favor, completa todos los campos requeridos.");
+      return;
+    }
+
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+    if (!isEmailValid) {
+      toast.error("El correo electrónico no es válido.");
+      return;
+    }
+  }
+
   const subtotal = cart.reduce((acc, item) => acc + item.details_price * item.details_quantity, 0);
 
   return (
@@ -146,7 +165,7 @@ export default function CheckoutForm() {
           <input
             type="text"
             name="nombre"
-            placeholder="Nombre"
+            placeholder="Nombre, ej: Juan Felipe Portillo Juarez"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.nombre}
@@ -155,7 +174,7 @@ export default function CheckoutForm() {
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email, ej: tunombre@gmail.com"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.email}
@@ -175,7 +194,7 @@ export default function CheckoutForm() {
           <input
             type="text"
             name="direccion"
-            placeholder="Dirección"
+            placeholder="Dirección, ej: San Salvador, CC Plaza Merliot, Edificio 3A-310, Cd Merliot"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.direccion}
@@ -184,7 +203,7 @@ export default function CheckoutForm() {
           <input
             type="text"
             name="telefono"
-            placeholder="Teléfono"
+            placeholder="Teléfono, ej: 87549865"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.telefono}

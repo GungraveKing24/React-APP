@@ -34,13 +34,28 @@ async function handleGoogleLogin(){
   window.location.href = "https://fastapi-app-production-f08f.up.railway.app/google/login"
 }
 
+function validateForm(){
+    if (!form.user_name || !form.user_email || !form.user_password || !form.user_number || !form.user_direction) {
+      toast.error("Por favor, completa todos los campos requeridos.");
+      return;
+    }
+
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.user_email);
+    if (!isEmailValid) {
+      toast.error("El correo electrónico no es válido.");
+      return;
+    }
+
+    if(form.user_password.length < 8){
+      toast.error("La contraseña debe tener al menos 8 caracteres");
+      return;
+    }
+  }
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  if(form.user_password.length < 8){
-    toast.error("La contraseña debe tener al menos 8 caracteres");
-    return;
-  }
+  validateForm()
 
   try {
     const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/register", {

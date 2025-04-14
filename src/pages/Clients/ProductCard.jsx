@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaLeaf } from "react-icons/fa";
-import { axiosInstance } from "../../Axios/Axios";
+import { usePost } from "../../Axios/customHooks/usePost";
 
 export default function ProductCard({ product, toastEvent }) {
-    const [loading, setLoading] = useState(false);
+    const { postData, loading } = usePost();
     const [error, setError] = useState("");
     const navigate = useNavigate();
     
@@ -23,9 +23,41 @@ export default function ProductCard({ product, toastEvent }) {
       }
     };
 
+    const handleAddToCartUser = async () => {
+      setError(""); // resetear error UI
+
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/login");
+        return;
+      }
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (typeof payload.sub !== 'string') {
+        throw new Error("Formato de token inválido");
+      }
+    
+      const { data, status } = await postData("/orders/cart/add", {
+        arrangements_id: product.id,
+        details_quantity: 1,
+        details_price: finalPrice
+      }, true);
+    
+      if (status === 200 || status === 201) {
+        toastEvent("Producto agregado correctamente.", "success");
+      } else if (status === 404) {
+        toastEvent("Producto no encontrado", "error");
+      } else if (status === 401) {
+        toastEvent("Sesión expirada. Por favor, inicia sesión nuevamente.", "error");
+        localStorage.removeItem("token");
+        navigate("/login");
+      } else if (!status) {
+        toastEvent("Error de conexión. Verifica tu conexión a internet.", "error");
+      } else {
+        toastEvent("Error al agregar al carrito. Por favor, inténtalo de nuevo.", "error");
+      }
+    };
+
     const handleAddToCartGuest = () => {
-      setLoading(true);
-      
       // Obtener el carrito del localStorage o inicializarlo
       const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
   
@@ -51,74 +83,7 @@ export default function ProductCard({ product, toastEvent }) {
       localStorage.setItem("guest_cart", JSON.stringify(guestCart));
   
       // Notificar al usuario
-
       toastEvent("Producto agregado al carrito como invitado.", "success")
-  
-      setLoading(false);
-    };
-
-    const handleAddToCartUser = async () => {
-      setLoading(true);
-      setError(""); // Resetear el error en cada intento de agregar al carrito
-
-      const token = localStorage.getItem("token");
-      if (!token) {
-          // Si el usuario no ha iniciado sesión, redirigir al login
-          return;
-      }
-
-      try {
-          // Verificar y normalizar token
-          const payload = JSON.parse(atob(token.split('.')[1]));
-          if (typeof payload.sub !== 'string') {
-              throw new Error("Formato de token inválido");
-          }
-
-          // Realizar la solicitud al backend
-          const response = await axiosInstance.post("/orders/cart/add",{
-              arrangements_id: product.id,
-              details_quantity: 1,
-              details_price: finalPrice,
-            },
-            {
-              headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-              },
-            }
-          );
-
-          // Manejar respuesta exitosa
-          if (response.status === 200 || response.status === 201) {
-              toastEvent("Producto agregado correctamente.", "success")
-              setError(""); // Limpiar errores previos
-          }
-
-      } catch (error) {
-          console.error("Error al agregar al carrito:", error);
-          if (error.response) {
-              switch (error.response.status) {
-                  case 401:
-                      toastEvent("Sesión expirada. Por favor, inicia sesión nuevamente.", "error")
-                      setError("Sesión expirada. Por favor, inicia sesión nuevamente.");
-                      localStorage.removeItem("token");
-                      navigate("/login");
-                      break;
-                  case 404:
-                      toastEvent("Producto no encontrado", "error")
-                      setError("Producto no encontrado.");
-                      break;
-                  default:
-                      toastEvent("Error al agregar al carrito. Por favor, inténtalo de nuevo.", "error")
-                      setError("Error al agregar al carrito. Por favor, inténtalo de nuevo.");
-              }
-          } else {
-              toastEvent("Error de conexión. Verifica tu conexión a internet.", "error")
-              setError("Error de conexión. Verifica tu conexión a internet.");
-          }
-      } finally {
-          setLoading(false);
-      }
     };
   
     return (

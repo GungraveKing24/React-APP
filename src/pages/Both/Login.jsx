@@ -30,8 +30,17 @@ export default function Login() {
     setForm({...form, [e.target.name]: e.target.value})
   }
 
+  function Emailvalidation(){
+    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+    if (!isEmailValid) {
+      toast.error("El correo electrónico no es válido.");
+      return;
+    }
+  }
+
   async function handleSubmit(e){
     e.preventDefault()
+    Emailvalidation()
     try {
       const res = await fetch("https://fastapi-app-production-f08f.up.railway.app/login", {
         method: "POST",

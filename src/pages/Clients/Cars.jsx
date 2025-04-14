@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { usePost } from "../../Axios/customHooks/usePost";
 import { axiosInstance } from "../../Axios/Axios";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function ShoppingCart() {
-  const url = "https://fastapi-app-production-f08f.up.railway.app/"
   const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { postData, loading } = usePost();
+  const navigate = useNavigate()
 
   useEffect(() => {
     HandleVerify();
@@ -43,8 +45,6 @@ export default function ShoppingCart() {
   };
 
   const updateQuantity = async (id, amount) => {
-    setLoading((prev) => ({ ...prev, [id]: true }));
-  
     const token = localStorage.getItem("token");
   
     if (!token) {
@@ -64,8 +64,6 @@ export default function ShoppingCart() {
         // ACTUALIZAR EL ESTADO DEL CARRITO
         setCart([...guestCart]);
       }
-  
-      setLoading((prev) => ({ ...prev, [id]: false }));
       return;
     }
   
@@ -80,18 +78,12 @@ export default function ShoppingCart() {
       await HandleGetDetailsUser();
     } catch (error) {
       console.error("Error al actualizar cantidad", error);
-    } finally {
-      setLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
 
   async function addItem(id) {
     try {
-      await axiosInstance.post(`/orders/cart/plus/${id}`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      await postData(`/orders/cart/plus/${id}`, {}, true);
   
       setCart((prevCart) =>
         prevCart.map((item) =>
@@ -107,11 +99,7 @@ export default function ShoppingCart() {
 
   async function decreaseItem(id) {
     try {
-      await axiosInstance.post(`/orders/cart/minus/${id}`, {}, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      await postData(`/orders/cart/minus/${id}`, {}, true);
   
       setCart((prevCart) =>
         prevCart.map((item) =>
@@ -129,10 +117,19 @@ export default function ShoppingCart() {
     setCart(cart.filter((item) => item.id !== id));
   };
 
+  const NoCart = () => {
+    if (cart.length <= 0) {
+      toast.error("No hay producto en el carrito")
+    } else {
+      navigate("/CheckoutForm");
+    }
+  };
+
   const subtotal = cart.reduce((acc, item) => acc + (item.final_price * item.details_quantity), 0);
 
   return (
     <section className="flex justify-center items-center min-h-screen bg-white p-6">
+      <Toaster />
       <div className="bg-white p-6 rounded-2xl shadow-xl max-w-6xl w-full">
         <h2 className="text-center text-2xl font-semibold text-[#EFB8C8] mb-4">Mi Carrito de Compras</h2>
         <div className="flex flex-col md:flex-row gap-6">
@@ -210,11 +207,12 @@ export default function ShoppingCart() {
                 <span className="text-gray-800 font-bold">${subtotal.toFixed(2)}</span>
               </div>
             </div>
-            <Link to="/CheckoutForm">
-              <button className="w-full bg-[#EFB8C8] text-white px-4 py-3 rounded-lg hover:bg-pink-500 font-medium">
-                Procesar Compra
-              </button>
-            </Link>
+            <button
+              onClick={NoCart}
+              className={`w-full bg-[#EFB8C8] text-white px-4 py-3 rounded-lg font-medium ${cart.length > 0 ? "hover:bg-pink-500" : null }`}
+            >
+              Procesar Compra
+            </button>
           </div>
         </div>
       </div>

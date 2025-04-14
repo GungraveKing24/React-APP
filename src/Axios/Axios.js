@@ -1,31 +1,31 @@
 import axios from 'axios'
 
-const token = localStorage.getItem("token");
-
 export const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_URL
 })
 
-export const authRequest = {
-  get: (url, config = {}) => {
-    return axiosInstance.get(url, {
-      ...config,
-      headers: {
-        ...(config.headers || {}),
-        Authorization: `Bearer ${token}`,
-      },
-    });
+export const HTTP = {
+  get: (url, { withAuth = false, ...config } = {}) => {
+    const token = localStorage.getItem('token');
+
+    const headers = {
+      ...(config.headers || {}),
+      ...(withAuth && token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+
+    return axiosInstance.get(url, { ...config, headers });
   },
 
-  post: (url, data, config = {}) => {
-    return axiosInstance.post(url, data, {
-      ...config,
-      headers: {
-        ...(config.headers || {}),
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  },
+  post: (url, data, { withAuth = false, ...config } = {}) => {
+    const token = localStorage.getItem('token');
+
+    const headers = {
+      ...(config.headers || {}),
+      ...(withAuth && token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+
+    return axiosInstance.post(url, data, { ...config, headers });
+  }
 
   //PATCH METHOD
 };

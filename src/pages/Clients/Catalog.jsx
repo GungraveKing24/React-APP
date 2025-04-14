@@ -3,7 +3,7 @@ import SmartSpinner from "../Both/SmartSpinner";
 import ProductCard from "./ProductCard";
 import { FaLeaf } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
-import { useFetch } from "../../Axios/useFetch";
+import { useFetch } from "../../Axios/customHooks/useFetch";
 
 export default function Catalog() {
   const {data, loading} = useFetch('/arrangements/')
