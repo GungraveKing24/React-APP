@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 import Logo from '../../assets/ArreglitosSV.png'
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const [form, setForm] = useState({user_email: "", user_password: ""})
   const token = localStorage.getItem("token")
   const navigate = useNavigate()
+  const { login } = useAuth();
 
   useEffect(() => {
     if(token){
@@ -14,7 +16,7 @@ export default function Login() {
         const userInfo = JSON.parse(atob(token.split(".")[1]))
         console.log("Usuario autenticado con exito", userInfo)
         // Redirigir según el rol del usuario
-        if (userInfo.role === 'Administrador') {
+        if (userInfo.user_role === 'Administrador') {
           navigate("/AdminDashboard");
         } else {
           navigate("/profile");
@@ -48,17 +50,20 @@ export default function Login() {
 
       const fetchData = await res.json()
       localStorage.setItem("token", fetchData.token)
+      login(fetchData.token);
       toast.success("Inicio de sesión exitoso!");
       localStorage.removeItem("guest_cart");
       
       // Decodificar el token para obtener el rol
       const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
-      
+      console.log("Payload del token:", payload);
       // Redirigir según el rol
-      if (payload.role === 'Administrador') {
+      if (payload.user_role === 'Administrador') {
+        console.log("Redirigiendo a AdminDashboard");
         navigate("/AdminDashboard");
       } else {
         navigate("/profile");
+        console.log("Redirigiendo a profile");
       }
       
     } catch (error) {

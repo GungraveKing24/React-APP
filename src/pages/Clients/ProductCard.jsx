@@ -2,13 +2,17 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaLeaf } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
-export default function ProductCard({ product, onCartUpdate }) {
+export default function ProductCard({ product }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const url = import.meta.env.VITE_API_URL + "orders/cart/add";
+    const { updateCartCount } = useCart();
+    const { user } = useAuth();
 
     // Calcular el precio final con descuento
     const finalPrice = product.arr_discount
@@ -19,65 +23,48 @@ export default function ProductCard({ product, onCartUpdate }) {
     const savings = (product.arr_price - finalPrice).toFixed(2);
 
     const handleAddToCart = () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            handleAddToCartGuest(); // Usuario sin sesión
+        if (user) {
+            handleAddToCartUser();
         } else {
-            handleAddToCartUser(); // Usuario con sesión
+            handleAddToCartGuest();
         }
     };
 
     const handleAddToCartGuest = () => {
         setLoading(true);
         
-        // Obtener el carrito del localStorage o inicializarlo
         const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
     
-        // Verificar si el producto ya está en el carrito
-        const existingItemIndex = guestCart.findIndex(item => item.arrangements_id === product.id);
+        const existingItemIndex = guestCart.findIndex(item => item.id === product.id);
         
         if (existingItemIndex !== -1) {
-            // Si ya está en el carrito, aumentar la cantidad
             guestCart[existingItemIndex].details_quantity += 1;
         } else {
-            // Si no está en el carrito, agregarlo
             guestCart.push({
-                id: product.id, // Usar 'id' en lugar de 'arrangements_id' para ser consistente
+                id: product.id,
+                arrangements_id: product.id,
                 details_quantity: 1, 
-                details_price: parseFloat(finalPrice), // Asegurar que se usa 'details_price'
-                final_price: parseFloat(finalPrice),   // Asegurar que 'final_price' también existe
+                details_price: parseFloat(finalPrice),
+                final_price: parseFloat(finalPrice),
                 arr_name: product.arr_name, 
                 arr_img_url: product.arr_img_url
             });
         }
     
-        // Guardar en localStorage
         localStorage.setItem("guest_cart", JSON.stringify(guestCart));
-    
-        // Notificar al usuario
-        toast.success("Producto agregado al carrito como invitado.");
-    
+        updateCartCount();
+        toast.success("Producto agregado al carrito");
         setLoading(false);
     };
 
     const handleAddToCartUser = async () => {
         setLoading(true);
-        setError(""); // Resetear el error en cada intento de agregar al carrito
-
-        const token = localStorage.getItem("token");
-        if (!token) {
-            // Si el usuario no ha iniciado sesión, redirigir al login
-            return;
-        }
+        setError("");
 
         try {
-            // Verificar y normalizar token
-            const payload = JSON.parse(atob(token.split('.')[1]));
-            if (typeof payload.sub !== 'string') {
-                throw new Error("Formato de token inválido");
-            }
+            const token = localStorage.getItem("token");
+            if (!token) throw new Error("No hay token de autenticación");
 
-            // Realizar la solicitud al backend
             const response = await axios.post(
                 url,
                 {
@@ -93,33 +80,30 @@ export default function ProductCard({ product, onCartUpdate }) {
                 }
             );
 
-            // Manejar respuesta exitosa
-            if (response.status === 200 && response.status === 201) {
-                toast.success("Producto agregado correctamente.");
-                if (onCartUpdate) onCartUpdate();
-                setError(""); // Limpiar errores previos
+            if ([200, 201].includes(response.status)) {
+                toast.success("Producto agregado correctamente");
+                updateCartCount();
             }
-
         } catch (error) {
             console.error("Error al agregar al carrito:", error);
-            if (error.response) {
-                switch (error.response.status) {
-                    case 401:
-                        setError("Sesión expirada. Por favor, inicia sesión nuevamente.");
-                        localStorage.removeItem("token");
-                        navigate("/login");
-                        break;
-                    case 404:
-                        setError("Producto no encontrado.");
-                        break;
-                    default:
-                        setError("Error al agregar al carrito. Por favor, inténtalo de nuevo.");
-                }
-            } else {
-                setError("Error de conexión. Verifica tu conexión a internet.");
+            setError(handleCartError(error));
+            
+            if (error.response?.status === 401) {
+                localStorage.removeItem("token");
+                navigate("/login");
             }
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCartError = (error) => {
+        if (!error.response) return "Error de conexión";
+        
+        switch (error.response.status) {
+            case 401: return "Sesión expirada";
+            case 404: return "Producto no encontrado";
+            default: return "Error al agregar al carrito";
         }
     };
 

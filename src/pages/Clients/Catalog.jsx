@@ -11,6 +11,7 @@ export default function Catalog() {
   useEffect(() => {
     setLoading(true);
     const url = import.meta.env.VITE_API_URL + "arrangements/";
+    console.log(url);
     fetch(url)
       .then((response) => {
         if (!response.ok) throw new Error("Error en la respuesta");

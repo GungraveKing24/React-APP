@@ -9,21 +9,30 @@ function User_Dashboard() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Obtener usuario desde el token
         const token = localStorage.getItem("token");
         if (!token) {
             navigate("/login");
             return;
         }
-
+    
+        // Verify token is valid before making requests
         try {
             const payload = JSON.parse(atob(token.split(".")[1]));
+            
+            // Check if token is expired
+            if (payload.exp && payload.exp < Date.now() / 1000) {
+                localStorage.removeItem("token");
+                navigate("/login");
+                return;
+            }
+            
             setUser(payload);
             
             if (payload.role === 'Administrador') {
                 navigate("/AdminDashboard");
             }
         } catch (error) {
+            console.error("Token error:", error);
             localStorage.removeItem("token");
             navigate("/login");
         }
@@ -37,7 +46,8 @@ function User_Dashboard() {
 
     async function fetchOrders() {
         try {
-            const res = await axios.get(`http://localhost:8000/orders/cart`, {
+            const url = import.meta.env.VITE_API_URL + "orders/cart/";
+            const res = await axios.get(url, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }

@@ -8,6 +8,7 @@ export default function Catalog2() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const url = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     fetchProducts();
@@ -15,14 +16,14 @@ export default function Catalog2() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/arrangements/");
+      const response = await fetch(url + "arrangements/");
       if (!response.ok) throw new Error("Error al obtener productos");
       const data = await response.json();
-      setProducts(data.map(p => ({ ...p, arr_is_active: p.arr_is_active !== false })));
+      setProducts(data.map(p => ({ ...p, arr_is_active: p.arr_availability })));
     } catch (error) {
       console.error("Error:", error);
       Swal.fire("Error", "No se pudieron cargar los productos", "error");
-    } finally {
+    } finally { 
       setLoading(false);
     }
   };
@@ -44,11 +45,16 @@ export default function Catalog2() {
     if (result.isConfirmed) {
       try {
         const endpoint = isCurrentlyActive ? "disable" : "enable";
+        const payload = localStorage.getItem("token");
+
         const response = await fetch(
-          `https://fastapi-app-production-f08f.up.railway.app/arrangements/${id}/${endpoint}`, 
+          url + `arrangements/${endpoint}/${id}`, 
           {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${payload}`
+            }
           }
         );
 

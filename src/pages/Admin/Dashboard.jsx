@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaDatabase, FaShoppingCart, FaBell, FaUser, FaChartBar, FaDollarSign, FaHome, FaBox, FaChartLine, FaSignOutAlt, FaBars } from "react-icons/fa";
 import { FaSquareCaretRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
@@ -15,7 +15,7 @@ const menuItems = [
 
 export default function AdminDashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };

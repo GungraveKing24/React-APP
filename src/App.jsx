@@ -29,7 +29,6 @@ import Categories from './pages/Admin/Categories/Categories.jsx';
 import CreateProduct from './pages/Admin/Products/addproduct.jsx'
 import EditProduct from './pages/Admin/Products/editproduct.jsx'
 import Catalog2 from './pages/Admin/Products/Products.jsx'
-import AddCate from './pages/Admin/Categories/addcate.jsx'
 import Statistics from './pages/Admin/Statistics.jsx'
 import Notifications from './pages/Admin/Notification.jsx'
 import OrderDetails from './pages/Admin/DetailsOrder.jsx'
@@ -40,53 +39,60 @@ import SalesHistory from './pages/Admin/Sales_history.jsx';
 import ProtectedRoute from './components/ProtectedRoutes.jsx';
 import GoogleCallback from './components/GoogleCallback.jsx';
 
+{/* Provedor de Contexto */}
+import { CartProvider  } from './context/CartContext.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+
 function App() {
   return (
-    <Router>
-      <Layout>
-        <Routes>
-          {/* Global */}
-          <Route path="/" element={<Homepage />} />
-          <Route path="*" element={<Bug/>} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/google/callback" element={<GoogleCallback />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/aboutus" element={<AboutUs />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/policies" element={<Policiaes />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/catalog" element={<Catalog />} />
-          <Route path="/CheckoutForm" element={<Checkout/>} /> 
-          <Route path="/ShoppingCart" element={<Cars/>} /> 
-          <Route path="/details" element={<Product_Detail/>} />
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              {/* Global */}
+              <Route path="/" element={<Homepage />} />
+              <Route path="*" element={<Bug/>} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/google/callback" element={<GoogleCallback />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/aboutus" element={<AboutUs />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/policies" element={<Policiaes />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/catalog" element={<Catalog />} />
+              <Route path="/CheckoutForm" element={<Checkout/>} /> 
+              <Route path="/ShoppingCart" element={<Cars/>} /> 
+              <Route path="/details" element={<Product_Detail/>} />
 
-          {/* Auth Users */}
-          <Route element={<ProtectedRoute allowedRoles={['Cliente']} />}>
-            <Route path="/profile" element={<User_Dashboard />} />
-            <Route path='/order_Details' element={<OrderDetails />} />
-            <Route path='/order_History' element={<Order_History />} />
-            <Route path='/settings' element={<Settings />} />
-          </Route>
+              {/* Auth Users */}
+              <Route element={<ProtectedRoute allowedRoles={['Cliente']} />}>
+                <Route path="/profile" element={<User_Dashboard />} />
+                <Route path='/order_Details' element={<OrderDetails />} />
+                <Route path='/order_History' element={<Order_History />} />
+                <Route path='/settings' element={<Settings />} />
+              </Route>
 
-          {/* Admin */}
-          <Route element={<ProtectedRoute allowedRoles={['Administrador']} />}>
-            <Route path="/AdminDashboard" element={<Dashboard/>} />
-            <Route path='/categories' element={<Categories />} />
-            <Route path='/CreateProduct' element={<CreateProduct />} />
-            <Route path='/EditProduct' element={<EditProduct />} />
-            <Route path='/Catalog2' element={<Catalog2 />} />
-            <Route path='/AddCate' element={<AddCate />} />
-            <Route path='/Statistics' element={<Statistics />} />
-            <Route path='/Notifications' element={<Notifications />} />
-            <Route path='/OrderDetails' element={<OrderDetails />} />
-            <Route path='/orders' element={<SalesHistory />} />
-            <Route path='/SalesHistory' element={<SalesHistory />} />
-            <Route path='/UserManagement' element={<UserManagement />} />
-          </Route>
-        </Routes>
-        <Footer />
-      </Layout>
-    </Router>
+              {/* Admin */}
+              <Route element={<ProtectedRoute allowedRoles={['Administrador']} />}>
+                <Route path="/AdminDashboard" element={<Dashboard/>} />
+                <Route path='/categories' element={<Categories />} />
+                <Route path='/CreateProduct' element={<CreateProduct />} />
+                <Route path='/EditProduct' element={<EditProduct />} />
+                <Route path='/Catalog2' element={<Catalog2 />} />
+                <Route path='/Statistics' element={<Statistics />} />
+                <Route path='/Notifications' element={<Notifications />} />
+                <Route path='/OrderDetails' element={<OrderDetails />} />
+                <Route path='/orders' element={<SalesHistory />} />
+                <Route path='/SalesHistory' element={<SalesHistory />} />
+                <Route path='/UserManagement' element={<UserManagement />} />
+              </Route>
+            </Routes>
+            <Footer />
+          </Layout>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

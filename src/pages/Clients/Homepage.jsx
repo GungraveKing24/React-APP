@@ -165,7 +165,6 @@ const Homepage = () => {
                   alt="Ramo"
                   className="rounded-lg shadow-md mx-auto w-[350px] h-[350px] object-cover"
                 />
-                 
               </div>
             
         </section>
