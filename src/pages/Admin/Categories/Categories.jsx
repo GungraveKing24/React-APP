@@ -1,84 +1,46 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import Modal from 'react-modal'
-import { axiosInstance } from "../../../Axios/Axios";
-
-function CategoryCard({ category }) {
-  return (
-    <div className="group relative block overflow-hidden border border-gray-200 rounded-lg shadow-md">
-      <div className="p-4">
-        <h3 className="text-lg font-medium text-gray-900">{category.name_cat}</h3>
-
-        <div className="flex space-x-4 mt-4">
-          <Link to={`/edit/${category.id}`}>
-            <button className="rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-600">
-              Editar
-            </button>
-          </Link>
-          <button
-            className="rounded-md bg-pink-400 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-red-600"
-            onClick={() => handleDisable(category.id)}
-          >
-            Deshabilitar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { useFetch } from "../../../Axios/customHooks/useFetch";
+import { toast, Toaster } from "react-hot-toast";
+import SmartSpinner from "../../Both/SmartSpinner";
+import ModalCategories from "./ModalCategories";
+import CategoryCard from "./CategoryCard";
 
 function Categories() {
-  const [categories, setCategories] = useState([]);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [categories, setCategories] = useState([])
+  const {data, loading} = useFetch('/categories');
 
   useEffect(() => {
-    getCategories();
-  }, []);
-
-  async function getCategories() {
-    try {
-      const response = await axiosInstance.get("/categories")
-      setCategories(response.data);
-    } catch (error) {
-      console.log(error);
+    if(data){
+      setCategories(data)
     }
-  }
+  }, [data])
 
-  async function handleDisable(categoryId) {
-    console.log(`Deshabilitar categoría con ID: ${categoryId}`);
-    // Aquí puedes llamar a una API para deshabilitar la categoría
-  }
-
-  function openModal(){
-    setIsOpen(true)
-  }
-
-  function closeModal(){
-    setIsOpen(false)
+  function toastEvent(message, type) {
+    const types = {
+      success: toast.success,
+      error: toast.error,
+      info: toast.info,
+      warning: toast.warning,
+    };
+  
+    return types[type]?.(message);
   }
 
   return (
     <>
+      <Toaster position="top-center"/>
       <div className="flex justify-between items-center p-4">
         <h2 className="text-xl font-bold">Categorías</h2>
-        <button
-          onClick={openModal}
-          className="rounded-full bg-green-500 px-4 py-2 text-white text-lg shadow-md hover:bg-green-600">
-          +
-        </button>
-
-        <Modal  isOpen={modalIsOpen} onRequestClose={closeModal}>
-        </Modal>
+        <ModalCategories category={false} toastEvent={toastEvent}/>
       </div>
-      {categories.length > 0 ? (
+      {loading ? (
+        <SmartSpinner />
+      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-          {categories.map((category) => (
-            <CategoryCard key={category.id} category={category} />
+          {categories.map((category, index) => (
+            <CategoryCard key={index} category={category} toastEvent={toastEvent} />
           ))}
         </div>
-      ) : (
-        <p className="text-center text-gray-500">Cargando categorías...</p>
       )}
     </>
   );

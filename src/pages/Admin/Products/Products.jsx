@@ -1,91 +1,46 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import SmartSpinner from "../../Both/SmartSpinner";
-import { FaTrash, FaPlus, FaEdit, FaUndo } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { useFetch } from "../../../Axios/customHooks/useFetch";
+import ProductCard from "./ProductCard";
+import { toast, Toaster } from "react-hot-toast";
+import ModalProduct from "./ModalProduct";
 
 export default function Catalog2() {
+  const {data, loading} = useFetch('/arrangements/')
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/arrangements/");
-      if (!response.ok) throw new Error("Error al obtener productos");
-      const data = await response.json();
-      setProducts(data.map(p => ({ ...p, arr_is_active: p.arr_is_active !== false })));
-    } catch (error) {
-      console.error("Error:", error);
-      Swal.fire("Error", "No se pudieron cargar los productos", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleProductStatus = async (id, productName, isCurrentlyActive) => {
-    const action = isCurrentlyActive ? "deshabilitar" : "habilitar";
-    
-    const result = await Swal.fire({
-      title: `¿${isCurrentlyActive ? 'Deshabilitar' : 'Habilitar'} ${productName}?`,
-      text: `El producto ${isCurrentlyActive ? 'no estará' : 'volverá a estar'} disponible para la venta`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: `Sí, ${action}`,
-      cancelButtonText: "Cancelar"
-    });
-
-    if (result.isConfirmed) {
+    if(data){
       try {
-        const endpoint = isCurrentlyActive ? "disable" : "enable";
-        const response = await fetch(
-          `https://fastapi-app-production-f08f.up.railway.app/arrangements/${id}/${endpoint}`, 
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-
-        if (!response.ok) throw new Error(`Error al ${action}`);
-
-        Swal.fire(
-          isCurrentlyActive ? "Deshabilitado" : "Habilitado", 
-          `${productName} ha sido ${action}do`, 
-          "success"
-        );
-        
-        setProducts(products.map(p => 
-          p.id === id ? { ...p, arr_is_active: !isCurrentlyActive } : p
-        ));
+        setProducts(data)
+        //setProducts(data.map(p => ({ ...p, arr_is_active: p.arr_is_active !== false })));
       } catch (error) {
         console.error("Error:", error);
-        Swal.fire("Error", `No se pudo ${action} el producto`, "error");
+        Swal.fire("Error", "No se pudieron cargar los productos", "error");
       }
     }
-  };
-
-  const calculateFinalPrice = (price, discount) => {
-    return discount ? price * (1 - discount / 100) : price;
-  };
+  }, [data]);
 
   if (loading) return <SmartSpinner />;
 
+  function toastEvent(message, type) {
+    const types = {
+      success: toast.success,
+      error: toast.error,
+      info: toast.info,
+      warning: toast.warning,
+    };
+  
+    return types[type]?.(message);
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
+      <Toaster position="top-center"/>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800">Catálogo de Productos</h1>
-        <button
-          onClick={() => navigate("/CreateProduct")}
-          className="bg-[#EFB8C8] hover:bg-red-300 text-white px-6 py-2 rounded-lg transition-colors flex items-center"
-        >
-          <FaPlus className="mr-2" /> Nuevo Producto
-        </button>
+        <ModalProduct product={false} toastEvent={toastEvent}/>
       </div>
 
       {products.length === 0 ? (
@@ -95,89 +50,7 @@ export default function Catalog2() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products.map((product) => (
-            <div
-              key={product.id}
-              className={`bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 ${
-                !product.arr_is_active ? "opacity-70" : ""
-              }`}
-            >
-              <div className="relative">
-                <img
-                  src={product.arr_img_url || "/placeholder-product.jpg"}
-                  alt={product.arr_name}
-                  className="w-full h-48 object-cover"
-                  onError={(e) => {
-                    e.target.src = "/placeholder-product.jpg";
-                  }}
-                />
-                {product.arr_discount > 0 && (
-                  <span className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-                    -{product.arr_discount}%
-                  </span>
-                )}
-              </div>
-
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-semibold text-lg text-gray-800">
-                    {product.arr_name}
-                  </h3>
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    product.arr_is_active 
-                      ? "bg-green-200 text-green-800" 
-                      : "bg-gray-200 text-gray-600"
-                  }`}>
-                    {product.arr_is_active ? "Activo" : "Inactivo"}
-                  </span>
-                </div>
-
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                  {product.arr_description}
-                </p>
-
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <span className="font-bold text-gray-900">
-                      ${calculateFinalPrice(product.arr_price, product.arr_discount).toFixed(2)}
-                    </span>
-                    {product.arr_discount > 0 && (
-                      <span className="ml-2 text-sm text-gray-500 line-through">
-                        ${product.arr_price.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                  <span className="text-sm text-gray-500">
-                    Stock: {product.arr_stock}
-                  </span>
-                </div>
-
-                <div className="flex justify-between space-x-2">
-                  <button
-
-                  // {/* NO DUNCIONA AUNNNN */}
-                    onClick={() => navigate(`/EditProduct/:id${product.id}`)}
-                    className="text-yellow-600 hover:text-yellow-800 p-2 rounded-full hover:bg-yellow-50 flex-1 flex items-center justify-center"
-                  >
-                    <FaEdit className="mr-1" /> Editar
-                  </button>
-                  <button
-                    onClick={() => toggleProductStatus(product.id, product.arr_name, product.arr_is_active)}
-                    className={`p-2 rounded-full flex-1 flex items-center justify-center ${
-                      product.arr_is_active 
-                        ? "text-red-600 hover:text-red-800 hover:bg-red-50" 
-                        : "text-blue-600 hover:text-blue-800 hover:bg-blue-50"
-                    }`}
-                  >
-                    {product.arr_is_active ? (
-                      <FaTrash className="mr-1" />
-                    ) : (
-                      <FaUndo className="mr-1" />
-                    )}
-                    {product.arr_is_active ? "Deshab." : "Habilitar"}
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} toastEvent={toastEvent} />
           ))}
         </div>
       )}

@@ -29,7 +29,6 @@ import Categories from './pages/Admin/Categories/Categories.jsx';
 import CreateProduct from './pages/Admin/Products/addproduct.jsx'
 import EditProduct from './pages/Admin/Products/editproduct.jsx'
 import Catalog2 from './pages/Admin/Products/Products.jsx'
-import AddCate from './pages/Admin/Categories/addcate.jsx'
 import Statistics from './pages/Admin/Statistics.jsx'
 import Notifications from './pages/Admin/Notification.jsx'
 import OrderDetails from './pages/Admin/DetailsOrder.jsx'
@@ -75,8 +74,6 @@ function App() {
             <Route path='/CreateProduct' element={<CreateProduct />} />
             <Route path='/EditProduct' element={<EditProduct />} />
             <Route path='/Catalog2' element={<Catalog2 />} />
-            <Route path='/AddCate' element={<AddCate />} />
-              {/* EditCate? */}
             <Route path='/Statistics' element={<Statistics />} />
             <Route path='/Notifications' element={<Notifications />} />
             <Route path='/OrderDetails' element={<OrderDetails />} />
