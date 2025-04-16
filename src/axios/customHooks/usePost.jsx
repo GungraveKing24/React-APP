@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { HTTP } from '../Axios.js';
+import { HTTP } from '../axios.js';
 
 export const usePost = () => {
   const [loading, setLoading] = useState(false);

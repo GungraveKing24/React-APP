@@ -1,6 +1,6 @@
 // src/Axios/useFetch.js
 import { useEffect, useState } from 'react';
-import { HTTP } from '../Axios.js'
+import { HTTP } from '../axios';
 
 export const useFetch = (endpoint, withAuth = false) => {
   const [data, setData] = useState(null);

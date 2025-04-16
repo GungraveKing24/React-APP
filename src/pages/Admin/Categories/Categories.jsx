@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { useFetch } from "../../../Axios/customHooks/useFetch";
 import { toast, Toaster } from "react-hot-toast";
 import SmartSpinner from "../../Both/SmartSpinner";
 import ModalCategories from "./ModalCategories";
 import CategoryCard from "./CategoryCard";
+import { useFetch } from "../../../axios/customHooks/useFetch";
 
 function Categories() {
   const [categories, setCategories] = useState([])
@@ -25,7 +25,7 @@ function Categories() {
   
     return types[type]?.(message);
   }
-
+  
   return (
     <>
       <Toaster position="top-center"/>
@@ -37,8 +37,8 @@ function Categories() {
         <SmartSpinner />
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-          {categories.map((category, index) => (
-            <CategoryCard key={index} category={category} toastEvent={toastEvent} />
+          {categories.map((category) => (
+            <CategoryCard key={category.id} category={category} toastEvent={toastEvent} />
           ))}
         </div>
       )}
