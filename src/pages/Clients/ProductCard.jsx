@@ -89,8 +89,8 @@ export default function ProductCard({ product }) {
             setError(handleCartError(error));
             
             if (error.response?.status === 401) {
-                localStorage.removeItem("token");
-                navigate("/login");
+                //localStorage.removeItem("token");
+                //navigate("/login");
             }
         } finally {
             setLoading(false);
