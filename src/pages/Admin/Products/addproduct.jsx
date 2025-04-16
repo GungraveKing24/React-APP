@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSave, FaTimes, FaUpload } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { axiosInstance } from "../../../axios/axios";
 
 export default function CreateProduct() {
   const navigate = useNavigate();
@@ -12,10 +13,24 @@ export default function CreateProduct() {
     arr_discount: 0,
     arr_img_url: "",
     arr_stock: 0,
-    arr_category: "",
-    arr_is_active: true
+    arr_id_cat: 0,
+    arr_is_active: true,
+    image: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosInstance.get("/categories")
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -25,60 +40,64 @@ export default function CreateProduct() {
     }));
   };
 
-  const handleImageUpload = async (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
-
-    setIsSubmitting(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      const mockImageUrl = `https://source.unsplash.com/random/300x300/?product,${Date.now()}`;
-      
-      setFormData(prev => ({ ...prev, arr_img_url: mockImageUrl }));
-      Swal.fire("Éxito", "Imagen subida correctamente", "success");
-    } catch (error) {
-      Swal.fire("Error", "No se pudo subir la imagen", "error");
-    } finally {
-      setIsSubmitting(false);
-    }
+  
+    setFormData(prev => ({
+      ...prev,
+      image: file,
+      arr_img_url: URL.createObjectURL(file) // vista previa
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    // Validación básica
-    if (!formData.arr_name || !formData.arr_description || formData.arr_price <= 0) {
+  
+    if (
+      !formData.arr_name ||
+      !formData.arr_description ||
+      formData.arr_price <= 0 ||
+      formData.arr_stock <= 0 ||
+      !formData.arr_id_cat ||
+      !formData.image
+    ) {
       Swal.fire("Error", "Por favor complete todos los campos requeridos", "error");
       setIsSubmitting(false);
       return;
     }
-
+  
+    const token = localStorage.getItem("token");
+    if (!token) {
+      Swal.fire("Error", "No estás autenticado", "error");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    // 🛠 Construir FormData manualmente
+    const form = new FormData();
+    form.append("arr_name", formData.arr_name);
+    form.append("arr_description", formData.arr_description);
+    form.append("arr_price", formData.arr_price.toString());
+    form.append("arr_discount", formData.arr_discount.toString());
+    form.append("arr_stock", formData.arr_stock.toString());
+    form.append("arr_id_cat", formData.arr_id_cat.toString());
+    form.append("arr_is_active", formData.arr_is_active.toString());
+    form.append("image", formData.image); // este es el archivo
+  
     try {
-      const response = await fetch("https://fastapi-app-production-f08f.up.railway.app/arrangements/", {
-        method: "POST",
+      const response = await axiosInstance.post("/create/arrangements", form, {
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
       });
-
-      if (!response.ok) throw new Error("Error al crear el producto");
-
-      const result = await response.json();
-      
-      await Swal.fire({
-        title: "¡Éxito!",
-        text: "Producto creado correctamente",
-        icon: "success",
-        confirmButtonText: "Continuar"
-      });
-
-      navigate(`/admin/edit-product/${result.id}`);
+  
+      Swal.fire("Éxito", response.data.message || "Exito", "success");
+      navigate("/Catalog2");
     } catch (error) {
-      console.error("Error:", error);
-      Swal.fire("Error", "No se pudo crear el producto", "error");
+      Swal.fire("Error", error.response?.data?.detail || "Error al guardar", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -165,24 +184,23 @@ export default function CreateProduct() {
           </div>
 
           {/* Categoría */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Categoría
-            </label>
+          {categories.length === 0 ? (
+            <p className="text-gray-500">Cargando categorías...</p>
+          ) : (
             <select
-              name="arr_category"
-              value={formData.arr_category}
+              name="arr_id_cat"
+              value={formData.arr_id_cat}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-red-300 focus:border-red-300"
             >
-              <option value="">Seleccione una categoría</option>
-              <option value="flores">Flores</option>
-              <option value="ramos">Ramos</option>
-              <option value="arreglos">Arreglos</option>
-              <option value="plantas">Plantas</option>
-              <option value="ocasiones">Ocasiones especiales</option>
+              <option value="Seleccion">Seleccione una categoría</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name_cat}
+                </option>
+              ))}
             </select>
-          </div>
+          )}
 
           {/* Estado */}
           <div className="flex items-center">
