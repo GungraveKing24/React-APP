@@ -95,6 +95,8 @@ export default function CreateProduct() {
       });
   
       Swal.fire("Éxito", response.data.message || "Exito", "success");
+      // navegar hasta la zona de abajo
+      window.scrollTo(0, document.body.scrollHeight);
       navigate("/Catalog2");
     } catch (error) {
       Swal.fire("Error", error.response?.data?.detail || "Error al guardar", "error");

@@ -161,7 +161,7 @@ export default function Catalog2() {
                   <button
 
                   // {/* NO DUNCIONA AUNNNN */}
-                    onClick={() => navigate(`/EditProduct/:id${product.id}`)}
+                    onClick={() => navigate(`/admin/products/edit/${product.id}`)}
                     className="text-yellow-600 hover:text-yellow-800 p-2 rounded-full hover:bg-yellow-50 flex-1 flex items-center justify-center"
                   >
                     <FaEdit className="mr-1" /> Editar

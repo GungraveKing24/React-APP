@@ -78,8 +78,8 @@ function App() {
                 <Route path="/AdminDashboard" element={<Dashboard/>} />
                 <Route path='/categories' element={<Categories />} />
                 <Route path='/CreateProduct' element={<CreateProduct />} />
-                <Route path='/EditProduct' element={<EditProduct />} />
-                <Route path='/Catalog2' element={<Catalog2 />} />
+                <Route path='/admin/products' element={<Catalog2 />} />
+                <Route path='/admin/products/edit/:id' element={<EditProduct />} />
                 <Route path='/Statistics' element={<Statistics />} />
                 <Route path='/Notifications' element={<Notifications />} />
                 <Route path='/OrderDetails' element={<OrderDetails />} />

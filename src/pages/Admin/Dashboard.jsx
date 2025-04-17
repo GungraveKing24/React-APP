@@ -4,7 +4,7 @@ import { FaSquareCaretRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const menuItems = [
-    { icon: <FaDatabase size={24} className="text-[#6C5CE7]" />, label: "Productos y Stock", bg: "bg-[#F2EFFD]", link: "/Catalog2" },
+    { icon: <FaDatabase size={24} className="text-[#6C5CE7]" />, label: "Productos y Stock", bg: "bg-[#F2EFFD]", link: "/admin/products" },
     { icon: <FaDollarSign size={24} className="text-[#00B894]" />, label: "Órdenes", bg: "bg-[#E8F8F5]", link: "/orders" },
     { icon: <FaBell size={24} className="text-[#FDCB6E]" />, label: "Notificaciones", bg: "bg-[#FFF3E6]", link: "/Notifications" },
     { icon: <FaShoppingCart size={24} className="text-[#E84393]" />, label: "Historial de Venta", bg: "bg-[#FCE4EC]", link: "/SalesHistory" },
