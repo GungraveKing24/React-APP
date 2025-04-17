@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaSave, FaTimes, FaUpload } from "react-icons/fa";
 import Swal from "sweetalert2";
 import SmartSpinner from "../../Both/SmartSpinner";
+import { axiosInstance } from "../../../Axios/Axios";
 
 export default function EditProduct() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     arr_name: "",
@@ -14,11 +15,48 @@ export default function EditProduct() {
     arr_discount: 0,
     arr_img_url: "",
     arr_stock: 0,
-    arr_category: "",
-    arr_is_active: true
+    arr_id_cat: 0,
+    arr_is_active: true,
+    image: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch categories
+        const categoriesRes = await axiosInstance.get("/categories");
+        setCategories(categoriesRes.data);
+
+        // Fetch product data if editing
+        if (id) {
+          const productRes = await axiosInstance.get(`/arrangements/${id}`);
+          const productData = productRes.data;
+          
+          setFormData({
+            arr_name: productData.arr_name,
+            arr_description: productData.arr_description,
+            arr_price: productData.arr_price,
+            arr_discount: productData.arr_discount || 0,
+            arr_img_url: productData.arr_img_url,
+            arr_stock: productData.arr_stock,
+            arr_id_cat: productData.arr_id_cat,
+            arr_is_active: productData.arr_availability,
+            image: null // Initialize as null - will only change if new image uploaded
+          });
+        }
+      } catch (error) {
+        console.error("Error loading data:", error);
+        Swal.fire("Error", "No se pudieron cargar los datos", "error");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -28,65 +66,86 @@ export default function EditProduct() {
     }));
   };
 
-  const handleImageChange = (e) => {
+  const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setFormData(prev => ({ ...prev, arr_img_url: reader.result }));
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+  
+    setFormData(prev => ({
+      ...prev,
+      image: file,
+      arr_img_url: URL.createObjectURL(file) // preview
+    }));
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({
+      ...prev,
+      image: null,
+      arr_img_url: ""
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Validación básica
-    if (!formData.arr_name || !formData.arr_description || formData.arr_price <= 0) {
+    // Validation (same as CreateProduct)
+    if (
+      !formData.arr_name ||
+      !formData.arr_description ||
+      formData.arr_price <= 0 ||
+      formData.arr_stock <= 0 ||
+      !formData.arr_id_cat
+    ) {
       Swal.fire("Error", "Por favor complete todos los campos requeridos", "error");
       setIsSubmitting(false);
       return;
     }
 
-    try {
-      const method = id ? "PUT" : "POST";
-      const url = id 
-        ? `https://fastapi-app-production-f08f.up.railway.app/arrangements/${id}`
-        : "https://fastapi-app-production-f08f.up.railway.app/arrangements/";
+    const token = localStorage.getItem("token");
+    if (!token) {
+      Swal.fire("Error", "No estás autenticado", "error");
+      setIsSubmitting(false);
+      return;
+    }
 
-      const response = await fetch(url, {
-        method,
+    const form = new FormData();
+    form.append("arr_name", formData.arr_name);
+    form.append("arr_description", formData.arr_description);
+    form.append("arr_price", formData.arr_price.toString());
+    form.append("arr_discount", formData.arr_discount.toString());
+    form.append("arr_stock", formData.arr_stock.toString());
+    form.append("arr_id_cat", formData.arr_id_cat.toString());
+    form.append("arr_is_active", formData.arr_is_active.toString());
+    
+    // Only append image if a new one was selected
+    if (formData.image) {
+      form.append("image", formData.image);
+    }
+
+    try {
+      const response = await axiosInstance.patch(`/arrangements/edit/${id}`, form, {
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
       });
 
-      if (!response.ok) throw new Error(id ? "Error al actualizar" : "Error al crear");
-
-      const successMessage = id 
-        ? "Producto actualizado correctamente" 
-        : "Producto creado correctamente";
-
-      await Swal.fire("¡Éxito!", successMessage, "success");
+      Swal.fire("Éxito", response.data.message || "Producto actualizado correctamente", "success");
       navigate("/admin/products");
     } catch (error) {
-      console.error("Error:", error);
-      Swal.fire("Error", id ? "No se pudo actualizar" : "No se pudo crear", "error");
+      Swal.fire("Error", error.response?.data?.detail || "Error al actualizar", "error");
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  if (loading) return <SmartSpinner />;
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">
-          {id ? "Editar Producto" : "Editar Producto"}
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-800">Editar Producto</h1>
         <button
           onClick={() => navigate("/Catalog2")}
           className="flex items-center text-gray-600 hover:text-gray-800"
@@ -166,20 +225,21 @@ export default function EditProduct() {
           {/* Categoría */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Categoría
+              Categoría *
             </label>
             <select
-              name="arr_category"
-              value={formData.arr_category}
+              name="arr_id_cat"
+              value={formData.arr_id_cat}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-red-300 focus:border-red-300"
+              required
             >
               <option value="">Seleccione una categoría</option>
-              <option value="flores">Flores</option>
-              <option value="ramos">Ramos</option>
-              <option value="arreglos">Arreglos</option>
-              <option value="plantas">Plantas</option>
-              <option value="ocasiones">Ocasiones especiales</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name_cat}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -219,18 +279,35 @@ export default function EditProduct() {
             Imagen del producto
           </label>
           
-          {imagePreview || formData.arr_img_url ? (
+          {formData.arr_img_url ? (
             <div className="flex flex-col items-start">
               <img 
-                src={imagePreview || formData.arr_img_url} 
+                src={formData.arr_img_url} 
                 alt="Vista previa" 
                 className="h-40 object-cover rounded-md border mb-2"
               />
-              <input
-                type="file"
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('image-upload').click()}
+                  className="text-sm text-blue-600 hover:text-blue-800"
+                >
+                  Cambiar imagen
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="text-sm text-red-600 hover:text-red-800"
+                >
+                  Eliminar imagen
+                </button>
+              </div>
+              <input 
+                id="image-upload"
+                type="file" 
+                className="hidden" 
                 accept="image/*"
-                onChange={handleImageChange}
-                className="text-sm text-gray-500"
+                onChange={handleImageUpload}
               />
             </div>
           ) : (
@@ -247,11 +324,15 @@ export default function EditProduct() {
                   type="file" 
                   className="hidden" 
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={handleImageUpload}
+                  disabled={isSubmitting}
                 />
               </label>
             </div>
           )}
+          <p className="mt-1 text-xs text-gray-500">
+            {formData.image ? "Nueva imagen seleccionada" : "Imagen actual se mantendrá si no se selecciona una nueva"}
+          </p>
         </div>
 
         {/* Botón de guardar */}
@@ -269,11 +350,11 @@ export default function EditProduct() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                {id ? "Actualizando..." : "Creando..."}
+                Guardando...
               </>
             ) : (
               <>
-                <FaSave className="mr-2" /> {id ? "Guardar Cambios" : "Crear Producto"}
+                <FaSave className="mr-2" /> Guardar Cambios
               </>
             )}
           </button>
