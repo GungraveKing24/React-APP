@@ -86,7 +86,7 @@ export default function Navbar() {
           {/* Botones de Login y Sign Up o User */}
           {user ? (
             <div className="flex items-center space-x-4">
-              <Link to="/profile" className="w-10 h-10">
+              <Link  to={user.user_role === 'Administrador' ? "/AdminDashboard" : "/profile"}>
                 <img src={user.user_url_photo} alt="Perfil" className="w-10 h-10 rounded-full border border-gray-300" />
               </Link>
               <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-300">
