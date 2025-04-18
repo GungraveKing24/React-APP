@@ -15,7 +15,7 @@ export default function Login() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // Redirigir si ya está autenticado
+ 
   useEffect(() => {
     if (token) {
       try {
@@ -39,7 +39,7 @@ export default function Login() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
-    // Limpiar error cuando el usuario escribe
+  
     if (errors[name]) {
       setErrors({ ...errors, [name]: null });
     }
@@ -126,16 +126,16 @@ export default function Login() {
       />
       
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden border border-pink-100">
-        {/* Encabezado */}
+       
         <div className="bg-[#EFB8C8] p-6 text-center">
           <img src={Logo} alt="Logo" className="h-16 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white">Iniciar Sesión</h1>
           <p className="text-pink-100 mt-1">Bienvenido de vuelta</p>
         </div>
         
-        {/* Formulario */}
+      
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Campo Email */}
+          
           <div>
             <label className="block text-sm font-Title text-gray-700 mb-1">Correo electrónico</label>
             <div className="relative">
@@ -154,13 +154,13 @@ export default function Login() {
             {errors.user_email && <p className="mt-1 text-sm text-red-500">{errors.user_email}</p>}
           </div>
 
-          {/* Campo Contraseña */}
+       
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-sm font-Title text-gray-700">Contraseña</label>
               <a 
                 href="#" 
-                className="text-sm text-black hover:text-pink-600 font-medium"
+                className="text-sm text-black hover:text-pink-400 font-medium"
                 onClick={(e) => {
                   e.preventDefault();
                   toast("Funcionalidad en desarrollo", { icon: "🔧" });

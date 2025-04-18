@@ -245,7 +245,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 
 export default function SignIn() {
-  // Estados del formulario
+
   const [form, setForm] = useState({
     user_firstname: "",
     user_lastname: "",
@@ -262,7 +262,7 @@ export default function SignIn() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // Redirigir si ya está autenticado
+
   useEffect(() => {
     if (token) {
       try {
@@ -275,11 +275,11 @@ export default function SignIn() {
     }
   }, [token, navigate]);
 
-  // Manejar cambios en los campos del formulario
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    // Validación en tiempo real para nombre y apellido
+
     if (name === 'user_firstname' || name === 'user_lastname') {
       if (/[0-9]/.test(value)) {
         setErrors({...errors, [name]: "No se permiten números"});
@@ -288,24 +288,24 @@ export default function SignIn() {
     }
     
     setForm({ ...form, [name]: value });
-    // Limpiar error cuando el usuario escribe
+
     if (errors[name]) {
       setErrors({...errors, [name]: null});
     }
   };
 
-  // Manejar cambio de imagen
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validar tipo de archivo
+
     if (!file.type.match('image.*')) {
       toast.error("Solo se permiten imágenes (JPEG, PNG)");
       return;
     }
 
-    // Validar tamaño (2MB máximo)
+   
     if (file.size > 2 * 1024 * 1024) {
       toast.error("La imagen no debe superar 2MB");
       return;
@@ -313,7 +313,7 @@ export default function SignIn() {
 
     setImageFile(file);
 
-    // Crear vista previa
+  
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreviewImage(reader.result);
@@ -321,12 +321,12 @@ export default function SignIn() {
     reader.readAsDataURL(file);
   };
 
-  // Login con Google
+
   const handleGoogleLogin = () => {
     window.location.href = "https://fastapi-app-production-f08f.up.railway.app/google/login";
   };
 
-  // Validar formulario
+
   const validateForm = () => {
     const newErrors = {};
     let isValid = true;
@@ -383,7 +383,7 @@ export default function SignIn() {
     return isValid;
   };
 
-  // Enviar formulario
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm() || isSubmitting) return;
@@ -439,16 +439,16 @@ export default function SignIn() {
       />
       
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden border border-pink-100">
-        {/* Encabezado */}
+     
         <div className="bg-[#EFB8C8] p-6 text-center">
           <img src={Logo} alt="Logo" className="h-16 mx-auto mb-4" />
           <h1 className="text-2xl font-Title text-white">Crear Cuenta</h1>
           <p className="text-pink-100 mt-1 font-Title">Únete a nuestra comunidad</p>
         </div>
         
-        {/* Formulario */}
+        
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          {/* Avatar */}
+          
           <div className="flex justify-center">
             <label className="relative group cursor-pointer">
               <div className="w-24 h-24 rounded-full bg-pink-100 border-2 border-dashed border-[#EFB8C8] flex items-center justify-center overflow-hidden">
@@ -473,7 +473,7 @@ export default function SignIn() {
             </label>
           </div>
 
-          {/* Campos del formulario */}
+         
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-Title text-gray-700 mb-1">Nombre</label>
@@ -584,7 +584,7 @@ export default function SignIn() {
             {errors.user_direction && <p className="mt-1 text-sm text-red-500">{errors.user_direction}</p>}
           </div>
 
-          {/* Botón de registro */}
+          
           <button
             type="submit"
             disabled={isSubmitting}
@@ -601,7 +601,7 @@ export default function SignIn() {
             ) : 'Registrarme'}
           </button>
 
-          {/* Divisor */}
+          
           <div className="relative font-Title">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300"></div>
@@ -611,7 +611,7 @@ export default function SignIn() {
             </div>
           </div>
 
-          {/* Botón de Google */}
+          
           <button
             type="button"
             onClick={handleGoogleLogin}
@@ -621,7 +621,7 @@ export default function SignIn() {
             Google
           </button>
 
-          {/* Enlace a login */}
+          
           <div className="text-center text-sm font-Title text-gray-600">
             ¿Ya tienes cuenta?{' '}
             <a href="/login" className="text-[#EFB8C8]  hover:text-pink-600 font-medium">
