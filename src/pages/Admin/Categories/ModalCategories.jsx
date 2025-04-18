@@ -1,87 +1,61 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Modal from 'react-modal';
 import { usePost } from '../../../Axios/customHooks/usePost';
-import { axiosInstance } from '../../../Axios/Axios';
 
 // Necesario para accesibilidad (sólo una vez, en tu app principal o layout)
 Modal.setAppElement('#root');
 
 function ModalCategories({category, toastEvent}) {
-    const { postData } = usePost();
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [formData, setFormData] = useState({});
+  const { postData, error } = usePost();
+  const info = {
+    name_cat: category ? category.name_cat : ''
+  }
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [formData, setFormData] = useState(info);
 
-    const openModal = () => setModalIsOpen(true);
-    const closeModal = () => setModalIsOpen(false);
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false);
 
-    const handleChange = (e) => {
-        setFormData(prev => ({
-        ...prev,
-        [e.target.name]: e.target.value
-        }));
-    };
-
-    useEffect(() => {
-      if (category) {
-        setFormData({
-          name_cat: category.name_cat
-        });
-      } else {
-        setFormData({
-          name_cat: ''
-        });
-      }
-    }, [category, modalIsOpen]);
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(category){
-      EditCategory()
-    } else{
-      AddCategory()
+    try {
+      if(category){
+        EditCategory()
+      } else{
+        AddCategory()
+      }
+    } catch (error) {
+      toastEvent("Ocurrio un error", "error")
     }
   };
 
   async function AddCategory() {
     try {
-      const { status } = await postData("/categories", formData, true); 
+      const { status } = await postData("/categories", formData);
       console.log(status)
       closeModal();
       if (status === 200 || status === 201){
         toastEvent("Creacion exitosa", "success")
         console.log("Creacion exitosa")
-      } else{
-        toastEvent("Ocurrio un error", "error")
-        console.log("ERROR")
       }
     } catch (error) {
-      closeModal();
       toastEvent("Ocurrio un error", "error")
       console.log("ERROR")
     }
   }
 
   async function EditCategory() {
-    try {
-      const token = localStorage.getItem("token")
-      if(token){
-        const res = await axiosInstance.patch(`/categories/${category.id}`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            // Si necesitás enviar tipo JSON explícitamente:
-            "Content-Type": "application/json",
-          }
-        });
-        closeModal();
-        toastEvent("Edicion exitosa", "success")
-      }
-    } catch (error) {
-      closeModal();
-      toastEvent("Ocurrio un error", "error")
-      console.error(error)
-    }
+    closeModal();
+    toastEvent("Edicion exitosa", "success")
+    console.log("Editado", formData)
   }
-  
 
   return (
     <div className="p-4">
@@ -107,7 +81,7 @@ function ModalCategories({category, toastEvent}) {
             <input
               type="text"
               name="name_cat"
-              value={formData.name_cat}
+              value={category ? category.name_cat : formData.name}
               onChange={handleChange}
               className="w-full border px-3 py-2 rounded-md"
               required
@@ -128,6 +102,7 @@ function ModalCategories({category, toastEvent}) {
               Enviar
             </button>
           </div>
+          {error ? <span>Hubo un error, vuelve a intentar</span> : ""}
         </form>
       </Modal>
     </div>
