@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import SmartSpinner from '../../Both/SmartSpinner.jsx';
 import { useNavigate, Link } from 'react-router-dom';
-import { useFetch } from '../../../Axios/customHooks/useFetch.js';
+import axios from 'axios';
 
-export default function User_Dashboard() {
+function User_Dashboard() {
     const [user, setUser] = useState(null);
+    const [orders, setOrders] = useState([]);
     const navigate = useNavigate();
-
-    // Hook para obtener órdenes con token
-    const { data: ordersData, loading, error } = useFetch('/orders/cart', true);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -16,18 +14,20 @@ export default function User_Dashboard() {
             navigate("/login");
             return;
         }
-
+    
+        // Verify token is valid before making requests
         try {
             const payload = JSON.parse(atob(token.split(".")[1]));
-
+            
+            // Check if token is expired
             if (payload.exp && payload.exp < Date.now() / 1000) {
                 localStorage.removeItem("token");
                 navigate("/login");
                 return;
             }
-
+            
             setUser(payload);
-
+            
             if (payload.role === 'Administrador') {
                 navigate("/AdminDashboard");
             }
@@ -38,8 +38,27 @@ export default function User_Dashboard() {
         }
     }, [navigate]);
 
-    // Filtramos los pedidos para excluir los del estado "carrito"
-    const filteredOrders = (ordersData || []).filter(order => order.order_state !== "carrito");
+    useEffect(() => {
+        if (user) {
+            fetchOrders();
+        }
+    }, [user]);
+
+    async function fetchOrders() {
+        try {
+            const url = import.meta.env.VITE_API_URL + "orders/cart/";
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            // Filtrar pedidos que NO sean del estado "carrito"
+            const filteredOrders = res.data.filter(order => order.order_state !== "carrito");
+            setOrders(filteredOrders);
+        } catch (error) {
+            console.error("Error al obtener los pedidos:", error);
+        }
+    }
 
     if (!user) {
         return (
@@ -87,8 +106,8 @@ export default function User_Dashboard() {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredOrders.length > 0 ? (
-                                filteredOrders.map((order) => (
+                            {orders.length > 0 ? (
+                                orders.map((order) => (
                                     <tr key={order.id} className="text-center">
                                         <td className="border border-gray-300 px-4 py-2">{order.id}</td>
                                         <td className="border border-gray-300 px-4 py-2">{order.order_date}</td>
@@ -113,3 +132,5 @@ export default function User_Dashboard() {
         </div>
     );
 }
+
+export default User_Dashboard;
