@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaDatabase, FaShoppingCart, FaBell, FaUser, FaChartBar, FaDollarSign, FaHome, FaBox, FaChartLine, FaSignOutAlt, FaBars } from "react-icons/fa";
-import { FaSquareCaretRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const menuItems = [
-    { icon: <FaDatabase size={24} className="text-[#6C5CE7]" />, label: "Productos y Stock", bg: "bg-[#F2EFFD]", link: "/admin/products" },
+    { icon: <FaDatabase size={24} className="text-[#6C5CE7]" />, label: "Productos y Stock", bg: "bg-[#F2EFFD]", link: "/Catalog2" },
     { icon: <FaDollarSign size={24} className="text-[#00B894]" />, label: "Órdenes", bg: "bg-[#E8F8F5]", link: "/orders" },
     { icon: <FaBell size={24} className="text-[#FDCB6E]" />, label: "Notificaciones", bg: "bg-[#FFF3E6]", link: "/Notifications" },
     { icon: <FaShoppingCart size={24} className="text-[#E84393]" />, label: "Historial de Venta", bg: "bg-[#FCE4EC]", link: "/SalesHistory" },
     { icon: <FaUser size={24} className="text-[#0984E3]" />, label: "Usuarios", bg: "bg-[#E3F2FD]", link: "/UserManagement" },
-    { icon: <FaChartBar size={24} className="text-[#D63031]" />, label: "Estadísticas", bg: "bg-[#FFE6E6]", link: "/Statistics" },
-    { icon: <FaBox size={24} className="text-[#6C5CE7]" />, label: "Categorías", bg: "bg-[#F2EFFD]", link: "/Categories" },
+    { icon: <FaChartBar size={24} className="text-[#D63031]" />, label: "Estadísticas", bg: "bg-[#FFE6E6]", link: "/Statistics" }
 ];
 
 export default function AdminDashboard() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
