@@ -4,6 +4,7 @@ import { FaGoogle } from 'react-icons/fa';
 import Logo from '../../assets/ArreglitosSV.png';
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const [form, setForm] = useState({ 
@@ -14,27 +15,26 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { login } = useAuth()
 
  
   useEffect(() => {
-    if (token) {
+    if(token){
       try {
-        const userInfo = JSON.parse(atob(token.split(".")[1]));
-        redirectUser(userInfo.role);
+        const userInfo = JSON.parse(atob(token.split(".")[1]))
+        console.log("Usuario autenticado con exito", userInfo)
+        // Redirigir según el rol del usuario
+        if (userInfo.user_role === 'Administrador') {
+          navigate("/AdminDashboard");
+        } else {
+          navigate("/profile");
+        }
       } catch (error) {
-        console.error("Error decodificando el token", error);
+        console.error("Error decodificando el token", error)
         localStorage.removeItem("token");
       }
     }
-  }, [token, navigate]);
-
-  const redirectUser = (role) => {
-    if (role === 'Administrador') {
-      navigate("/AdminDashboard", { replace: true });
-    } else {
-      navigate("/profile", { replace: true });
-    }
-  };
+  }, [token, navigate])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,39 +69,49 @@ export default function Login() {
     return isValid;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  
+  async function handleSubmit(e){
+    e.preventDefault()
     if (!validateForm() || isSubmitting) return;
-
+  
     setIsSubmitting(true);
-
     try {
-      const res = await fetch("https://fastapi-app-production-f08f.up.railway.app/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const url = import.meta.env.VITE_API_URL
 
-      if (!res.ok) {
-        throw new Error("Credenciales incorrectas");
+      const res = await fetch(url + "/login", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(form),
+      })
+
+      if(!res.ok){
+        toast.error("Contraseña o correo incorrecto");
+        return
       }
 
-      const data = await res.json();
-      localStorage.setItem("token", data.token);
+      const fetchData = await res.json()
+      localStorage.setItem("token", fetchData.token)
+      login(fetchData.token);
+      toast.success("Inicio de sesión exitoso!");
       localStorage.removeItem("guest_cart");
       
-      toast.success("¡Inicio de sesión exitoso!");
-      
-      const payload = JSON.parse(atob(data.token.split(".")[1]));
-      redirectUser(payload.role);
+      // Decodificar el token para obtener el rol
+      const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
+      console.log("Payload del token:", payload);
+      // Redirigir según el rol
+      if (payload.user_role === 'Administrador') {
+        console.log("Redirigiendo a AdminDashboard");
+        navigate("/AdminDashboard");
+      } else {
+        navigate("/profile");
+        console.log("Redirigiendo a profile");
+      }
       
     } catch (error) {
+      toast.error("Error al iniciar sesión");
       console.error("Error:", error);
-      toast.error(error.message || "Error al iniciar sesión");
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  }
 
   const handleGoogleLogin = () => {
     const frontendUrl = window.location.origin;
