@@ -8,36 +8,71 @@ export default function Catalog() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Para la busqueda
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(import.meta.env.VITE_API_URL + "categories/");
+        if (!res.ok) throw new Error("Error al cargar categorías");
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error al obtener categorías:", error);
+      }
+    };
+  
+    fetchCategories();
+  }, []);
+
   useEffect(() => {
     setLoading(true);
     const url = import.meta.env.VITE_API_URL + "arrangements/";
-    console.log(url);
+  
     fetch(url)
       .then((response) => {
         if (!response.ok) throw new Error("Error en la respuesta");
         return response.json();
       })
       .then((data) => {
-        // Ordenar productos con descuento primero
-        const sortedProducts = [...data].sort((a, b) => 
-          (b.arr_discount || 0) - (a.arr_discount || 0)
-        );
-        setProducts(sortedProducts);
+        // Filtrar por nombre y categoría
+        let filteredProducts = data.filter((product) => {
+          const matchesName = product.arr_name.toLowerCase().includes(searchTerm.toLowerCase());
+          const matchesCategory = selectedCategory ? product.arr_id_cat === parseInt(selectedCategory) : true;
+          return matchesName && matchesCategory;
+        });
+  
+        // Ordenar: primero los que tienen descuento
+        filteredProducts.sort((a, b) => {
+          const aHasDiscount = a.arr_discount > 0;
+          const bHasDiscount = b.arr_discount > 0;
+  
+          if (aHasDiscount && !bHasDiscount) return -1;
+          if (!aHasDiscount && bHasDiscount) return 1;
+          return 0; // mantener el orden original si ambos tienen/no tienen descuento
+        });
+  
+        setProducts(filteredProducts);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Error al obtener productos:", error);
         setLoading(false);
       });
-  }, []);
+  }, [searchTerm, selectedCategory]);
 
   const handleCartUpdate = () => {
     setCartCount((prevCount) => prevCount + 1); // Incrementar contador del carrito
   };
 
   return (
+    
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-center"/>
+
 
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
@@ -47,6 +82,29 @@ export default function Catalog() {
           <p className="mt-3 max-w-2xl mx-auto font-Title text-gray-500 sm:mt-4">
             Descubre nuestros hermosos arreglos florales artesanales
           </p>
+        </div>
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+          <input
+            type="text"
+            placeholder="Buscar por nombre"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full md:w-1/2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-red-300"
+          />
+
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-red-300"
+          >
+            <option value="">Todas las categorías</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name_cat}
+              </option>
+            ))}
+          </select>
         </div>
 
         {loading ? (
