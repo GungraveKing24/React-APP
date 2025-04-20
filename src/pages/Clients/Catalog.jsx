@@ -3,6 +3,7 @@ import SmartSpinner from "../Both/SmartSpinner";
 import ProductCard from "./ProductCard";
 import { FaLeaf } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+import { useFetch } from "../../axios/customHooks/useFetch";
 
 export default function Catalog() {
   const [products, setProducts] = useState([]);
@@ -13,20 +14,10 @@ export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
+  const {data} = useFetch('/categories');
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(import.meta.env.VITE_API_URL + "categories/");
-        if (!res.ok) throw new Error("Error al cargar categorías");
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error al obtener categorías:", error);
-      }
-    };
-  
-    fetchCategories();
-  }, []);
+    if (data) setCategories(data);
+  }, [data]);
 
   useEffect(() => {
     setLoading(true);
