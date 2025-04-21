@@ -3,6 +3,7 @@ import SmartSpinner from "../Both/SmartSpinner";
 import ProductCard from "./ProductCard";
 import { FaLeaf } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+import { useFetch } from "../../Axios/customHooks/useFetch";
 
 export default function Catalog() {
   const [products, setProducts] = useState([]);
@@ -13,20 +14,10 @@ export default function Catalog() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
+  const {data} = useFetch('/categories');
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(import.meta.env.VITE_API_URL + "categories/");
-        if (!res.ok) throw new Error("Error al cargar categorías");
-        const data = await res.json();
-        setCategories(data);
-      } catch (error) {
-        console.error("Error al obtener categorías:", error);
-      }
-    };
-  
-    fetchCategories();
-  }, []);
+    if (data) setCategories(data);
+  }, [data]);
 
   useEffect(() => {
     setLoading(true);
@@ -63,10 +54,6 @@ export default function Catalog() {
         setLoading(false);
       });
   }, [searchTerm, selectedCategory]);
-
-  const handleCartUpdate = () => {
-    setCartCount((prevCount) => prevCount + 1); // Incrementar contador del carrito
-  };
 
   return (
     
@@ -114,7 +101,7 @@ export default function Catalog() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} onCartUpdate={handleCartUpdate} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
