@@ -1,10 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import { axiosInstance } from "../../Axios/Axios";
 
 export default function details() {
+    const { id } = useParams();
     const [activeTab, setActiveTab] = useState("descripcion");
+    const [product, setProduct] = useState({})
+    const [finalPrice, setFinalPride] = useState(0)
+
+    useEffect(() => {
+     async function fetchProduct(){
+      try {
+        const res = await axiosInstance.get(`/arrangements/${id}`)
+        setProduct(res.data)
+        setFinalPride(res.data.arr_discount
+          ? (res.data.arr_price * (1 - res.data.arr_discount / 100)).toFixed(2)
+          : res.data.arr_price.toFixed(2))
+      } catch (error) {
+        console.log(error)
+      }
+     }
+
+    fetchProduct()
+    }, [id])
+
     const [cantidad, setCantidad] = useState(1);
-  
     const incrementar = () => setCantidad(cantidad + 1);
     const disminuir = () => cantidad > 1 && setCantidad(cantidad - 1);
   
@@ -14,18 +35,15 @@ export default function details() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="flex justify-center">
               <img
-                src="https://via.placeholder.com/350"
-                alt="Producto"
+                src={product.arr_img_url}
+                alt={product.arr_name}
                 className="w-72 rounded-lg shadow-md"
               />
             </div>
   
             <div className="text-center md:text-left">
-              <h2 className="text-3xl font-bold text-gray-800">Chinese Cabbage</h2>
-              <span className="text-2xl text-[#EFB8C8] font-semibold">$17.28</span>
-              <p className="text-gray-600 mt-2">
-                Class aptent taciti sociosqu ad litora torquent per conubia nostra.
-              </p>
+              <h2 className="text-3xl font-bold text-gray-800">{product.arr_name}</h2>
+              <span className="text-2xl text-[#EFB8C8] font-semibold">${finalPrice}</span>
   
               <div className="flex items-center justify-center md:justify-start mt-4 space-x-4">
                 <button
@@ -67,7 +85,7 @@ export default function details() {
               </div>
   
               {activeTab === "descripcion" ? (
-                <p className="mt-4 text-gray-700">Detalles sobre el producto...</p>
+                <p className="mt-4 text-gray-700">{product.arr_description}</p>
               ) : (
                 <div className="mt-4 space-y-2 text-gray-700">
                   <p><strong>Kristin Watson:</strong> Hermoso ramo</p>

@@ -63,7 +63,7 @@ function App() {
               <Route path="/catalog" element={<Catalog />} />
               <Route path="/CheckoutForm" element={<Checkout/>} /> 
               <Route path="/ShoppingCart" element={<Cars/>} /> 
-              <Route path="/details" element={<Product_Detail/>} />
+              <Route path="/details/:id" element={<Product_Detail/>} />
 
               {/* Auth Users */}
               <Route element={<ProtectedRoute allowedRoles={['Cliente']} />}>

@@ -4,12 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { usePost } from "../../Axios/customHooks/usePost";
 import { axiosInstance } from "../../Axios/Axios";
 import { Toaster, toast } from "react-hot-toast";
-import { notifyCartChange } from "../../Axios/customHooks/useCartCount";
+import { useCart } from "../../context/CarContext"
 
 export default function ShoppingCart() {
   const [cart, setCart] = useState([]);
   const { postData } = usePost();
   const navigate = useNavigate()
+  const { updateCartCount } = useCart();
 
   useEffect(() => {
     HandleVerify();
@@ -114,7 +115,7 @@ export default function ShoppingCart() {
     }
   }
 
-  const removeItem = (id) => {
+  const removeItem = async (id) => {
     const token = localStorage.getItem('token');
     //User no Auth
     if (!token) {
@@ -123,11 +124,30 @@ export default function ShoppingCart() {
   
       localStorage.setItem("guest_cart", JSON.stringify(newCart));
       setCart(newCart);
-      notifyCartChange(newCart.length);
+      updateCartCount();
       return;
     }
 
-    //User Auth
+    //User Auth -> PROBLEMA DE CORS
+    try {
+      const res = await axiosInstance.delete(`/orders/cart/remove/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+      setCart((prevCart) =>
+        prevCart.map((item) =>
+          item.id === id
+            ? { ...item, details_quantity: item.details_quantity - 1 }
+            : item
+        )
+      );
+      console.log(res)
+      updateCartCount();
+    } catch(error) {
+      console.log("Error quitando del carrito")
+    }
   };
 
   const NoCart = () => {

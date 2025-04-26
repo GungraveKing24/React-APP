@@ -4,6 +4,7 @@ import { FaShoppingCart, FaLeaf } from "react-icons/fa";
 import { toast } from "react-hot-toast";
 import { useCart } from "../../context/CarContext"
 import { useAuth } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 export default function ProductCard({ product }) {
     const [loading, setLoading] = useState(false);
@@ -161,6 +162,7 @@ export default function ProductCard({ product }) {
 
                 <div className="mt-5 flex justify-between items-center">
                     <span className="text-xs text-gray-400">Disponible</span>
+                    <Link to={`/details/${product.id}`} className="p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110">Detalles</Link> 
                     <button
                         className={`p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 ${
                             loading

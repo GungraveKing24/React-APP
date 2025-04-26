@@ -1,11 +1,29 @@
+import axios from "axios";
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 
 function Order_History(){
-    const orders = [{"id": 1, "date": "15-02-2025", "total": "50", "status": "enviado"}, 
-        {"id": 2, "date": "15-02-2025", "total": "50", "status": "entregado"}, 
-        {"id": 3, "date": "15-02-2025", "total": "100", "status": "ordenado"}, 
-        {"id": 4, "date": "15-02-2025", "total": "150", "status": "enviado"}, 
-        {"id": 5, "date": "15-02-2025", "total": "200", "status": "entregado"}]
+  const [orders, setOrders] = useState([])
+
+  useEffect(() => {
+    async function fetchOrders(){
+      try {
+        const url = import.meta.env.VITE_API_URL + "orders/cart/";
+        const res = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        });
+        // Filtrar pedidos que NO sean del estado "carrito"
+        const filteredOrders = res.data.filter(order => order.order_state !== "carrito");
+        setOrders(filteredOrders);
+      } catch (error) {
+            console.error("Error al obtener los pedidos:", error);
+      }
+    }
+
+    fetchOrders()
+  }, [])
 
     return <>
         <div className="bg-white shadow-xl rounded-lg p-6">
@@ -24,9 +42,9 @@ function Order_History(){
               {orders.map((order) => (
                 <tr key={order.id} className="text-center">
                   <td className="border border-gray-300 px-4 py-2">{order.id}</td>
-                  <td className="border border-gray-300 px-4 py-2">{order.date}</td>
-                  <td className="border border-gray-300 px-4 py-2">${order.total}</td>
-                  <td className="border border-gray-300 px-4 py-2">{order.status}</td>
+                  <td className="border border-gray-300 px-4 py-2">{order.order_date}</td>
+                  <td className="border border-gray-300 px-4 py-2">${order.order_total}</td>
+                  <td className="border border-gray-300 px-4 py-2">{order.order_state}</td>
                   <td className="border border-gray-300 px-4 py-2 text-[#B9A387]"><Link to="/order_Details">Detalles</Link></td>
                 </tr>
               ))}
