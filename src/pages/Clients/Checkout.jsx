@@ -155,12 +155,19 @@ export default function CheckoutForm() {
       toast.error("El correo electrónico no es válido.");
       return;
     }
+
+    if (form.metodoPago === "Tarjeta") {
+      if (!form.cardName || !form.cardNumber || !form.cardExp || !form.cardCVC) {
+        toast.error("Por favor, completa todos los campos de la tarjeta.");
+        return;
+      }
+    }
   }
 
   const subtotal = cart.reduce((acc, item) => acc + item.details_price * item.details_quantity, 0);
 
   return (
-    <div className="max-w-5xl mx-auto p-10 bg-white shadow-lg rounded-2xl border border-gray-200 flex gap-10">
+    <div className="max-w-5xl mx-auto p-10 bg-white shadow-lg my-4 rounded-2xl border border-gray-200 flex gap-10">
       <Toaster /> {/* Asegúrate de que Toaster esté presente aquí */}
       
       <div className="flex-1">
@@ -220,6 +227,49 @@ export default function CheckoutForm() {
             onChange={handleChange}
             value={form.notas}
           ></textarea>
+          {form.metodoPago === "Tarjeta" && (
+            <div className="grid gap-4 bg-pink-50 p-4 rounded-lg shadow-inner">
+            <h3 className="text-lg font-semibold text-pink-700">Datos de Tarjeta</h3>
+            <input
+              type="text"
+              name="cardName"
+              placeholder="Nombre en la tarjeta"
+              className="input border border-gray-300 p-3 rounded-lg"
+              onChange={handleChange}
+              value={form.cardName || ""}
+              required
+            />
+            <input
+              type="text"
+              name="cardNumber"
+              placeholder="Número de tarjeta"
+              className="input border border-gray-300 p-3 rounded-lg"
+              onChange={handleChange}
+              value={form.cardNumber || ""}
+              required
+            />
+            <div className="flex gap-4">
+              <input
+                type="text"
+                name="cardExp"
+                placeholder="MM/AA"
+                className="input border border-gray-300 p-3 rounded-lg flex-1"
+                onChange={handleChange}
+                value={form.cardExp || ""}
+                required
+              />
+              <input
+                type="text"
+                name="cardCVC"
+                placeholder="CVC"
+                className="input border border-gray-300 p-3 rounded-lg flex-1"
+                onChange={handleChange}
+                value={form.cardCVC || ""}
+                required
+              />
+            </div>
+          </div>
+          )}
           <button
             type="submit"
             className="bg-[#EFB8C8] py-3 rounded-xl text-white font-semibold text-lg shadow-md hover:bg-pink-500 transition"
