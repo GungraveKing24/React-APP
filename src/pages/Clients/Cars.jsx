@@ -128,7 +128,7 @@ export default function ShoppingCart() {
       return;
     }
 
-    //User Auth -> PROBLEMA DE CORS
+    //User Auth
     try {
       const res = await axiosInstance.delete(`/orders/cart/remove/${id}`, {
       headers: {
@@ -136,13 +136,8 @@ export default function ShoppingCart() {
       },
     });
 
-      setCart((prevCart) =>
-        prevCart.map((item) =>
-          item.id === id
-            ? { ...item, details_quantity: item.details_quantity - 1 }
-            : item
-        )
-      );
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+
       console.log(res)
       updateCartCount();
     } catch(error) {

@@ -76,20 +76,16 @@ export default function CheckoutForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    //Validaciones
-    validateForm()
-    if(cart.length <= 0 ){
-      toast.error("No existe un carrito, agrega productos para comprar")
-      return
+  
+    validateForm();
+    if (cart.length <= 0) {
+      toast.error("No existe un carrito, agrega productos para comprar");
+      return;
     }
-    
-    // Evitar el envío múltiple de pedidos
+  
     if (isSubmitting) return;
-
-    setIsSubmitting(true); // Deshabilitar el envío hasta que se procese el pedido
-
-    // Datos del usuario
+    setIsSubmitting(true);
+  
     const orderData = {
       guest_name: form.nombre,
       guest_email: form.email,
@@ -101,48 +97,52 @@ export default function CheckoutForm() {
       })),
       pay_method: form.metodoPago,
     };
-
+  
     try {
       const token = localStorage.getItem("token");
-      if (token) {
-        // Si el usuario está logueado, enviar el pedido al backend
-        const response = await axiosInstance.post("/orders/cart/complete/", {}, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        toast.success("Pedido procesado con éxito");
-        console.log(response.data);
+      if (form.metodoPago === "Tarjeta") {
+        // PAGO CON TARJETA
+        const response = await axiosInstance.post("/payments/create/", orderData, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+  
+        const paymentUrl = response.data.payment_url;
+        if (paymentUrl) {
+          window.location.href = paymentUrl; // Redirecciona a Wompi
+        } else {
+          toast.error("No se pudo generar el pago");
+        }
       } else {
-        // Si es un invitado, envía los detalles del pedido al endpoint de invitado
-        const response = await axiosInstance.post("orders/guest/checkout", orderData)
-        toast.success("Pedido procesado con éxito como invitado");
-        console.log(response.data);
+        // CONTRA ENTREGA
+        if (token) {
+          await axiosInstance.post("/orders/cart/complete/", {}, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        } else {
+          await axiosInstance.post("orders/guest/checkout", orderData);
+        }
+  
+        toast.success("Pedido procesado con éxito");
+        localStorage.removeItem("guest_cart");
+        setCart([]);
+        notifyCartChange(0);
+        setForm({
+          nombre: "",
+          email: "",
+          departamento: "",
+          direccion: "",
+          telefono: "",
+          notas: "",
+          metodoPago: "Contra Entrega",
+        });
       }
-
-      // Limpiar datos del localStorage
-      localStorage.removeItem("guest_cart");
-
-      // Resetear el carrito y el formulario
-      setCart([]);
-      setForm({
-        nombre: "",
-        email: "",
-        departamento: "",
-        direccion: "",
-        telefono: "",
-        notas: "",
-        metodoPago: "Contra Entrega",
-      });
-
-      //Notificar al carrito
-      notifyCartChange(0)
-
     } catch (error) {
       console.error("Error al enviar el pedido:", error);
       toast.error("Hubo un problema al procesar tu pedido");
     } finally {
-      setIsSubmitting(false); // Volver a habilitar el botón
+      setIsSubmitting(false);
     }
-  };
+  }; 
 
   function validateForm(){
     if (!form.nombre || !form.email || !form.departamento || !form.direccion || !form.telefono) {
