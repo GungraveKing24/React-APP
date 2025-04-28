@@ -13,6 +13,10 @@ export default function CheckoutForm() {
     telefono: "",
     notas: "",
     metodoPago: "Contra Entrega",
+    cardName: "",
+    cardNumber: "",
+    cardExp: "",
+    cardCVC: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío
 
@@ -96,6 +100,7 @@ export default function CheckoutForm() {
         details_quantity: item.details_quantity,
       })),
       pay_method: form.metodoPago,
+      notes: form.notas,
     };
   
     try {
@@ -107,6 +112,7 @@ export default function CheckoutForm() {
         });
   
         const paymentUrl = response.data.payment_url;
+
         if (paymentUrl) {
           window.location.href = paymentUrl; // Redirecciona a Wompi
         } else {
