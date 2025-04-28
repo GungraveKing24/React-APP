@@ -155,7 +155,7 @@ export default function ProductCard({ product }) {
                         </>
                     ) : (
                         <span className="text-xl font-Title text-gray-900">
-                            ${finalPrice}
+                ${finalPrice}
                         </span>
                     )}
                 </div>
