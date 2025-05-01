@@ -1,130 +1,64 @@
-import { useState } from 'react';
-import { FaUsers, FaSearch, FaUserEdit, FaTrash, FaRegEnvelope, FaPhone, FaRegCalendarAlt, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
+import { useEffect, useMemo, useState } from 'react';
+import { FaUsers, FaSearch, FaRegEnvelope, FaPhone, FaRegCalendarAlt } from 'react-icons/fa';
+import { axiosInstance } from '../../Axios/Axios';
 
-// Datos de ejemplo de usuarios
-const initialUsers = [
-  {
-    id: 1,
-    name: "María González",
-    email: "maria@example.com",
-    phone: "+1 234 567 8901",
-    joinDate: "15/03/2023",
-    orders: 5,
-    totalSpent: "$450.00",
-    status: "active"
-  },
-  {
-    id: 2,
-    name: "Juan Pérez",
-    email: "juan@example.com",
-    phone: "+1 345 678 9012",
-    joinDate: "22/05/2023",
-    orders: 2,
-    totalSpent: "$180.50",
-    status: "active"
-  },
-  {
-    id: 3,
-    name: "Ana Rodríguez",
-    email: "ana@example.com",
-    phone: "+1 456 789 0123",
-    joinDate: "10/07/2023",
-    orders: 8,
-    totalSpent: "$720.25",
-    status: "active"
-  },
-  {
-    id: 4,
-    name: "Carlos Sánchez",
-    email: "carlos@example.com",
-    phone: "+1 567 890 1234",
-    joinDate: "03/09/2023",
-    orders: 1,
-    totalSpent: "$75.80",
-    status: "inactive"
-  },
-];
+// HighlightText.jsx
+export function HighlightText({ text, highlight }) {
+  if (!highlight.trim()) {
+    return text;
+  }
+
+  const regex = new RegExp(`(${highlight})`, 'gi');
+  const parts = text.split(regex);
+
+  return parts.map((part, index) =>
+    part.toLowerCase() === highlight.toLowerCase() ? (
+      <mark
+        key={index}
+        className="bg-red-200 text-red-800 rounded px-1 py-0.5"
+      >
+        {part}
+      </mark>
+    ) : (
+      <span key={index}>{part}</span>
+    )
+  );
+}
 
 export default function UserManagement() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [userToDelete, setUserToDelete] = useState(null);
   const usersPerPage = 5;
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const response = await axiosInstance.get("/Users", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+      setUsers(response.data)
+    }
+    fetchUsers()
+  }, []);
+
   // Filtrar usuarios
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return users; // Si searchTerm está vacío, mostrar todos
+
+    return users.filter(user => 
+      (user.user_name?.toLowerCase().includes(term)) ||
+      (user.user_email?.toLowerCase().includes(term))
+    );
+  }, [users, searchTerm]);
 
   // Paginación
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-
-  // Cambiar estado del usuario
-  const toggleUserStatus = (userId) => {
-    setUsers(users.map(user =>
-      user.id === userId 
-        ? { ...user, status: user.status === 'active' ? 'inactive' : 'active' } 
-        : user
-    ));
-  };
-
-  // Preparar eliminación de usuario
-  const confirmDelete = (user) => {
-    setUserToDelete(user);
-    setShowDeleteModal(true);
-  };
-
-  // Cancelar eliminación
-  const cancelDelete = () => {
-    setShowDeleteModal(false);
-    setUserToDelete(null);
-  };
-
-  // Eliminar usuario después de confirmación
-  const handleDelete = () => {
-    if (userToDelete) {
-      setUsers(users.filter(user => user.id !== userToDelete.id));
-      setShowDeleteModal(false);
-      setUserToDelete(null);
-      // Resetear a la primera página si es necesario
-      if (currentUsers.length === 1 && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-    }
-  };
-
-  // Obtener icono según estado
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case "Procesando":
-        return <FaInfoCircle className="text-yellow-500 text-xl" />;
-      case "En camino":
-        return <FaTruck className="text-blue-500 text-xl" />;
-      case "Completado":
-        return <FaCheckCircle className="text-green-500 text-xl" />;
-      case "Cancelado":
-        return <FaTimesCircle className="text-red-500 text-xl" />;
-      default:
-        return <FaInfoCircle className="text-gray-500 text-xl" />;
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "active":
-        return "bg-green-100 text-green-800";
-      case "inactive":
-        return "bg-gray-100 text-gray-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white p-6 font-title">
@@ -168,24 +102,6 @@ export default function UserManagement() {
             <h3 className="text-gray-500 text-sm">Total Usuarios</h3>
             <p className="text-2xl font-Title text-[#B9A387]">{users.length}</p>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-            <h3 className="text-gray-500 text-sm">Usuarios Activos</h3>
-            <p className="text-2xl font-Title text-green-600">
-              {users.filter(u => u.status === 'active').length}
-            </p>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-            <h3 className="text-gray-500 text-sm">Pedidos Totales</h3>
-            <p className="text-2xl font-Title text-blue-600">
-              {users.reduce((sum, user) => sum + user.orders, 0)}
-            </p>
-          </div>
-          <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-            <h3 className="text-gray-500 text-sm">Ingresos Totales</h3>
-            <p className="text-2xl font-Title text-amber-600">
-              ${users.reduce((sum, user) => sum + parseFloat(user.totalSpent.replace('$', '')), 0).toFixed(2)}
-            </p>
-          </div>
         </div>
 
         {/* Tabla de Usuarios */}
@@ -197,24 +113,22 @@ export default function UserManagement() {
                   <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Usuario</th>
                   <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Contacto</th>
                   <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Historial</th>
-                  <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Estado</th>
-                  <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-100">
                 {currentUsers.length > 0 ? (
                   currentUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-rose-50 transition-colors">
+                    <tr key={user.user_name} className="hover:bg-rose-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-800">
-                            {user.name.charAt(0)}
+                            {user.user_name.charAt(0)}
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-Title text-gray-900">{user.name}</div>
+                            <HighlightText text={user.user_name} highlight={searchTerm}/>
                             <div className="text-sm text-gray-500 flex items-center">
                               <FaRegCalendarAlt className="mr-1" />
-                              {user.joinDate}
+                              {user.user_register_date}
                             </div>
                           </div>
                         </div>
@@ -222,37 +136,15 @@ export default function UserManagement() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex items-center">
                           <FaRegEnvelope className="mr-2 text-rose-500" />
-                          {user.email}
+                          <HighlightText text={user.user_email} highlight={searchTerm}/>
                         </div>
                         <div className="text-sm text-gray-500 flex items-center mt-1">
                           <FaPhone className="mr-2 text-rose-500" />
-                          {user.phone}
+                          {user.user_number}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {user.orders} {user.orders === 1 ? 'pedido' : 'pedidos'}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          Total: {user.totalSpent}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${getStatusColor(user.status)}`}>
-                          {user.status === 'active' ? 'Activo' : 'Inactivo'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-3">
-                          <button 
-                            onClick={() => confirmDelete(user)}
-                            className="text-rose-600 hover:text-rose-800"
-                            title="Eliminar"
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
+                        <p>Historial</p>
                       </td>
                     </tr>
                   ))
@@ -314,41 +206,6 @@ export default function UserManagement() {
           )}
         </div>
 
-        {showDeleteModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center">
-                  <FaExclamationTriangle className="text-yellow-500 text-2xl mr-3" />
-                  <h3 className="text-xl font-Title text-gray-800">Confirmar eliminación</h3>
-                </div>
-                <button 
-                  onClick={cancelDelete}
-                  className="text-gray-400 hover:text-gray-500"
-                >
-                  <FaTimes />
-                </button>
-              </div>
-              <p className="mb-6 text-gray-700">
-                ¿Estás seguro que deseas eliminar permanentemente al usuario <span className="font-semibold">{userToDelete?.name}</span>? Esta acción no se puede deshacer.
-              </p>
-              <div className="flex justify-end space-x-4">
-                <button
-                  onClick={cancelDelete}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={handleDelete}
-                  className="px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors"
-                >
-                  Confirmar Eliminación
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
