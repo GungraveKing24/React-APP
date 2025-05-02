@@ -9,6 +9,8 @@ export default function Navbar() {
   const { cartCount, updateCartCount } = useCart(); // Asegúrate de obtener updateCartCount del contexto
   const navigate = useNavigate();
 
+  const token = localStorage.getItem("token");
+
   // Escuchar cambios en el localStorage para guest cart
   useEffect(() => {
     const handleStorageChange = () => {
@@ -96,30 +98,35 @@ export default function Navbar() {
           </ul>
 
           {/* Carrito de compras */}
-          <div className="relative flex justify-center md:justify-start items-center">
-            <Link 
-              to="/ShoppingCart" 
-              className="relative text-gray-700 hover:text-gray-600 flex items-center"
-            >
-              <svg 
-                className="w-6 h-6" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
+          
+          {/* Si el usuario es admin no mostrar el carrito */}
+          {/* Carrito de compras - No mostrar para Administrador */}
+          {user?.user_role !== 'Administrador' && (
+            <div className="relative flex justify-center md:justify-start items-center">
+              <Link 
+                to="/ShoppingCart" 
+                className="relative text-gray-700 hover:text-gray-600 flex items-center"
               >
-                <path 
-                  d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.70711 15.2929C4.07714 15.9229 4.52331 17 5.41421 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM9 19C9 20.1046 8.10457 21 7 21C5.89543 21 5 20.1046 5 19C5 17.8954 5.89543 17 7 17C8.10457 17 9 17.8954 9 19Z" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
-                {cartCount}
-              </span>
-            </Link>
-          </div>
+                <svg 
+                  className="w-6 h-6" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path 
+                    d="M3 3H5L5.4 5M7 13H17L21 5H5.4M7 13L5.4 5M7 13L4.70711 15.2929C4.07714 15.9229 4.52331 17 5.41421 17H17M17 17C15.8954 17 15 17.8954 15 19C15 20.1046 15.8954 21 17 21C18.1046 21 19 20.1046 19 19C19 17.8954 18.1046 17 17 17ZM9 19C9 20.1046 8.10457 21 7 21C5.89543 21 5 20.1046 5 19C5 17.8954 5.89543 17 7 17C8.10457 17 9 17.8954 9 19Z" 
+                    stroke="currentColor" 
+                    strokeWidth="2" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
+                  {cartCount}
+                </span>
+              </Link>
+            </div>
+          )}
 
           {/* Botones de Login y Sign Up o User */}
           {user ? (

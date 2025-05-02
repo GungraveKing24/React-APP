@@ -36,8 +36,8 @@ export default function AdminDashboard() {
       </button>
 
       <div
-        className={`fixed left-6 top-28 w-64 bg-gradient-to-b from-[#EFB8C8] to-[#d7b788] p-6 shadow-2xl rounded-lg transform transition-transform duration-300 ${
-          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed left-0 top-28 w-64 bg-gradient-to-b from-[#EFB8C8] to-[#d7b788] p-6 shadow-2xl rounded-lg transform transition-transform duration-300 ${
+          isMenuOpen ? "translate-x-2 translate-y-5" : "-translate-x-full"
         }`}
       >
         <ul className="space-y-4">
@@ -97,16 +97,18 @@ export default function AdminDashboard() {
         </ul>
       </div>
 
-      <div className="flex-1 flex flex-col items-center p-10 mt-16">
-        <h1 className="text-4xl font-Title text-[#2D3436] mb-8">ADMINISTRACIÓN</h1>
-        <div className="grid grid-cols-3 gap-8 p-8 bg-white rounded-3xl shadow-2xl border border-gray-200">
+      {/* Contenido principal */}
+      <div className="flex-1 flex flex-col items-center p-4 md:p-10 mt-16 md:mt-0">
+        <h1 className="text-2xl md:text-4xl font-Title text-[#2D3436] mb-6 md:mb-8">ADMINISTRACIÓN</h1>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 w-full max-w-6xl p-4 md:p-8 bg-white rounded-xl md:rounded-3xl shadow-lg md:shadow-2xl border border-gray-200">
           {menuItems.map((item, index) => (
-            <Link to={item.link} key={index}>
+            <Link to={item.link} key={index} className="w-full">
               <div
-                className={`flex flex-col items-center justify-center w-60 h-60 ${item.bg} rounded-2xl shadow-lg hover:shadow-xl transition-all cursor-pointer p-6 border border-gray-200 hover:scale-105`}
+                className={`flex flex-col items-center justify-center w-full h-40 md:h-60 ${item.bg} rounded-xl md:rounded-2xl shadow-md hover:shadow-lg transition-all cursor-pointer p-4 md:p-6 border border-gray-200 hover:scale-[1.02]`}
               >
-                <div className="mb-4">{item.icon}</div>
-                <span className="text-[#2D3436] font-semibold text-lg text-center">{item.label}</span>
+                <div className="mb-2 md:mb-4">{item.icon}</div>
+                <span className="text-[#2D3436] font-semibold text-base md:text-lg text-center">{item.label}</span>
               </div>
             </Link>
           ))}

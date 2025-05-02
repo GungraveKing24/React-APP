@@ -17,7 +17,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth()
 
- 
+
   useEffect(() => {
     if(token){
       try {
@@ -117,8 +117,8 @@ export default function Login() {
     const frontendUrl = window.location.origin;
     const callbackUrl = `${frontendUrl}/google/callback`;
     const encodedCallback = encodeURIComponent(encodeURIComponent(callbackUrl));
-    const url = `https://fastapi-app-production-f08f.up.railway.app/google/login?callback_url=${encodedCallback}`;
-    
+    const url = import.meta.env.VITE_API_URL + "google/login?callback_url=" + encodedCallback;
+
     localStorage.removeItem("guest_cart");
     window.location.href = url;
   };
@@ -136,7 +136,7 @@ export default function Login() {
       />
       
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg overflow-hidden border border-pink-100">
-       
+
         <div className="bg-[#EFB8C8] p-6 text-center">
           <img src={Logo} alt="Logo" className="h-16 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-white">Iniciar Sesión</h1>
@@ -164,7 +164,6 @@ export default function Login() {
             {errors.user_email && <p className="mt-1 text-sm text-red-500">{errors.user_email}</p>}
           </div>
 
-       
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-sm font-Title text-gray-700">Contraseña</label>
@@ -195,7 +194,6 @@ export default function Login() {
             {errors.user_password && <p className="mt-1 text-sm text-red-500">{errors.user_password}</p>}
           </div>
 
-   
           <button
             type="submit"
             disabled={isSubmitting}

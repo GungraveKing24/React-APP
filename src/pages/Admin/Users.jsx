@@ -1,62 +1,34 @@
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import { FaUsers, FaSearch, FaUserEdit, FaTrash, FaRegEnvelope, FaPhone, FaRegCalendarAlt, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
-
-// Datos de ejemplo de usuarios
-const initialUsers = [
-  {
-    id: 1,
-    name: "María González",
-    email: "maria@example.com",
-    phone: "+1 234 567 8901",
-    joinDate: "15/03/2023",
-    orders: 5,
-    totalSpent: "$450.00",
-    status: "active"
-  },
-  {
-    id: 2,
-    name: "Juan Pérez",
-    email: "juan@example.com",
-    phone: "+1 345 678 9012",
-    joinDate: "22/05/2023",
-    orders: 2,
-    totalSpent: "$180.50",
-    status: "active"
-  },
-  {
-    id: 3,
-    name: "Ana Rodríguez",
-    email: "ana@example.com",
-    phone: "+1 456 789 0123",
-    joinDate: "10/07/2023",
-    orders: 8,
-    totalSpent: "$720.25",
-    status: "active"
-  },
-  {
-    id: 4,
-    name: "Carlos Sánchez",
-    email: "carlos@example.com",
-    phone: "+1 567 890 1234",
-    joinDate: "03/09/2023",
-    orders: 1,
-    totalSpent: "$75.80",
-    status: "inactive"
-  },
-];
+import { axiosInstance } from '../../Axios/Axios';
 
 export default function UserManagement() {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const usersPerPage = 5;
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  async function fetchUsers() {
+      const token = localStorage.getItem("token");
+      const response = await axiosInstance.get("/Users", {
+          headers: {
+              Authorization: `Bearer ${token}`,
+          }
+      })  
+      setUsers(response.data)
+  }
+
   // Filtrar usuarios
   const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    (user.user_name && user.user_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (user.user_email && user.user_email.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   // Paginación
@@ -117,14 +89,16 @@ export default function UserManagement() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "active":
+      case true:
         return "bg-green-100 text-green-800";
-      case "inactive":
+      case false:
         return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  console.log(users)
 
   return (
     <div className="min-h-screen bg-white p-6 font-title">
@@ -171,7 +145,7 @@ export default function UserManagement() {
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
             <h3 className="text-gray-500 text-sm">Usuarios Activos</h3>
             <p className="text-2xl font-Title text-green-600">
-              {users.filter(u => u.status === 'active').length}
+              { users.filter(user => user.user_account_state === true).length}
             </p>
           </div>
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
@@ -183,7 +157,7 @@ export default function UserManagement() {
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
             <h3 className="text-gray-500 text-sm">Ingresos Totales</h3>
             <p className="text-2xl font-Title text-amber-600">
-              ${users.reduce((sum, user) => sum + parseFloat(user.totalSpent.replace('$', '')), 0).toFixed(2)}
+              {/* ${users.reduce((sum, user) => sum + parseFloat(user.totalSpent.replace('$', '')), 0).toFixed(2)} */}
             </p>
           </div>
         </div>
@@ -208,13 +182,13 @@ export default function UserManagement() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-800">
-                            {user.name.charAt(0)}
+                            {user.user_name.charAt(0)}
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-Title text-gray-900">{user.name}</div>
+                            <div className="text-sm font-Title text-gray-900">{user.user_name}</div>
                             <div className="text-sm text-gray-500 flex items-center">
                               <FaRegCalendarAlt className="mr-1" />
-                              {user.joinDate}
+                              {user.user_register_date}
                             </div>
                           </div>
                         </div>
@@ -222,11 +196,11 @@ export default function UserManagement() {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 flex items-center">
                           <FaRegEnvelope className="mr-2 text-rose-500" />
-                          {user.email}
+                          {user.user_email}
                         </div>
                         <div className="text-sm text-gray-500 flex items-center mt-1">
                           <FaPhone className="mr-2 text-rose-500" />
-                          {user.phone}
+                          {user.user_number}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -234,13 +208,14 @@ export default function UserManagement() {
                           {user.orders} {user.orders === 1 ? 'pedido' : 'pedidos'}
                         </div>
                         <div className="text-sm text-gray-500">
-                          Total: {user.totalSpent}
+                          {/* Total: {user.totalSpent} */}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                          ${getStatusColor(user.status)}`}>
-                          {user.status === 'active' ? 'Activo' : 'Inactivo'}
+                          ${getStatusColor(user.user_account_state)}`}>
+                          
+                          {user.user_account_state === true ? 'Activo' : 'Inactivo'}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

@@ -19,9 +19,10 @@ export default function SalesHistory(){
     }, [location.pathname]);
 
     async function fetchOrders() {
-        const response = await axiosInstance.get("/orders/admin/cart", {
+        const token = localStorage.getItem("token");
+        const response = await axiosInstance.get("/orders/admin/cart/", {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`
+                Authorization: `Bearer ${token}`,
             }
         })
         setOrders(response.data)
@@ -40,28 +41,26 @@ export default function SalesHistory(){
 
     const getStatusColor = (status) => {
         switch (status) {
-          case "Procesando":
-            return "bg-yellow-100 text-yellow-800";
-          case "En camino":
-            return "bg-blue-100 text-blue-800";
-          case "Completado":
-            return "bg-green-100 text-green-800";
-          case "Cancelado":
-            return "bg-red-100 text-red-800";
-          default:
-            return "bg-gray-100 text-gray-800";
+            case "Procesando":
+                return "bg-yellow-100 text-yellow-800";
+            case "En camino":
+                return "bg-blue-100 text-blue-800";
+            case "Completado":
+                return "bg-green-100 text-green-800";
+            case "Cancelado":
+                return "bg-red-100 text-red-800";
+            default:
+                return "bg-gray-100 text-gray-800";
         }
     };
 
     const handleStatusChange = (status) => {
         setStatusFilter((prev) =>
-          prev.includes(status)
-            ? prev.filter((s) => s !== status) // Si ya estaba, lo quitamos
-            : [...prev, status] // Si no estaba, lo agregamos
+            prev.includes(status)
+                ? prev.filter((s) => s !== status) // Si ya estaba, lo quitamos
+                : [...prev, status] // Si no estaba, lo agregamos
         );
     };
-
-    console.log(orders)
 
     return<>
     <div className="min-h-screen bg-white p-6 font-title">
@@ -201,26 +200,26 @@ export default function SalesHistory(){
                     </div>
                 )}
             </div>
-          
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-                <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
-                <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
+            
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+                    <h3 className="text-gray-500 font-Title text-sm">Total Pedidos</h3>
+                    <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
+                </div>
+                <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+                <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>
+                <p className="text-2xl font-Title text-yellow-600">
+                    {orders.filter(o => o.status === "Procesando").length}
+                </p>
+                </div>
+                <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+                <h3 className="text-gray-500 font-Title text-sm">En Camino</h3>
+                <p className="text-2xl font-Title text-blue-600">
+                    {orders.filter(o => o.status === "En camino").length}
+                </p>
+                </div>
             </div>
-            <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-              <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>
-              <p className="text-2xl font-Title text-yellow-600">
-                {orders.filter(o => o.status === "Procesando").length}
-              </p>
-            </div>
-            <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-              <h3 className="text-gray-500 font-Title text-sm">En Camino</h3>
-              <p className="text-2xl font-Title text-blue-600">
-                {orders.filter(o => o.status === "En camino").length}
-              </p>
-            </div>
-          </div>
         </div>
     </div>
-    </>
+</>
 }

@@ -15,6 +15,7 @@ import Catalog from "./pages/Clients/Catalog.jsx"
 import Product_Detail from "./pages/Clients/Product_Detail.jsx"
 import Cars from "./pages/Clients/Cars.jsx"
 import Checkout from "./pages/Clients/Checkout.jsx"
+import Payment from "./pages/Both/payment.jsx"
 import Footer from './pages/Both/Footer.jsx';
 
 {/* Auth Users */}
@@ -61,7 +62,8 @@ function App() {
               <Route path="/policies" element={<Policiaes />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/catalog" element={<Catalog />} />
-              <Route path="/CheckoutForm" element={<Checkout/>} /> 
+              <Route path="/payment" element={<Checkout/>} />
+              <Route path="/CheckoutForm" element={<Payment/>} /> 
               <Route path="/ShoppingCart" element={<Cars/>} /> 
               <Route path="/details/:id" element={<Product_Detail/>} />
 

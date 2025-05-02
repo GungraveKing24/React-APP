@@ -78,6 +78,25 @@ export default function CheckoutForm() {
     }));
   };
 
+  const handlePayment = async () => {
+    try {
+      const response = await axios.post('/payments/create/', orderData);
+      
+      if (response.data.payment_url) {
+        // Opción 1: Redirección directa
+        window.location.href = response.data.payment_url;
+        
+        // Opción 2: Abrir en nueva pestaña (mejor para UX)
+        window.open(response.data.payment_url, '_blank');
+      } else {
+        toast.error('No se pudo generar el enlace de pago');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error(error.response?.data?.message || 'Error al procesar el pago');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
