@@ -10,50 +10,52 @@ const Statistics = () => {
   const [monthlySales, setMonthlySales] = useState([])
   const [weeklySales, setWeeklySale] = useState([])
   const [cancelledOrders, setCancelledOrders] = useState([])
+  const [users, setUsers] = useState([])
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    fetchMonth()
+    fetchWeek()
+    fetchCancelled()
+    fetchUsers()
+  }, []);
 
-    const fetchEverything = async () => {
-      try {
-        const requests = [
-          axiosInstance.get("/month-sales", { signal }),
-          axiosInstance.get("/week-sales", { signal }),
-          axiosInstance.get("/cancelled-orders", { signal }),
-        ];
-
-        const results = await Promise.allSettled(requests);
-
-        if (results[0].status === "fulfilled") setMonthlySales(results[0].value.data);
-        if (results[1].status === "fulfilled") setWeeklySale(results[1].value.data);
-        if (results[2].status === "fulfilled") setCancelledOrders(results[2].value.data);
-
-        results.forEach((result, i) => {
-          if (result.status === "rejected") {
-            console.error(`Request ${i + 1} error:`, result.reason);
-          }
-        });
-      } catch (err) {
-        if (err.name === "CanceledError") {
-          console.log("Request cancelled");
-        } else {
-          console.error("Unexpected error:", err);
+  async function fetchMonth(){
+    const response = await axiosInstance.get("/stats/month-sales", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
         }
-      }
-    };
+      })
+    setMonthlySales(response.data)
+  }
 
-    fetchEverything();
+  async function fetchWeek(){
+      const response = await axiosInstance.get("/stats/week-sales", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+    setWeeklySale(response.data)
+  }
 
-    return () => {
-      controller.abort();
-    };
-  }, []); console.log(monthlySales, weeklySales, cancelledOrders)
+  async function fetchCancelled(){
+      const response = await axiosInstance.get("/stats/cancelled-orders", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+    setCancelledOrders(response.data)
+  }
+
+  async function fetchUsers(){
+      const response = await axiosInstance.get("/Users", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+    setUsers(response.data)
+  }
   
   const estadisticas = {
-    ventasTotales: 12500,
-    pedidosMes: 84,
-    clientesNuevos: 23,
     floresVendidas: 542,
     categoriasPopulares: [
       { nombre: 'Rosas', porcentaje: 45 },
@@ -89,8 +91,8 @@ const Statistics = () => {
         <div className="bg-gradient-to-br from-rose-200 to- rounded-lg shadow-lg p-6 text-rose-900">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold">Ventas Totales</p>
-              <p className="text-2xl font-bold">${estadisticas.ventasTotales.toLocaleString()}</p>
+              <p className="text-sm font-semibold">Ganancia este mes</p>
+              <p className="text-2xl font-bold">${monthlySales.monto_total}</p>
             </div>
             <FiDollarSign className="text-4xl opacity-70" />
           </div>
@@ -100,7 +102,7 @@ const Statistics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold">Pedidos este Mes</p>
-              <p className="text-2xl font-bold">{estadisticas.pedidosMes}</p>
+              <p className="text-2xl font-bold">{monthlySales.cantidad_pedidos}</p>
             </div>
             <FiShoppingCart className="text-4xl opacity-70" />
           </div>
@@ -109,8 +111,8 @@ const Statistics = () => {
         <div className="bg-gradient-to-br from-rose-200 to-rose-300 rounded-lg shadow-lg p-6 text-rose-900">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold">Clientes Nuevos</p>
-              <p className="text-2xl font-bold">{estadisticas.clientesNuevos}</p>
+              <p className="text-sm font-semibold">Clientes Registrados</p>
+              <p className="text-2xl font-bold">{users.length}</p>
             </div>
             <FiUsers className="text-4xl opacity-70" />
           </div>
@@ -119,10 +121,40 @@ const Statistics = () => {
         <div className="bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg shadow-lg p-6 text-amber-900">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold">Flores Vendidas</p>
-              <p className="text-2xl font-bold">{estadisticas.floresVendidas}</p>
+              <p className="text-sm font-semibold">Vistas a la pagina</p>
+              <p className="text-2xl font-bold">100,000,000</p>
             </div>
             <FiPieChart className="text-4xl opacity-70" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-rose-200 to- rounded-lg shadow-lg p-6 text-rose-900">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">Ganancia esta semana</p>
+              <p className="text-2xl font-bold">${weeklySales.monto_total}</p>
+            </div>
+            <FiDollarSign className="text-4xl opacity-70" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg shadow-lg p-6 text-amber-900">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">Pedidos esta semana</p>
+              <p className="text-2xl font-bold">{weeklySales.cantidad_pedidos}</p>
+            </div>
+            <FiPieChart className="text-4xl opacity-70" />
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-br from-rose-200 to-rose-300 rounded-lg shadow-lg p-6 text-rose-900">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">Pedidos cancelados</p>
+              <p className="text-2xl font-bold">{cancelledOrders.total}</p>
+            </div>
+            <FiShoppingCart className="text-4xl opacity-70" />
           </div>
         </div>
       </div>
@@ -149,16 +181,20 @@ const Statistics = () => {
         </div>
 
         <div className="bg-white rounded-lg shadow-lg p-6 border border-rose-200">
-          <h2 className="text-xl font-semibold text-rose-900 mb-4">Tendencia Mensual de Ventas</h2>
-          <div className="flex items-end space-x-2 h-64">
-            {estadisticas.tendenciaMensual.map((mes, index) => (
-              <div key={index} className="flex flex-col items-center flex-1">
-                <div 
-                  className="w-full bg-gradient-to-t from-rose-400 to-rose-300 rounded-t-lg"
-                  style={{ height: `${(mes.ventas / 7000) * 100}%` }}
-                ></div>
-                <span className="text-xs mt-2 text-rose-900">{mes.mes}</span>
-                <span className="text-xs text-amber-800">${mes.ventas}</span>
+          <h2 className="text-xl font-semibold text-rose-900 mb-4">Arreglos Populares</h2>
+          <div className="space-y-4">
+            {estadisticas.categoriasPopulares.map((categoria, index) => (
+              <div key={index}>
+                <div className="flex justify-between mb-1">
+                  <span className="text-sm font-medium text-rose-800">{categoria.nombre}</span>
+                  <span className="text-sm font-medium text-amber-800">{categoria.porcentaje}%</span>
+                </div>
+                <div className="w-full bg-rose-100 rounded-full h-2.5">
+                  <div 
+                    className="bg-gradient-to-r from-rose-400 to-amber-600 h-2.5 rounded-full" 
+                    style={{ width: `${categoria.porcentaje}%` }}
+                  ></div>
+                </div>
               </div>
             ))}
           </div>
