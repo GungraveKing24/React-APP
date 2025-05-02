@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useLocation } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaTruck, FaInfoCircle, FaBell, FaRegBell } from "react-icons/fa";
 
 const notificationsData = [
@@ -57,6 +58,14 @@ export default function OrderNotifications() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white  p-6">
       <div className="max-w-5xl mx-auto">
+      <Link to="/AdminDashboard" className="flex items-center text-[#B9A387] hover:text-[#9c8568] transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span className="ml-1 font-Title">Volver</span>
+            </Link>
+
+        
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-3xl font-Title text-[#B9A387] flex items-center">

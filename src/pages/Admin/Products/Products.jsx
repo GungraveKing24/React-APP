@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import SmartSpinner from "../../Both/SmartSpinner";
 import { FaTrash, FaPlus, FaEdit, FaUndo } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
+
 
 export default function Catalog2() {
   const [products, setProducts] = useState([]);
@@ -85,6 +87,12 @@ export default function Catalog2() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
+      <Link to="/AdminDashboard" className="flex items-center text-[#B9A387] hover:text-[#9c8568] transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span className="ml-1 font-Title">Volver</span>
+            </Link>
         <h1 className="text-3xl font-bold text-gray-800">Catálogo de Productos</h1>
         <button
           onClick={() => navigate("/CreateProduct")}

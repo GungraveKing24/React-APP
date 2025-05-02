@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { FiDollarSign, FiShoppingCart, FiUsers, FiPieChart, FiArrowLeft } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../../Axios/Axios';
+import { Link } from "react-router-dom";
+
 
 const Statistics = () => {
   const navigate = useNavigate();
@@ -72,13 +74,12 @@ const Statistics = () => {
   return (
     <div className="min-h-screen bg-white p-6">
         <div className="flex items-center mb-8">
-        <button
-            onClick={() => navigate("/AdminDashboard")}
-            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors duration-200"
-        >
-            <FiArrowLeft className="mr-2" />
-            Volver
-        </button>
+        <Link to="/AdminDashboard" className="flex items-center text-[#B9A387] hover:text-[#9c8568] transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span className="ml-1 font-Title">Volver</span>
+            </Link>
         
         </div>
         <h1 className="text-3xl font-bold text-rose-900">Estadísticas de la Floristería</h1>

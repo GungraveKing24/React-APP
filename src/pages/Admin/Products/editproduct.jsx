@@ -4,6 +4,8 @@ import { FaSave, FaTimes, FaUpload } from "react-icons/fa";
 import Swal from "sweetalert2";
 import SmartSpinner from "../../Both/SmartSpinner";
 import { axiosInstance } from "../../../Axios/Axios";
+import { Link } from "react-router-dom";
+
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -146,12 +148,12 @@ export default function EditProduct() {
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800">Editar Producto</h1>
-        <button
-          onClick={() => navigate("/Catalog2")}
-          className="flex items-center text-gray-600 hover:text-gray-800"
-        >
-          <FaTimes className="mr-1" /> Volver
-        </button>
+        <Link to="/AdminDashboard" className="flex items-center text-[#B9A387] hover:text-[#9c8568] transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span className="ml-1 font-Title">Volver</span>
+            </Link>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

@@ -92,7 +92,7 @@ function ModalCategories({category, toastEvent}) {
     <div className="p-4">
       <button
         onClick={openModal}
-        className={category ? "rounded-md bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-blue-600" 
+        className={category ? "rounded-md bg-[#EFB8C8] px-4 py-2 text-sm font-semibold text-white shadow-md hover:bg-[#e75cad]" 
             : "rounded-full bg-pink-500 px-4 py-2 text-white text-lg shadow-md hover:bg-pink-400"}
       >
         {category ? "Editar" : "+"}
@@ -128,7 +128,7 @@ function ModalCategories({category, toastEvent}) {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              className="px-4 py-2 bg-[#EFB8C8]  text-white rounded hover:bg-green-600"
             >
               Enviar
             </button>
