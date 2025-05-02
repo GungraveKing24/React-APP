@@ -161,7 +161,7 @@ export default function OrderDetails() {
 
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <Link
-            to={isDisabled ? "/order_History" : "/Notifications"}
+            to={isDisabled ? "/order_History" : "/Orders"}
             className="px-6 py-3 bg-rose-100 text-rose-800 rounded-lg hover:bg-rose-200 transition-colors text-center font-Title"
           >
             Volver
