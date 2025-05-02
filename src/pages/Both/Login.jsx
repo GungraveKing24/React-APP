@@ -17,7 +17,6 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth()
 
-
   useEffect(() => {
     if(token){
       try {
@@ -86,6 +85,7 @@ export default function Login() {
 
       if(!res.ok){
         toast.error("Contraseña o correo incorrecto");
+        setIsSubmitting(false);
         return
       }
 

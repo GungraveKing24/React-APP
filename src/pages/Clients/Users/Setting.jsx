@@ -92,43 +92,51 @@ function Settings() {
 
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
-    if (!validateProfile()) return;
-    
     setLoading(true);
     
     try {
       const formData = new FormData();
-      formData.append("user_name", user.user_name);
-      formData.append("user_email", user.email);
-      formData.append("user_number", user.user_number);
-      formData.append("user_direction", user.user_direction);
       
+      // Agregar solo los campos que han cambiado
+      if (user.user_name !== originalData.user_name) {
+        formData.append("user_name", user.user_name);
+      }
+      if (user.email !== originalData.email) {
+        formData.append("user_email", user.email);
+      }
+      if (user.user_number !== originalData.user_number) {
+        formData.append("user_number", user.user_number);
+      }
+      if (user.user_direction !== originalData.user_direction) {
+        formData.append("user_direction", user.user_direction);
+      }
       if (fileInputRef.current?.files[0]) {
         formData.append("image", fileInputRef.current.files[0]);
       }
+  
+      const response = await axios.patch(
+        "/api/user/update",
+        formData,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       
-      const response = await axios.patch(url + "user/update", formData, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      
-      // Actualizar token con nuevos datos
-      const updatedUser = {
-        ...user,
-        user_name: response.data.user_name || user.user_name,
-        email: response.data.user_email || user.email,
-        user_number: response.data.user_number || user.user_number,
-        user_direction: response.data.user_direction || user.user_direction,
-        user_url_photo: response.data.user_url_photo || user.user_url_photo,
-      };
-      
-      setUser(updatedUser);
       toast.success("Perfil actualizado correctamente");
+      // Actualizar los datos originales
+      setOriginalData({
+        user_name: user.user_name,
+        email: user.email,
+        user_number: user.user_number,
+        user_direction: user.user_direction
+      });
     } catch (error) {
       console.error("Error updating profile:", error);
-      toast.error("Error al actualizar el perfil");
+      const message = error.response?.data?.detail || "Error al actualizar el perfil";
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -139,24 +147,43 @@ function Settings() {
     if (!validatePassword()) return;
     
     setLoading(true);
+
     
     try {
-      await axios.patch(url + "user/password", {
-        current: passwords.current,
-        new: passwords.new,
-        confirm: passwords.confirm,
-      }, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const formData = new FormData();
+      formData.append("old_password", passwords.current);
+      formData.append("new_password", passwords.new);
+      formData.append("confirm_password", passwords.confirm);
       
-      toast.success("Contraseña actualizada correctamente");
-      setPasswords({ current: '', new: '', confirm: '' });
+      const response = await axios.patch(
+        url + "user/password",
+        formData,
+        {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
+      if (response.status !== 200) {
+        throw new Error("Error al actualizar la contraseña");
+      } else {
+        toast.success("Contraseña actualizada correctamente");
+        setPasswords({ current: '', new: '', confirm: '' });
+      }
     } catch (error) {
       console.error("Error updating password:", error);
       const message = error.response?.data?.detail || "Error al actualizar la contraseña";
       toast.error(message);
+      
+      // Manejar específicamente el error de contraseña incorrecta
+      if (error.response?.status === 400 && error.response?.data?.detail === "La contraseña actual no es correcta") {
+        setErrors({
+          ...errors,
+          password: { ...errors.password, current: "La contraseña actual no es correcta" }
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -236,6 +263,7 @@ function Settings() {
                   <input
                     type="email"
                     value={user.email || ''}
+                    disabled
                     onChange={(e) => setUser({ ...user, email: e.target.value })}
                     className={`w-full rounded-md border ${errors.profile.email ? 'border-red-500' : 'border-gray-300'} px-4 py-2 pl-10 focus:ring-blue-500 focus:border-blue-500`}
                     placeholder="tu@email.com"
