@@ -1,9 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiDollarSign, FiShoppingCart, FiUsers, FiPieChart, FiArrowLeft } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { axiosInstance } from '../../Axios/Axios';
 
 const Statistics = () => {
   const navigate = useNavigate();
+  const [monthlySales, setMonthlySales] = useState([])
+  const [weeklySales, setWeeklySale] = useState([])
+  const [cancelledOrders, setCancelledOrders] = useState([])
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const fetchEverything = async () => {
+      try {
+        const requests = [
+          axiosInstance.get("/month-sales", { signal }),
+          axiosInstance.get("/week-sales", { signal }),
+          axiosInstance.get("/cancelled-orders", { signal }),
+        ];
+
+        const results = await Promise.allSettled(requests);
+
+        if (results[0].status === "fulfilled") setMonthlySales(results[0].value.data);
+        if (results[1].status === "fulfilled") setWeeklySale(results[1].value.data);
+        if (results[2].status === "fulfilled") setCancelledOrders(results[2].value.data);
+
+        results.forEach((result, i) => {
+          if (result.status === "rejected") {
+            console.error(`Request ${i + 1} error:`, result.reason);
+          }
+        });
+      } catch (err) {
+        if (err.name === "CanceledError") {
+          console.log("Request cancelled");
+        } else {
+          console.error("Unexpected error:", err);
+        }
+      }
+    };
+
+    fetchEverything();
+
+    return () => {
+      controller.abort();
+    };
+  }, []); console.log(monthlySales, weeklySales, cancelledOrders)
   
   const estadisticas = {
     ventasTotales: 12500,
