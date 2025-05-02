@@ -24,8 +24,8 @@ function NavBarUsersAuth(){
         </button>
     
         <div
-            className={`fixed left-6 top-28 w-64 bg-gradient-to-b from-[#EFB8C8] to-[#d7b788] p-6 shadow-2xl rounded-lg transform transition-transform duration-300 ${
-              isMenuOpen ? "translate-x-0" : "-translate-x-full"
+            className={`fixed left-0 top-34 w-64 z-10 bg-gradient-to-b from-[#EFB8C8] to-[#d7b788] p-6 shadow-2xl rounded-lg transform transition-transform duration-300 ${
+              isMenuOpen ? "translate-x-4" : "-translate-x-full"
             }`}
         >
             <ul className="space-y-4">
