@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import NavBarUsersAuth from "./pages/Clients/Users/NavbarUsersAuth";
 import Navbar from "./pages/Both/Navbar";
+import Footer from "./pages/Both/Footer";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -11,8 +12,9 @@ const Layout = ({ children }) => {
   return (
     <>
       <Navbar />
-      {showUserNavBar && <NavBarUsersAuth />}
-      <main className="container mx-auto">{children}</main>
+        {showUserNavBar && <NavBarUsersAuth />}
+        <main className="container mx-auto">{children}</main>
+      <Footer />
     </>
   );
 };

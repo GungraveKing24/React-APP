@@ -1,6 +1,45 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Footer() {
+  const { user } = useAuth();
+
+  if(user?.user_role === "Administrador"){
+    return <>
+      {/* Footer Secundario */}
+      <footer className="bg-[#EFB8C8] py-8 px-6 text-center text-white">
+        <p className="text-lg font-Title">Somos una floristería en línea</p>
+        <p className="text-sm mt-2">Síguenos por medio de Instagram</p>
+      </footer>
+
+      <footer className="bg-[#B9A387] text-white p-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-Title">Arreglitosv</h2>
+            <p className="text-white-400 mt-2">
+              “Para toda Ocasión”
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-Title">For every occasion</h3>
+              <ul className="mt-4 space-y-2">
+                <li><Link to="/catalog" className="text-white-400 hover:text-white">Catálogo</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="text-center mt-8 border-t border-b-orange-100 pt-6">
+            <p className="text-white-400">
+              Arreglitosv SmartEnterprise® 2025. All Rights Reserved
+            </p>
+          </div>
+        </div>
+      </footer>
+    </>
+  }
+
   return (
     <>
       {/* Footer Secundario */}

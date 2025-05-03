@@ -3,6 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CarContext";
 
+const menuItems = [
+  { label: "Inicio", roles: ["Cliente", "Invitado"], link: "/" },
+  { label: "Catálogo", roles: ["Administrador", "Cliente", "Invitado"], link: "/catalog" },
+  { label: "Nosotros", roles: ["Cliente", "Invitado"], link: "/aboutus" },
+  { label: "Contáctanos", roles: ["Cliente", "Invitado"], link: "/contact" },
+];
+
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
@@ -75,26 +83,15 @@ export default function Navbar() {
         >
           {/* Links */}
           <ul className="flex flex-col font-Title md:flex-row space-y-3 md:space-y-0 md:space-x-6 text-center md:text-left">
-            <li>
-              <Link to="/" className="text-gray-700 hover:text-gray-900">
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link to="/catalog" className="text-gray-700 hover:text-gray-900">
-                Catálogo
-              </Link>
-            </li>
-            <li>
-              <Link to="/aboutus" className="text-gray-700 hover:text-gray-900">
-                Nosotros
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" className="text-gray-700 hover:text-gray-900">
-                Contáctanos
-              </Link>
-            </li>
+            {menuItems
+              .filter(item => item.roles.includes(user?.user_role || "Invitado"))
+              .map((item, index) => (
+                <li key={index} className="text-gray-700 hover:text-gray-900 cursor-pointer">
+                  <Link to={item.link} className="text-gray-700 hover:text-gray-900">
+                    {item.label}
+                  </Link>
+                </li>
+            ))}
           </ul>
 
           {/* Carrito de compras */}

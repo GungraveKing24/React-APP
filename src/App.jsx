@@ -16,7 +16,6 @@ import Product_Detail from "./pages/Clients/Product_Detail.jsx"
 import Cars from "./pages/Clients/Cars.jsx"
 import Checkout from "./pages/Clients/Checkout.jsx"
 import Payment from "./pages/Both/payment.jsx"
-import Footer from './pages/Both/Footer.jsx';
 
 {/* Auth Users */}
 import User_Dashboard from './pages/Clients/Users/User_Dashboard.jsx';
@@ -90,7 +89,6 @@ function App() {
                 <Route path='/UserManagement' element={<UserManagement />} />
               </Route>
             </Routes>
-            <Footer />
           </Layout>
         </Router>
       </CartProvider>

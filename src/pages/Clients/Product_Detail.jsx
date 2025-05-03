@@ -123,83 +123,80 @@ export default function details() {
 
     return (
       <section className="flex justify-center items-center min-h-screen bg-[#F8E8EE] p-6">
-        <Toaster />
-        <div className="bg-white p-8 rounded-2xl shadow-lg max-w-3xl w-full flex flex-col items-center">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="flex justify-center">
-              <img
-                src={product.arr_img_url}
-                alt={product.arr_name}
-                className="w-72 rounded-lg shadow-md"
-              />
+  <Toaster />
+  <div className="bg-white p-8 rounded-2xl shadow-lg max-w-3xl w-full flex flex-col items-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <div className="flex justify-center">
+        <img
+          src={product.arr_img_url}
+          alt={product.arr_name}
+          className="w-72 rounded-lg shadow-md"
+        />
+      </div>
+
+      <div className="text-center md:text-left">
+        <h2 className="text-3xl font-bold text-gray-800">{product.arr_name}</h2>
+        <span className="text-2xl text-[#EFB8C8] font-semibold">${finalPrice}</span>
+
+        {user?.user_role !== "Administrador" && (
+          <>
+            <div className="flex items-center justify-center md:justify-start mt-4 space-x-4">
+              <button
+                className="border-2 border-[#EFB8C8] text-[#EFB8C8] px-3 py-2 rounded-md hover:bg-[#F8E8EE] transition"
+                onClick={disminuir}
+              >
+                <FaMinus />
+              </button>
+              <span className="text-lg font-semibold">{cantidad}</span>
+              <button
+                className="border-2 border-[#EFB8C8] text-[#EFB8C8] px-3 py-2 rounded-md hover:bg-[#F8E8EE] transition"
+                onClick={incrementar}
+              >
+                <FaPlus />
+              </button>
             </div>
-  
-            <div className="text-center md:text-left">
-              <h2 className="text-3xl font-bold text-gray-800">{product.arr_name}</h2>
-              <span className="text-2xl text-[#EFB8C8] font-semibold">${finalPrice}</span>
-  
-              <div className="flex items-center justify-center md:justify-start mt-4 space-x-4">
-                <button
-                  className="border-2 border-[#EFB8C8] text-[#EFB8C8] px-3 py-2 rounded-md hover:bg-[#F8E8EE] transition"
-                  onClick={disminuir}
-                >
-                  <FaMinus />
-                </button>
-                <span className="text-lg font-semibold">{cantidad}</span>
-                <button
-                  className="border-2 border-[#EFB8C8] text-[#EFB8C8] px-3 py-2 rounded-md hover:bg-[#F8E8EE] transition"
-                  onClick={incrementar}
-                >
-                  <FaPlus />
-                </button>
-              </div>
- 
-              {loading ? (
-                <span className="flex items-center justify-center animate-spin text-sm">
-                  🌸
-                </span>
-              ) : (
-                <button className="mt-4 w-full flex justify-center items-center border-2 border-[#EFB8C8] text-[#EFB8C8] px-6 py-3 rounded-lg shadow-md hover:bg-[#F8E8EE] transition" onClick={handleAddToCart}>
-                  <FaShoppingCart className="mr-2" /> Agregar al carrito
-                </button>
-              )}
-              
-              {error && (
-                <p className="mt-2 text-red-500 text-sm text-center">{error}</p>
-              )}
-  
-              <div className="mt-6 flex justify-center border-b w-full">
-                <button
-                  className={`px-4 py-2 font-semibold border-b-2 transition ${
-                    activeTab === "descripcion" ? "text-[#EFB8C8] border-[#EFB8C8]" : "text-gray-600"
-                  }`}
-                  onClick={() => setActiveTab("descripcion")}
-                >
-                  Descripción
-                </button>
-                <button
-                  className={`px-4 py-2 ml-4 font-semibold border-b-2 transition ${
-                    activeTab === "comentarios" ? "text-[#EFB8C8] border-[#EFB8C8]" : "text-gray-600"
-                  }`}
-                  onClick={() => setActiveTab("comentarios")}
-                >
-                  Comentarios
-                </button>
-              </div>
-  
-              {activeTab === "descripcion" ? (
-                <p className="mt-4 text-gray-700">{product.arr_description}</p>
-              ) : (
-                <div className="mt-4 space-y-2 text-gray-700">
-                  <p><strong>Kristin Watson:</strong> Hermoso ramo</p>
-                  <p><strong>Jane Cooper:</strong> Hermoso cerdito</p>
-                  <p><strong>Jacob Jones:</strong> x2</p>
-                  <p><strong>Ralph Edwards:</strong> Me encanta este lugar</p>
-                </div>
-              )}
-            </div>
-          </div>
+
+            {loading ? (
+              <span className="flex items-center justify-center animate-spin text-sm">
+                🌸
+              </span>
+            ) : (
+              <button
+                className="mt-4 w-full flex justify-center items-center border-2 border-[#EFB8C8] text-[#EFB8C8] px-6 py-3 rounded-lg shadow-md hover:bg-[#F8E8EE] transition"
+                onClick={handleAddToCart}
+              >
+                <FaShoppingCart className="mr-2" /> Agregar al carrito
+              </button>
+            )}
+
+            {error && (
+              <p className="mt-2 text-red-500 text-sm text-center">{error}</p>
+            )}
+          </>
+        )}
+
+        {/* Tabs */}
+        <div className="mt-6 flex justify-center border-b w-full">
+          <button className="px-4 py-2 font-semibold border-b-2 transition text-gray-600">
+            Descripción
+          </button>
         </div>
-      </section>
+
+        <p className="mt-4 text-gray-700 max-h-52 overflow-y-auto pr-2">{product.arr_description}</p>
+      </div>
+    </div>
+
+    {/* Nueva sección de comentarios debajo del producto */}
+    <div className="mt-8 w-full">
+      <h3 className="text-2xl font-bold text-gray-800 mb-4">Comentarios</h3>
+      <div className="space-y-2 text-gray-700">
+        <p><strong>Kristin Watson:</strong> Hermoso ramo</p>
+        <p><strong>Jane Cooper:</strong> Hermoso cerdito</p>
+        <p><strong>Jacob Jones:</strong> x2</p>
+        <p><strong>Ralph Edwards:</strong> Me encanta este lugar</p>
+      </div>
+    </div>
+  </div>
+</section>
     );
 }
