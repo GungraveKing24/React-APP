@@ -163,24 +163,27 @@ export default function ProductCard({ product }) {
                 <div className="mt-5 flex justify-between items-center">
                     <span className="text-xs text-gray-400">Disponible</span>
                     <Link to={`/details/${product.id}`} className="p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110">Detalles</Link> 
-                    <button
-                        className={`p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 ${
-                            loading
-                                ? "bg-gray-300 cursor-not-allowed"
-                                : "text-white bg-gradient-to-r from-red-400 to-red-300 hover:from-red-200 hover:to-[#EFB8C8]"
-                        }`}
-                        aria-label="Añadir al carrito"
-                        onClick={handleAddToCart}
-                        disabled={loading}
-                    >
-                        {loading ? (
-                            <span className="flex items-center justify-center animate-spin text-sm">
-                                🌸
-                            </span>
-                        ) : (
-                            <FaShoppingCart className="w-4 h-4" />
-                        )}
-                    </button>
+                    {user?.user_role !== 'Administrador' && (
+
+                        <button
+                            className={`p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 ${
+                                loading
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "text-white bg-gradient-to-r from-red-400 to-red-300 hover:from-red-200 hover:to-[#EFB8C8]"
+                            }`}
+                            aria-label="Añadir al carrito"
+                            onClick={handleAddToCart}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <span className="flex items-center justify-center animate-spin text-sm">
+                                    🌸
+                                </span>
+                            ) : (
+                                <FaShoppingCart className="w-4 h-4" />
+                            )}
+                        </button>
+                    )}
                 </div>
                 {error && (
                     <p className="mt-2 text-red-500 text-sm text-center">{error}</p>
