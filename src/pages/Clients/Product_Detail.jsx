@@ -5,13 +5,23 @@ import { axiosInstance } from "../../Axios/Axios";
 import { toast, Toaster } from "react-hot-toast";
 import { useCart } from "../../context/CarContext"
 import { useAuth } from "../../context/AuthContext";
+import { usePost } from '../../Axios/customHooks/usePost';
 
 export default function details() {
+    const { postData } = usePost();
     const { id } = useParams();
-    const [activeTab, setActiveTab] = useState("descripcion");
+    const [activeTab, setActiveTab] = useState("comment")
+
     const [product, setProduct] = useState({})
+    const [comments, setComments] = useState([])
     const [finalPrice, setFinalPride] = useState(0)
+    const [form, setForm] = useState({
+      comment_text: "",
+      comment_rating: 0
+    })
+
     const [loading, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false)
     const [error, setError] = useState("");
     const { updateCartCount } = useCart();
     const { user } = useAuth();
@@ -28,6 +38,9 @@ export default function details() {
         setFinalPride(res.data.arr_discount
           ? (res.data.arr_price * (1 - res.data.arr_discount / 100)).toFixed(2)
           : res.data.arr_price.toFixed(2))
+
+        const res2 = await axiosInstance.get(`/Comments/${id}`)
+        setComments(res2.data)
       } catch (error) {
         console.log(error)
       }
@@ -121,6 +134,54 @@ export default function details() {
         }
     };
 
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setForm(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    };
+
+    const handleRating = (rating) => {
+      setForm(prev => ({
+        ...prev,
+        comment_rating: rating
+      }));
+    };
+
+    async function handleCommentSubmit(e){
+      e.preventDefault()
+
+      if(form.comment_rating === 0 || !form.comment_text.trim()){
+        toast.error("Rellena todos los campos")
+        return
+      }
+
+      setIsSubmitting(true)
+      try {
+        const { data, status } = await postData(`/Comments/${id}`, form ,true);
+        if (status === 200 || status === 201){
+          toast.success("Comentario enviado")
+          console.log("Creacion exitosa")
+          setComments(prev => [
+            ...prev,
+            data
+          ]);
+        } else{
+          toast.error("Error al enviar comentario")
+        }
+      } catch (error) {
+        console.log(error)
+        toast.error("Error al enviar comentario")
+      } finally{
+        setIsSubmitting(false)
+        setForm({
+          comment_text: "",
+          comment_rating: 0
+        })
+      }
+    };
+
     return (
       <section className="flex justify-center items-center min-h-screen bg-[#F8E8EE] p-6">
   <Toaster />
@@ -188,12 +249,91 @@ export default function details() {
 
     {/* Nueva sección de comentarios debajo del producto */}
     <div className="mt-8 w-full">
-      <h3 className="text-2xl font-bold text-gray-800 mb-4">Comentarios</h3>
+      <div className="mt-6 flex justify-center border-b w-full">
+        <button
+          className={`px-4 py-2 font-semibold border-b-2 transition ${
+              activeTab === "comment" ? "text-[#EFB8C8] border-[#EFB8C8]" : "text-gray-600"
+            }`}
+          onClick={() => setActiveTab("comment")}
+        >
+          Comentarios
+        </button>
+        {user?.user_role === "Cliente" && (
+          <button
+            className={`px-4 py-2 ml-4 font-semibold border-b-2 transition ${
+              activeTab === "view" ? "text-[#EFB8C8] border-[#EFB8C8]" : "text-gray-600"
+            }`}
+          onClick={() => setActiveTab("view")}
+          >
+            Deja tu comentario
+          </button>
+        )}
+      </div>
+
       <div className="space-y-2 text-gray-700">
-        <p><strong>Kristin Watson:</strong> Hermoso ramo</p>
-        <p><strong>Jane Cooper:</strong> Hermoso cerdito</p>
-        <p><strong>Jacob Jones:</strong> x2</p>
-        <p><strong>Ralph Edwards:</strong> Me encanta este lugar</p>
+        {activeTab === "view" ? (
+            <div className="mt-4 space-y-2 text-gray-700">
+              <form onSubmit={handleCommentSubmit} className="bg-white p-6 rounded-2xl shadow-md w-full max-w-2xl space-y-4">
+                <textarea
+                  name="comment_text"
+                  rows="5"
+                  placeholder="Escribe tu comentario aquí..."
+                  className="w-full p-4 border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-[#EFB8C8]"
+                  value={form.comment_text}
+                  onChange={handleChange}
+                  required
+              />
+
+            <div>
+              <p className="mb-2 text-gray-700 font-semibold">Calificación:</p>
+              <div className="flex flex-wrap gap-1">
+                {[...Array(10)].map((_, index) => {
+                  const ratingValue = index + 1;
+                  return (
+                    <button
+                      type="button"
+                      key={ratingValue}
+                      onClick={() => handleRating(ratingValue)}
+                      className={`p-2 rounded-full ${
+                        ratingValue <= form.comment_rating ? "text-pink-400" : "text-gray-300"
+                      } hover:scale-110 transition`}
+                    >
+                      🌸
+                    </button>
+                  );
+                })}
+              </div>
+              {form.comment_rating > 0 && (
+                <p className="mt-1 text-sm text-gray-600">Tu calificación: {form.comment_rating} / 10</p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-[#EFB8C8] text-white font-semibold py-3 rounded-lg hover:bg-pink-400 transition disabled:opacity-50"
+            >
+              {isSubmitting ? "Enviando..." : "Enviar comentario"}
+            </button>
+            </form>
+            </div>
+          ) : comments.length > 0 ? (
+            <div className="mt-4 space-y-2 text-gray-700">
+              {comments.map((comment) => (
+                  <div className="bg-[#F8E8EE] p-4 rounded-lg shadow-sm">
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="font-semibold text-gray-800">{comment.user_name}</span>
+                      <span className="text-red-800 font-medium">{comment.comment_rating}/10</span>
+                    </div>
+                    <p className="text-gray-700">{comment.comment_text}</p>
+                  </div>
+              ))}
+            </div>
+          ) : (
+            <h3 className="text-lg font-medium text-gray-900 mb-1 mt-4">
+              No hay comentarios
+            </h3>
+          )}
       </div>
     </div>
   </div>
