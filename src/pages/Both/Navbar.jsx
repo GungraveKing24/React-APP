@@ -10,11 +10,11 @@ const menuItems = [
   { label: "Contáctanos", roles: ["Cliente", "Invitado"], link: "/contact" },
 ];
 
-
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, logout } = useAuth();
-  const { cartCount, updateCartCount } = useCart(); // Asegúrate de obtener updateCartCount del contexto
+
+  const { user, logout } = useAuth();  // No es necesario el useState aquí
+  const { cartCount, updateCartCount } = useCart(); 
   const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
@@ -34,7 +34,7 @@ export default function Navbar() {
     updateCartCount(); // Actualizar el carrito después de logout
     navigate("/");
   };
-  
+
   useEffect(() => {
     const handleStorageChange = () => {
       if (!localStorage.getItem("token")) {
@@ -95,9 +95,6 @@ export default function Navbar() {
           </ul>
 
           {/* Carrito de compras */}
-          
-          {/* Si el usuario es admin no mostrar el carrito */}
-          {/* Carrito de compras - No mostrar para Administrador */}
           {user?.user_role !== 'Administrador' && (
             <div className="relative flex justify-center md:justify-start items-center">
               <Link 

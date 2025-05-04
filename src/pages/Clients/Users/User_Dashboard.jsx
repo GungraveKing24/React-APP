@@ -15,27 +15,19 @@ function User_Dashboard() {
             return;
         }
     
-        // Verify token is valid before making requests
+        // Verificamos expiración mínima
         try {
             const payload = JSON.parse(atob(token.split(".")[1]));
-            
-            // Check if token is expired
             if (payload.exp && payload.exp < Date.now() / 1000) {
                 localStorage.removeItem("token");
                 navigate("/login");
                 return;
             }
-            
-            setUser(payload);
-            
-            if (payload.role === 'Administrador') {
-                navigate("/AdminDashboard");
-            }
-        } catch (error) {
-            console.error("Token error:", error);
-            localStorage.removeItem("token");
-            navigate("/login");
+        } catch (e) {
+            return;
         }
+    
+        fetchUser(); // NUEVO
     }, [navigate]);
 
     useEffect(() => {
@@ -59,6 +51,25 @@ function User_Dashboard() {
             console.error("Error al obtener los pedidos:", error);
         }
     }
+
+    async function fetchUser() {
+        try {
+            const res = await axios.get(import.meta.env.VITE_API_URL + "users/me", {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+            const userData = res.data;
+            if (userData.role === 'Administrador') {
+                navigate("/AdminDashboard");
+                return;
+            }
+            setUser(userData);
+        } catch (error) {
+            console.error("Error al obtener los datos del usuario:", error);
+            localStorage.removeItem("token");
+        }
+    }    
 
     if (!user) {
         return (

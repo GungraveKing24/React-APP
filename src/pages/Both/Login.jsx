@@ -21,7 +21,6 @@ export default function Login() {
     if(token){
       try {
         const userInfo = JSON.parse(atob(token.split(".")[1]))
-        console.log("Usuario autenticado con exito", userInfo)
         // Redirigir según el rol del usuario
         if (userInfo.user_role === 'Administrador') {
           navigate("/AdminDashboard");
@@ -97,16 +96,12 @@ export default function Login() {
       
       // Decodificar el token para obtener el rol
       const payload = JSON.parse(atob(fetchData.token.split(".")[1]));
-      console.log("Payload del token:", payload);
       // Redirigir según el rol
       if (payload.user_role === 'Administrador') {
-        console.log("Redirigiendo a AdminDashboard");
         navigate("/AdminDashboard");
       } else {
         navigate("/profile");
-        console.log("Redirigiendo a profile");
-      }
-      
+      }      
     } catch (error) {
       toast.error("Error al iniciar sesión");
       console.error("Error:", error);
