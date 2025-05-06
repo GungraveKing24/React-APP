@@ -69,7 +69,7 @@ function App() {
               {/* Auth Users */}
               <Route element={<ProtectedRoute allowedRoles={['Cliente']} />}>
                 <Route path="/profile" element={<User_Dashboard />} />
-                <Route path='/order_Details' element={<OrderDetails />} />
+                <Route path='/order_Details/:id' element={<OrderDetails />} />
                 <Route path='/order_History' element={<Order_History />} />
                 <Route path='/settings' element={<Settings />} />
               </Route>
