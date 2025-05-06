@@ -13,7 +13,7 @@ export default function SalesHistory(){
 
     useEffect(() => {
         if (location.pathname === "/orders") {
-            setStatusFilter([]);
+            setStatusFilter(["pendiente", "procesado"]);
         }
         fetchOrders();
     }, [location.pathname]);
@@ -138,7 +138,7 @@ export default function SalesHistory(){
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <Link to={`/OrderDetails`} className="flex space-x-3">
+                                            <Link to={`/OrderDetails/${order.id}`} className="flex space-x-3">
                                                 <CgDetailsMore size={24}/>
                                             </Link>
                                         </td>

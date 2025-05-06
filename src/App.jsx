@@ -20,7 +20,6 @@ import Payment from "./pages/Both/payment.jsx"
 {/* Auth Users */}
 import User_Dashboard from './pages/Clients/Users/User_Dashboard.jsx';
 import Order_History from './pages/Clients/Users/Order_History.jsx';
-import Order_Details from './pages/Clients/Users/Order_Deatils.jsx';
 import Settings from './pages/Clients/Users/Setting.jsx';
 
 {/* Admin */}
@@ -83,7 +82,7 @@ function App() {
                 <Route path='/admin/products/edit/:id' element={<EditProduct />} />
                 <Route path='/Statistics' element={<Statistics />} />
                 <Route path='/Notifications' element={<Notifications />} />
-                <Route path='/OrderDetails' element={<OrderDetails />} />
+                <Route path='/OrderDetails/:id' element={<OrderDetails />} />
                 <Route path='/orders' element={<SalesHistory />} />
                 <Route path='/SalesHistory' element={<SalesHistory />} />
                 <Route path='/UserManagement' element={<UserManagement />} />
