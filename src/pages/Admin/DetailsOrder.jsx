@@ -64,6 +64,16 @@ export default function OrderDetails() {
     setShowStatusDropdown(false);
   };console.log(order)
 
+  const formatDate = (isoDate) => {
+    if (!isoDate) return "";
+    const date = new Date(isoDate);
+    return new Intl.DateTimeFormat("es-ES",{
+      day: "2-digit",
+      month: "long",
+      year: "numeric"
+    }).format(date);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-amber-50 flex justify-center items-center p-6">
       <div className="bg-white shadow-xl rounded-xl p-6 w-full max-w-3xl">
@@ -114,7 +124,7 @@ export default function OrderDetails() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-rose-50 p-4 rounded-xl">
             <h3 className="font-Title text-rose-800 mb-2">Fecha del Pedido</h3>
-            <p className="text-gray-700">{order.order_date}</p>
+            <p className="text-gray-700">{formatDate(order.order_date)}</p>
           </div>
           <div className="bg-amber-50 p-4 rounded-xl">
             <h3 className="font-Title text-amber-800 mb-2">Método de Pago</h3>
@@ -132,7 +142,7 @@ export default function OrderDetails() {
             {order.arrangements?.map((product) => (
               <div key={product.arrangement_name} className="flex items-center border-b border-gray-100 pb-4">
                 <img 
-                  src={product.image} 
+                  src={product.arrangement_img_url} 
                   className="w-16 h-16 object-cover rounded-lg mr-4"
                 />
                 <div className="flex-grow">
