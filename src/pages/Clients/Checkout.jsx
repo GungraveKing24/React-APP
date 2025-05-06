@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { axiosInstance } from "../../Axios/Axios";
-import { notifyCartChange } from "../../Axios/customHooks/useCartCount";
+import { useCart } from "../../context/CarContext"
 
 export default function CheckoutForm() {
+  const { updateCartCount } = useCart();
   const [cart, setCart] = useState([]);
   const [form, setForm] = useState({
     nombre: "",
@@ -142,7 +143,7 @@ export default function CheckoutForm() {
         toast.success("Pedido procesado con éxito");
         localStorage.removeItem("guest_cart");
         setCart([]);
-        notifyCartChange(0);
+        updateCartCount();
         
         // Resetear formulario
         setForm({

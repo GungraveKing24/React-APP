@@ -351,7 +351,7 @@ function SubmitButton({ loading, label }) {
       disabled={loading}
       className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
     >
-      {loading ? <><SmartSpinner size={4} /> {label}...</> : <><FaSave /> {label}</>}
+      {loading ? (<><span className="animate-spin inline-block">🌸</span> {label}...</>) : (<><FaSave /> {label}</>)}
     </button>
   );
 }

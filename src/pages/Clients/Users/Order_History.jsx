@@ -45,7 +45,7 @@ function Order_History(){
                   <td className="border border-gray-300 px-4 py-2">{order.order_date}</td>
                   <td className="border border-gray-300 px-4 py-2">${order.order_total}</td>
                   <td className="border border-gray-300 px-4 py-2">{order.order_state}</td>
-                  <td className="border border-gray-300 px-4 py-2 text-[#B9A387]"><Link to="/order_Details">Detalles</Link></td>
+                  <td className="border border-gray-300 px-4 py-2 text-[#B9A387]"><Link to={`/order_Details/${order.id}`}>Detalles</Link></td>
                 </tr>
               ))}
             </tbody>
