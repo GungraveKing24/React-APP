@@ -12,13 +12,9 @@ export default function CheckoutForm() {
     direccion: "",
     telefono: "",
     notas: "",
-    metodoPago: "Contra Entrega",
-    cardName: "",
-    cardNumber: "",
-    cardExp: "",
-    cardCVC: "",
+    metodoPago: "Contra Entrega", // Valor por defecto
   });
-  const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     HandleVerify();
@@ -54,11 +50,11 @@ export default function CheckoutForm() {
 
   const HandleGetDetailsUser = async () => {
     try {
-      const response = await axiosInstance.get("/orders/cart/details/", {
+      const response = await axiosInstance.get("orders/cart/details/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      })
+      });
       setCart(response.data);
     } catch (error) {
       console.error("Error al obtener detalles del carrito", error);
@@ -74,83 +70,81 @@ export default function CheckoutForm() {
     const { name, value, type, checked } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "radio" ? value : (type === "checkbox" ? checked : value),
     }));
-  };
-
-  const handlePayment = async () => {
-    try {
-      const response = await axios.post('/payments/create/', orderData);
-      
-      if (response.data.payment_url) {
-        // Opción 1: Redirección directa
-        window.location.href = response.data.payment_url;
-        
-        // Opción 2: Abrir en nueva pestaña (mejor para UX)
-        window.open(response.data.payment_url, '_blank');
-      } else {
-        toast.error('No se pudo generar el enlace de pago');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast.error(error.response?.data?.message || 'Error al procesar el pago');
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    validateForm();
-    if (cart.length <= 0) {
-      toast.error("No existe un carrito, agrega productos para comprar");
+    setIsSubmitting(true);
+
+    // Validaciones básicas
+    if (!form.nombre || !form.email || !form.direccion || !form.telefono) {
+      toast.error("Por favor, completa todos los campos requeridos.");
+      setIsSubmitting(false);
       return;
     }
-  
-    if (isSubmitting) return;
-    setIsSubmitting(true);
-  
-    const orderData = {
-      guest_name: form.nombre,
-      guest_email: form.email,
-      guest_phone: form.telefono,
-      guest_address: form.direccion,
-      arrangements: cart.map(item => ({
-        arrangements_id: item.id,
-        details_quantity: item.details_quantity,
-      })),
-      pay_method: form.metodoPago,
-      notes: form.notas,
-    };
-  
-    try {
-      const token = localStorage.getItem("token");
-      if (form.metodoPago === "Tarjeta") {
-        // PAGO CON TARJETA
-        const response = await axiosInstance.post("/payments/create/", orderData, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
-  
-        const paymentUrl = response.data.payment_url;
 
-        if (paymentUrl) {
-          window.location.href = paymentUrl; // Redirecciona a Wompi
+    if (cart.length <= 0) {
+      toast.error("No hay productos en el carrito");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const orderData = {
+        guest_name: form.nombre,
+        guest_email: form.email,
+        guest_phone: form.telefono,
+        guest_address: form.direccion,
+        arrangements: cart.map(item => ({
+          arrangements_id: item.id || item.arrangements_id,
+          details_quantity: item.details_quantity,
+          details_price: item.details_price
+        })),
+        pay_method: form.metodoPago,
+        notes: form.notas
+      };
+
+      const token = localStorage.getItem("token");
+
+      if (form.metodoPago === "Tarjeta") {
+        // Pago con tarjeta - crear enlace Wompi
+        const response = await axiosInstance.post(
+          "orders/payments/create/", 
+          orderData, 
+          { headers: {
+            Authorization: `Bearer ${token}`
+          }}
+        );
+
+        if (response.data.payment_url) {
+          // Guardar datos temporales en localStorage
+          const pendingOrder = {
+            reference: response.data.reference,
+            amount: response.data.amount,
+            cart: cart,
+            formData: form
+          };
+          localStorage.setItem("pendingOrder", JSON.stringify(pendingOrder));
+          
+          // Redirigir a Wompi para completar el pago
+          window.location.href = response.data.payment_url;
         } else {
-          toast.error("No se pudo generar el pago");
+          toast.error("No se pudo generar el enlace de pago");
         }
       } else {
-        // CONTRA ENTREGA
-        if (token) {
-          await axiosInstance.post("/orders/cart/complete/", {}, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-        } else {
-          await axiosInstance.post("orders/guest/checkout", orderData);
-        }
-  
+        // Pago contra entrega
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const endpoint = token ? "orders/cart/complete/" : "orders/guest/checkout";
+        await axiosInstance.post(endpoint, orderData, { headers });
+        
         toast.success("Pedido procesado con éxito");
         localStorage.removeItem("guest_cart");
         setCart([]);
         notifyCartChange(0);
+        
+        // Resetear formulario
         setForm({
           nombre: "",
           email: "",
@@ -162,38 +156,18 @@ export default function CheckoutForm() {
         });
       }
     } catch (error) {
-      console.error("Error al enviar el pedido:", error);
-      toast.error("Hubo un problema al procesar tu pedido");
+      console.error("Error al procesar el pedido:", error);
+      toast.error(error.response?.data?.detail || "Error al procesar el pedido");
     } finally {
       setIsSubmitting(false);
     }
-  }; 
+  };
 
-  function validateForm(){
-    if (!form.nombre || !form.email || !form.departamento || !form.direccion || !form.telefono) {
-      toast.error("Por favor, completa todos los campos requeridos.");
-      return;
-    }
-
-    const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
-    if (!isEmailValid) {
-      toast.error("El correo electrónico no es válido.");
-      return;
-    }
-
-    if (form.metodoPago === "Tarjeta") {
-      if (!form.cardName || !form.cardNumber || !form.cardExp || !form.cardCVC) {
-        toast.error("Por favor, completa todos los campos de la tarjeta.");
-        return;
-      }
-    }
-  }
-
-  const subtotal = cart.reduce((acc, item) => acc + item.details_price * item.details_quantity, 0);
+  const subtotal = cart.reduce((acc, item) => acc + (item.details_price * item.details_quantity), 0);
 
   return (
     <div className="max-w-5xl mx-auto p-10 bg-white shadow-lg my-4 rounded-2xl border border-gray-200 flex gap-10">
-      <Toaster /> {/* Asegúrate de que Toaster esté presente aquí */}
+      <Toaster />
       
       <div className="flex-1">
         <h2 className="text-2xl font-bold text-gray-700 mb-6">Información</h2>
@@ -201,7 +175,7 @@ export default function CheckoutForm() {
           <input
             type="text"
             name="nombre"
-            placeholder="Nombre, ej: Juan Felipe Portillo Juarez"
+            placeholder="Nombre completo"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.nombre}
@@ -210,7 +184,7 @@ export default function CheckoutForm() {
           <input
             type="email"
             name="email"
-            placeholder="Email, ej: tunombre@gmail.com"
+            placeholder="Correo electrónico"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.email}
@@ -230,7 +204,7 @@ export default function CheckoutForm() {
           <input
             type="text"
             name="direccion"
-            placeholder="Dirección, ej: San Salvador, CC Plaza Merliot, Edificio 3A-310, Cd Merliot"
+            placeholder="Dirección completa"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.direccion}
@@ -239,7 +213,7 @@ export default function CheckoutForm() {
           <input
             type="text"
             name="telefono"
-            placeholder="Teléfono, ej: 87549865"
+            placeholder="Número de teléfono"
             className="input border border-gray-300 p-3 rounded-lg"
             onChange={handleChange}
             value={form.telefono}
@@ -247,94 +221,92 @@ export default function CheckoutForm() {
           />
           <textarea
             name="notas"
-            placeholder="Notas (Opcional)"
+            placeholder="Notas adicionales (opcional)"
             className="input border border-gray-300 p-3 rounded-lg h-24"
             onChange={handleChange}
             value={form.notas}
           ></textarea>
-          {form.metodoPago === "Tarjeta" && (
-            <div className="grid gap-4 bg-pink-50 p-4 rounded-lg shadow-inner">
-            <h3 className="text-lg font-semibold text-pink-700">Datos de Tarjeta</h3>
-            <input
-              type="text"
-              name="cardName"
-              placeholder="Nombre en la tarjeta"
-              className="input border border-gray-300 p-3 rounded-lg"
-              onChange={handleChange}
-              value={form.cardName || ""}
-              required
-            />
-            <input
-              type="text"
-              name="cardNumber"
-              placeholder="Número de tarjeta"
-              className="input border border-gray-300 p-3 rounded-lg"
-              onChange={handleChange}
-              value={form.cardNumber || ""}
-              required
-            />
-            <div className="flex gap-4">
-              <input
-                type="text"
-                name="cardExp"
-                placeholder="MM/AA"
-                className="input border border-gray-300 p-3 rounded-lg flex-1"
-                onChange={handleChange}
-                value={form.cardExp || ""}
-                required
-              />
-              <input
-                type="text"
-                name="cardCVC"
-                placeholder="CVC"
-                className="input border border-gray-300 p-3 rounded-lg flex-1"
-                onChange={handleChange}
-                value={form.cardCVC || ""}
-                required
-              />
-            </div>
-          </div>
-          )}
+          
           <button
             type="submit"
             className="bg-[#EFB8C8] py-3 rounded-xl text-white font-semibold text-lg shadow-md hover:bg-pink-500 transition"
-            disabled={isSubmitting} // Deshabilitar el botón mientras se procesa el pedido
+            disabled={isSubmitting}
           >
-            {isSubmitting ? "Procesando..." : "Ordenar"}
+            {isSubmitting ? "Procesando..." : 
+              form.metodoPago === "Tarjeta" ? "Pagar con Tarjeta" : "Finalizar Pedido"}
           </button>
         </form>
       </div>
 
       <div className="p-6 border rounded-2xl bg-gray-50 shadow-lg w-96">
-        <h2 className="text-xl font-bold text-gray-700 mb-4">Pedido</h2>
+        <h2 className="text-xl font-bold text-gray-700 mb-4">Resumen del Pedido</h2>
         <div className="space-y-2">
           {cart.length > 0 ? (
             cart.map((item) => (
-              <p key={item.id} className="text-gray-600">
-                {item.arr_name} x{item.details_quantity} -{" "}
-                <span className="font-semibold">${(item.details_price * item.details_quantity).toFixed(2)}</span>
-              </p>
+              <div key={item.id} className="flex justify-between">
+                <span className="text-gray-600">
+                  {item.arr_name} x{item.details_quantity}
+                </span>
+                <span className="font-semibold">
+                  ${(item.details_price * item.details_quantity).toFixed(2)}
+                </span>
+              </div>
             ))
           ) : (
             <p className="text-gray-500">No hay productos en el carrito.</p>
           )}
         </div>
-        <p className="text-lg font-bold mt-4">Total: ${subtotal.toFixed(2)}</p>
-        <h2 className="mt-6 text-lg font-bold text-gray-700">Métodos de Pago</h2>
-        <label className="flex items-center space-x-2 mt-2">
-          <input
-            type="radio"
-            name="metodoPago"
-            value="Contra Entrega"
-            checked={form.metodoPago === "Contra Entrega"}
-            onChange={handleChange}
-          />
-          <span className="text-gray-700">Contra Entrega</span>
-        </label>
-        <label className="flex items-center space-x-2 mt-2">
-          <input type="radio" name="metodoPago" value="Tarjeta" onChange={handleChange} />
-          <span className="text-gray-700">Tarjeta</span>
-        </label>
+        
+        <div className="border-t border-gray-200 mt-4 pt-4">
+          <div className="flex justify-between text-lg font-bold">
+            <span>Total:</span>
+            <span>${subtotal.toFixed(2)}</span>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-lg font-bold text-gray-700 mb-4">Métodos de Pago</h3>
+          
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+              <input
+                type="radio"
+                name="metodoPago"
+                value="Contra Entrega"
+                checked={form.metodoPago === "Contra Entrega"}
+                onChange={handleChange}
+                className="h-5 w-5 text-pink-600"
+              />
+              <div>
+                <span className="font-medium">Contra Entrega</span>
+                <p className="text-sm text-gray-500">Paga cuando recibas tu pedido</p>
+              </div>
+            </label>
+            
+            <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+              <input
+                type="radio"
+                name="metodoPago"
+                value="Tarjeta"
+                checked={form.metodoPago === "Tarjeta"}
+                onChange={handleChange}
+                className="h-5 w-5 text-pink-600"
+              />
+              <div>
+                <span className="font-medium">Tarjeta de Crédito/Débito</span>
+                <p className="text-sm text-gray-500">Pago seguro con Wompi</p>
+              </div>
+            </label>
+          </div>
+
+          {form.metodoPago === "Tarjeta" && (
+            <div className="mt-4 p-4 bg-pink-50 rounded-lg">
+              <p className="text-pink-700 text-sm">
+                Serás redirigido a Wompi para completar el pago de forma segura.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

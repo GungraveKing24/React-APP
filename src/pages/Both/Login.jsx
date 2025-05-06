@@ -83,8 +83,8 @@ export default function Login() {
       })
 
       if(!res.ok){
-        toast.error("Contraseña o correo incorrecto");
         setIsSubmitting(false);
+        toast.error("Contraseña o correo incorrecto");
         return
       }
 

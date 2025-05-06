@@ -13,7 +13,7 @@ export default function SalesHistory(){
 
     useEffect(() => {
         if (location.pathname === "/orders") {
-            setStatusFilter(["pendiente", "procesado"]);
+            setStatusFilter([]);
         }
         fetchOrders();
     }, [location.pathname]);
@@ -28,9 +28,9 @@ export default function SalesHistory(){
     }
 
     const filteredOrders = useMemo(() => {
-      return orders.filter(order =>
+        return orders.filter(order =>
         statusFilter.length === 0 || statusFilter.includes(order.status)
-      );
+    );
 }, [orders, statusFilter]);
 
     // Paginación
@@ -41,24 +41,24 @@ export default function SalesHistory(){
 
     const getStatusColor = (status) => {
         switch (status) {
-          case "procesado":
-            return "bg-yellow-100 text-yellow-800";
-          case "pendiente":
-            return "bg-blue-100 text-blue-800";
-          case "completado":
-            return "bg-green-100 text-green-800";
-          case "cancelado":
-            return "bg-red-100 text-red-800";
-          default:
-            return "bg-gray-100 text-gray-800";
+            case "procesado":
+                return "bg-yellow-100 text-yellow-800";
+            case "pendiente":
+                return "bg-blue-100 text-blue-800";
+            case "completado":
+                return "bg-green-100 text-green-800";
+            case "cancelado":
+                return "bg-red-100 text-red-800";
+            default:
+                return "bg-gray-100 text-gray-800";
         }
     };
 
     const handleStatusChange = (status) => {
         setStatusFilter((prev) =>
-          prev.includes(status)
-            ? prev.filter((s) => s !== status) // Si ya estaba, lo quitamos
-            : [...prev, status] // Si no estaba, lo agregamos
+            prev.includes(status)
+                ? prev.filter((s) => s !== status) // Si ya estaba, lo quitamos
+                : [...prev, status] // Si no estaba, lo agregamos
         );
     };
 
