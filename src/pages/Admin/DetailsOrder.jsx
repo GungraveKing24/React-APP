@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaCheckCircle, FaTruck, FaInfoCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { axiosInstance } from "../../Axios/Axios";
+import { formatDate } from "../../components/CardUtil";
 
 export default function OrderDetails() {
   const { id } = useParams();
@@ -63,16 +64,6 @@ export default function OrderDetails() {
     setOrder({ ...order, state: newStatus });
     setShowStatusDropdown(false);
   };console.log(order)
-
-  const formatDate = (isoDate) => {
-    if (!isoDate) return "";
-    const date = new Date(isoDate);
-    return new Intl.DateTimeFormat("es-ES",{
-      day: "2-digit",
-      month: "long",
-      year: "numeric"
-    }).format(date);
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-amber-50 flex justify-center items-center p-6">

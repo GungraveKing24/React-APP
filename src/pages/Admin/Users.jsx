@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FaUsers, FaSearch, FaRegEnvelope, FaPhone, FaRegCalendarAlt } from 'react-icons/fa';
 import { axiosInstance } from '../../Axios/Axios';
+import { formatDate } from '../../components/CardUtil';
 
 // HighlightText.jsx
 export function HighlightText({ text, highlight }) {
@@ -128,7 +129,7 @@ export default function UserManagement() {
                             <HighlightText text={user.user_name} highlight={searchTerm}/>
                             <div className="text-sm text-gray-500 flex items-center">
                               <FaRegCalendarAlt className="mr-1" />
-                              {user.user_register_date}
+                              {formatDate(user.user_register_date)}
                             </div>
                           </div>
                         </div>

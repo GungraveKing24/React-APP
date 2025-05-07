@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import SmartSpinner from '../../Both/SmartSpinner.jsx';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { formatDate } from '../../../components/CardUtil.jsx';
+import { FaRegCalendarAlt } from 'react-icons/fa';
+import { CgDetailsMore } from "react-icons/cg";
 
 function User_Dashboard() {
     const [user, setUser] = useState(null);
@@ -44,8 +47,11 @@ function User_Dashboard() {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-            // Filtrar pedidos que NO sean del estado "carrito"
-            const filteredOrders = res.data.filter(order => order.order_state !== "carrito");
+            // Filtrar pedidos que NO sean del estado "carrito" y obtener las 5 mas recientes
+            const filteredOrders = res.data
+            .filter(order => order.order_state !== "carrito")
+            .sort((a, b) => new Date(b.order_date) - new Date(a.order_date))
+            .slice(0,5);
             setOrders(filteredOrders);
         } catch (error) {
             console.error("Error al obtener los pedidos:", error);
@@ -79,6 +85,21 @@ function User_Dashboard() {
         );
     }
 
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "procesado":
+                return "bg-yellow-100 text-yellow-800";
+            case "pendiente":
+                return "bg-blue-100 text-blue-800";
+            case "completado":
+                return "bg-green-100 text-green-800";
+            case "cancelado":
+                return "bg-red-100 text-red-800";
+            default:
+                return "bg-gray-100 text-gray-800";
+        }
+    };
+
     return (
         <div className="max-w-5xl mx-auto mt-16">
             <div className="bg-white shadow-xl rounded-lg text-gray-900 p-6 flex items-center space-x-6">
@@ -103,43 +124,64 @@ function User_Dashboard() {
             </div>
 
             {/* Tabla de pedidos */}
-            <div className="bg-white shadow-xl rounded-lg p-6 mt-8">
-                <h3 className="text-xl font-semibold mb-4">Historial de Pedidos</h3>
-                <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
-                        <thead>
-                            <tr className="bg-gray-200">
-                                <th className="border border-gray-300 px-4 py-2">ID</th>
-                                <th className="border border-gray-300 px-4 py-2">Fecha</th>
-                                <th className="border border-gray-300 px-4 py-2">Total</th>
-                                <th className="border border-gray-300 px-4 py-2">Estado</th>
-                                <th className="border border-gray-300 px-4 py-2">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {orders.length > 0 ? (
-                                orders.map((order) => (
-                                    <tr key={order.id} className="text-center">
-                                        <td className="border border-gray-300 px-4 py-2">{order.id}</td>
-                                        <td className="border border-gray-300 px-4 py-2">{order.order_date}</td>
-                                        <td className="border border-gray-300 px-4 py-2">${order.order_total}</td>
-                                        <td className="border border-gray-300 px-4 py-2">{order.order_state}</td>
-                                        <td className="border border-gray-300 px-4 py-2 text-[#B9A387]">
-                                            <Link to={`/order_Details/${order.id}`}>Detalles</Link>
+            <div className="bg-white rounded-xl shadow-lg overflow-hidden mt-5">
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-rose-50">
+                                    <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Orden</th>
+                                    <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Fecha</th>
+                                    <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Total</th>
+                                    <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Estado</th>
+                                    <th className="px-6 py-3 text-left text-xs font-Title text-rose-800 uppercase tracking-wider">Detalles</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-100">
+                                    {orders.length > 0 ? (
+                                    orders.map((order) => (
+                                        <tr key={order.id} className="hover:bg-rose-50 transition-colors">
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex items-center">
+                                                <div className="flex-shrink-0 h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-800">
+                                                    #{order.id}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className="text-sm text-gray-500 flex items-center">
+                                                <FaRegCalendarAlt className="mr-1" />
+                                                {formatDate(order.order_date)}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-500">
+                                            ${order.order_total.toFixed(2)}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                            ${getStatusColor(order.order_state)}`}>
+                                                {order.order_state}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <Link to={`/order_Details/${order.id}`} className="flex space-x-3">
+                                                <CgDetailsMore size={24}/>
+                                            </Link>
+                                        </td>
+                                        </tr>
+                                    ))
+                                    ) : (
+                                    <tr>
+                                        <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                                        No se encontraron ordenes
                                         </td>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="5" className="text-center p-4 text-gray-500">
-                                        No hay pedidos aún.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
         </div>
     );
 }
