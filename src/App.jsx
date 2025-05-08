@@ -16,6 +16,7 @@ import Product_Detail from "./pages/Clients/Product_Detail.jsx"
 import Cars from "./pages/Clients/Cars.jsx"
 import Checkout from "./pages/Clients/Checkout.jsx"
 import Payment from "./pages/Both/payment.jsx"
+import Loading from "./pages/Clients/loading.jsx"
 
 {/* Auth Users */}
 import User_Dashboard from './pages/Clients/Users/User_Dashboard.jsx';
@@ -64,6 +65,7 @@ function App() {
               <Route path="/CheckoutForm" element={<Checkout/>} /> 
               <Route path="/ShoppingCart" element={<Cars/>} /> 
               <Route path="/details/:id" element={<Product_Detail/>} />
+              <Route path="/loading" element={<Loading />} />
 
               {/* Auth Users */}
               <Route element={<ProtectedRoute allowedRoles={['Cliente']} />}>
