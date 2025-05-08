@@ -115,7 +115,7 @@ export default function Navbar() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold text-white bg-blue-500 rounded-full">
+                <span className="absolute -top-2 -right-2 px-2 py-1 text-xs font-bold text-white bg-[#EFB8C8]  rounded-full">
                   {cartCount}
                 </span>
               </Link>

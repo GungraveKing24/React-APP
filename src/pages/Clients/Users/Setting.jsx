@@ -188,7 +188,7 @@ function Settings() {
       <div className="bg-white rounded-lg shadow p-6 mb-6">
         <form onSubmit={handleProfileSubmit}>
           <div className="flex items-center gap-2 mb-6">
-            <FaUser className="w-5 h-5 text-blue-600" />
+            <FaUser className="w-5 h-5 text-pink-400" />
             <h2 className="text-xl font-semibold text-gray-900">Información Personal</h2>
           </div>
 
@@ -203,7 +203,7 @@ function Settings() {
                 />
                 <button
                   type="button"
-                  className="absolute bottom-2 right-2 bg-blue-600 rounded-full p-2 text-white"
+                  className="absolute bottom-2 right-2 bg-[#EFB8C8]  rounded-full p-2 text-white"
                   onClick={() => fileInputRef.current.click()}
                 >
                   <FaCamera />
@@ -251,7 +251,7 @@ function Settings() {
             <div className="relative">
               <textarea
                 rows={3}
-                className="w-full rounded-md border border-gray-300 px-4 py-2 pl-10 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full rounded-md border border-gray-300 px-4 py-2 pl-10 focus:ring-pink-300 focus:border-pink-400"
                 value={formData.user_direction}
                 onChange={(e) => setFormData({...formData, user_direction: e.target.value})}
               />
@@ -269,7 +269,7 @@ function Settings() {
       <div className="bg-white rounded-lg shadow p-6">
         <form onSubmit={handlePasswordSubmit}>
           <div className="flex items-center gap-2 mb-6">
-            <FaKey className="w-5 h-5 text-blue-600" />
+            <FaKey className="w-5 h-5 text-pink-400" />
             <h2 className="text-xl font-semibold text-gray-900">Cambiar Contraseña</h2>
           </div>
 
@@ -311,7 +311,7 @@ function InputField({ label, icon: Icon, value = '', onChange, error, disabled =
           value={value}
           onChange={onChange}
           disabled={disabled}
-          className={`w-full rounded-md border ${error ? 'border-red-500' : 'border-gray-300'} px-4 py-2 pl-10 focus:ring-blue-500 focus:border-blue-500`}
+          className={`w-full rounded-md border ${error ? 'border-red-500' : 'border-gray-300'} px-4 py-2 pl-10 focus:ring-pink-300 focus:border-pink-400`}
         />
         <Icon className="absolute left-3 top-3 text-gray-400" />
       </div>
@@ -329,7 +329,7 @@ function PasswordInput({ field, label, value, error, show, onToggle, onChange })
           type={show ? "text" : "password"}
           value={value}
           onChange={onChange}
-          className={`w-full rounded-md border ${error ? 'border-red-500' : 'border-gray-300'} px-4 py-2 pr-10 focus:ring-blue-500 focus:border-blue-500`}
+          className={`w-full rounded-md border ${error ? 'border-red-500' : 'border-gray-300'} px-4 py-2 pr-10 focus:ring-pink-300 focus:border-pink-400`}
         />
         <button
           type="button"
@@ -349,7 +349,7 @@ function SubmitButton({ loading, label }) {
     <button
       type="submit"
       disabled={loading}
-      className="flex items-center gap-2 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 disabled:bg-blue-400 transition-colors"
+      className="flex items-center gap-2 bg-[#EFB8C8] text-white px-6 py-2 rounded-md hover:bg-pink-400 disabled:bg-pink-300 transition-colors"
     >
       {loading ? (<><span className="animate-spin inline-block">🌸</span> {label}...</>) : (<><FaSave /> {label}</>)}
     </button>

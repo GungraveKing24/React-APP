@@ -5,9 +5,21 @@ import insta2 from "../../assets/insta2.jpeg"
 import insta3 from "../../assets/insta3.jpeg"
 import insta from "../../assets/insta.jpeg"
 import lluvia from "../../assets/lluvia.jpeg"
+import F1 from "../../assets/FAV1.jpeg"
+import F2 from "../../assets/FAV.2.jpeg"
+import F3 from "../../assets/FAV-3.jpeg"
+import F4 from "../../assets/FAV4.jpeg"
+import F5 from "../../assets/FAV5.jpeg"
+import F6 from "../../assets/FAV6.jpeg"
+import F7 from "../../assets/FAV7.jpeg"
+import F8 from "../../assets/FAV8.jpeg"
+
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 
-
+const flowers = [F1, F2, F3, F4, F5, F6, F7, F8];
 
 const Homepage = () => {
 
@@ -62,20 +74,56 @@ const Homepage = () => {
           </div>
         </section>  
         
+
         {/* Productos más solicitados */}
-        <section className="mt-10 mt-3">
-          <h2 className="text-2xl font-Title text-gray-800 text-center">Las más solicitadas</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition duration-300">
-                <img src={`/images/flower${item}.jpg`} alt="Flor" className="w-full h-48 object-cover rounded" />
-                <p className="mt-2 text-gray-700 font-semibold">Ramo Especial {item}</p>
-                <p className="text-gray-600">$25.00</p>
-              </div>
-            ))}
-          </div>
-        </section>
-        
+          <section className="mt-10 px-4">
+            <h2 className="text-2xl font-Title text-gray-800 text-center mb-8">Las más solicitadas</h2>
+            
+            <Slider
+              dots={true}
+              infinite={true}
+              speed={500}
+              slidesToShow={4}
+              slidesToScroll={1}
+              responsive={[
+                {
+                  breakpoint: 1024,
+                  settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                  }
+                },
+                {
+                  breakpoint: 768,
+                  settings: {
+                    slidesToShow: 2,
+                    slidesToScroll: 1
+                  }
+                },
+                {
+                  breakpoint: 480,
+                  settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                  }
+                }
+              ]}
+            >
+              {flowers.map((flower, index) => (
+                <div key={index} className="px-2">
+                  <div className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                    <img 
+                      src={flower} 
+                      alt={`Arreglo floral ${index + 1}`} 
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                    <p className="mt-3 text-lg font-semibold text-gray-800">Ramo Especiales {index + 1}</p>
+                  </div>
+                </div>
+              ))}
+            </Slider>
+          </section>
+                  
        {/* Frase destacada */}
        <section className="relative mt-10 bg-gradient-to-r from-[#FAF6F0] to-[#FDECEF] p-12 rounded-2xl shadow-2xl flex items-center justify-between overflow-hidden">
           <div className="absolute top-0 left-0 w-32 h-32 bg-pink-300 opacity-30 blur-3xl"></div>
@@ -96,20 +144,7 @@ const Homepage = () => {
           </div>
         </section>
 
-        {/* Categorías */}
-        <section className="mt-10 text-center">
-          <h2 className="text-2xl font-Title text-gray-800">Compra por Categorías</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
-            {["Arreglos", "Ramos", "Plantas", "Regalos"].map((category) => (
-              <div key={category} className="p-4 bg-white rounded-lg shadow hover:shadow-lg transition duration-300">
-                <img src={`/images/${category.toLowerCase()}.jpg`} alt={category} className="w-full h-48 object-cover rounded" />
-                <p className="font-semibold text-gray-700 mt-2">{category}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-       
+      
 
         {/* Testimonios: Propuesta -> FERNANDO */}
         <section className="bg-white">

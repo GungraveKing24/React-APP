@@ -90,6 +90,7 @@ export default function Footer() {
               <ul className="mt-4 space-y-2">
                 <li><Link to="/terms" className="text-white-400 hover:text-white">Términos y Condiciones</Link></li>
                 <li><Link to="/policies" className="text-white-400 hover:text-white">Políticas de Privacidad</Link></li>
+                <li><Link to="/ContactDevelopers" className="text-white-400 hover:text-white">Desarrolladores</Link></li>
               </ul>
             </div>
           </div>
