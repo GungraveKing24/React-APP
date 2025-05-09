@@ -24,9 +24,9 @@ const Loading = () => {
             }
 
             try {
-                const url = import.meta.env.VITE_API_URL + "payments/status/"; 
+                const url = import.meta.env.VITE_API_URL + "webhooks/payments/status/"; 
                 const response = await axios.get(
-                    url + `?reference=${reference}`
+                    url + `${reference}`
                 );
 
                 if (response.data.status === "success") {

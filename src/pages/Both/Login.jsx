@@ -104,6 +104,7 @@ export default function Login() {
       }      
     } catch (error) {
       toast.error("Error al iniciar sesión");
+      setIsSubmitting(false);
       console.error("Error:", error);
     }
   }
