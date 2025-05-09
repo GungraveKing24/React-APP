@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { FiDollarSign, FiShoppingCart, FiUsers, FiPieChart, FiArrowLeft } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { FiDollarSign, FiShoppingCart, FiUsers, FiPieChart } from 'react-icons/fi';
 import { axiosInstance } from '../../Axios/Axios';
 import { Link } from "react-router-dom";
 
 
 const Statistics = () => {
-  const navigate = useNavigate();
   const [monthlySales, setMonthlySales] = useState([])
   const [weeklySales, setWeeklySale] = useState([])
   const [cancelledOrders, setCancelledOrders] = useState([])
   const [users, setUsers] = useState([])
+  const [topCategories, setTopCategories] = useState([])
+  const [topArragements, setTopArrangements] = useState([])
 
   useEffect(() => {
     fetchMonth()
     fetchWeek()
     fetchCancelled()
     fetchUsers()
+    fetchTopCategories()
+    fetchTopArragements()
   }, []);
 
   async function fetchMonth(){
@@ -47,12 +49,30 @@ const Statistics = () => {
   }
 
   async function fetchUsers(){
-      const response = await axiosInstance.get("/Users", {
+      const response = await axiosInstance.get("/stats/client-count", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`
         }
       })
     setUsers(response.data)
+  }
+
+  async function fetchTopCategories(){
+      const response = await axiosInstance.get("/stats/top-categories", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+    setTopCategories(response.data)
+  }
+
+  async function fetchTopArragements(){
+      const response = await axiosInstance.get("/stats/top-arrangements", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+    setTopArrangements(response.data)
   }
   
   const estadisticas = {
@@ -71,7 +91,7 @@ const Statistics = () => {
       { mes: 'May', ventas: 4900 },
       { mes: 'Jun', ventas: 6000 }
     ]
-  };
+  };console.log(monthlySales, weeklySales, cancelledOrders, users, topCategories, topArragements)
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -112,19 +132,9 @@ const Statistics = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold">Clientes Registrados</p>
-              <p className="text-2xl font-bold">{users.length}</p>
+              <p className="text-2xl font-bold">{users.total_clientes}</p>
             </div>
             <FiUsers className="text-4xl opacity-70" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg shadow-lg p-6 text-amber-900">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-semibold">Vistas a la pagina</p>
-              <p className="text-2xl font-bold">100,000,000</p>
-            </div>
-            <FiPieChart className="text-4xl opacity-70" />
           </div>
         </div>
 
@@ -163,16 +173,16 @@ const Statistics = () => {
         <div className="bg-white rounded-lg shadow-lg p-6 border border-rose-200">
           <h2 className="text-xl font-semibold text-rose-900 mb-4">Categorías Populares</h2>
           <div className="space-y-4">
-            {estadisticas.categoriasPopulares.map((categoria, index) => (
+            {topCategories.map((categoria, index) => (
               <div key={index}>
                 <div className="flex justify-between mb-1">
-                  <span className="text-sm font-medium text-rose-800">{categoria.nombre}</span>
-                  <span className="text-sm font-medium text-amber-800">{categoria.porcentaje}%</span>
+                  <span className="text-sm font-medium text-rose-800">{categoria.categoria}</span>
+                  <span className="text-sm font-medium text-amber-800">{categoria.cantidad}%</span>
                 </div>
                 <div className="w-full bg-rose-100 rounded-full h-2.5">
                   <div 
                     className="bg-gradient-to-r from-rose-400 to-amber-600 h-2.5 rounded-full" 
-                    style={{ width: `${categoria.porcentaje}%` }}
+                    style={{ width: `${categoria.cantidad}%` }}
                   ></div>
                 </div>
               </div>
@@ -183,36 +193,21 @@ const Statistics = () => {
         <div className="bg-white rounded-lg shadow-lg p-6 border border-rose-200">
           <h2 className="text-xl font-semibold text-rose-900 mb-4">Arreglos Populares</h2>
           <div className="space-y-4">
-            {estadisticas.categoriasPopulares.map((categoria, index) => (
+            {topArragements.map((arreglo, index) => (
               <div key={index}>
                 <div className="flex justify-between mb-1">
-                  <span className="text-sm font-medium text-rose-800">{categoria.nombre}</span>
-                  <span className="text-sm font-medium text-amber-800">{categoria.porcentaje}%</span>
+                  <span className="text-sm font-medium text-rose-800">{arreglo.arreglo}</span>
+                  <span className="text-sm font-medium text-amber-800">{arreglo.cantidad}%</span>
                 </div>
                 <div className="w-full bg-rose-100 rounded-full h-2.5">
                   <div 
                     className="bg-gradient-to-r from-rose-400 to-amber-600 h-2.5 rounded-full" 
-                    style={{ width: `${categoria.porcentaje}%` }}
+                    style={{ width: `${arreglo.cantidad}%` }}
                   ></div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-      <div className="mt-8 bg-gradient-to-r from-rose-100 to-amber-50 rounded-lg shadow-lg p-6 border border-rose-200">
-        <h2 className="text-xl font-semibold text-rose-900 mb-4">Recomendaciones</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white bg-opacity-70 p-4 rounded-lg border border-rose-200">
-            <h3 className="font-medium text-rose-800">Flor más vendida</h3>
-            <p className="text-amber-900">Rosas rojas (32%)</p>
-          </div>
-          <div className="bg-white bg-opacity-70 p-4 rounded-lg border border-rose-200">
-            <h3 className="font-medium text-rose-800">Mejor temporada</h3>
-            <p className="text-amber-900">Febrero - Mayo</p>
-          </div>
-          
         </div>
       </div>
     </div>
