@@ -198,9 +198,11 @@ export default function CheckoutForm() {
             value={form.departamento}
             required
           >
-            <option value="">Seleccione Departamento</option>
+            <option value="" disabled>Seleccione Departamento</option>
+            <option value="Santa Ana">Santa Ana</option>
             <option value="San Salvador">San Salvador</option>
             <option value="La Libertad">La Libertad</option>
+
           </select>
           <input
             type="text"

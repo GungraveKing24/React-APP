@@ -1,17 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaTruck, FaInfoCircle, FaBell, FaRegBell } from "react-icons/fa";
-
-const notificationsData = [
-  { id: 1, orderId: "#738", date: "8 Sep, 2023", status: "Procesando", read: false, customer: "María González", amount: "$95.00" },
-  { id: 2, orderId: "#703", date: "24 May, 2023", status: "En camino", read: false, customer: "Juan Pérez", amount: "$120.50" },
-  { id: 3, orderId: "#510", date: "22 Oct, 2023", status: "Completado", read: true, customer: "Ana Rodríguez", amount: "$65.25" },
-  { id: 4, orderId: "#489", date: "15 Oct, 2023", status: "Cancelado", read: true, customer: "Carlos Sánchez", amount: "$75.80" },
-];
+import axios from "axios";
 
 export default function OrderNotifications() {
-  const [notifications, setNotifications] = useState(notificationsData);
+  const [notifications, setNotifications] = useState([]);
   const [activeFilter, setActiveFilter] = useState("Todas");
+  const url = import.meta.env.VITE_API_URL;
+  const token = localStorage.getItem("token");
 
   const markAsRead = (id) => {
     setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n));
@@ -20,6 +16,13 @@ export default function OrderNotifications() {
   const markAllAsRead = () => {
     setNotifications(notifications.map(n => ({ ...n, read: true })));
   };
+
+  
+  useEffect(() => {
+    axios.get(url +"orders/notifications/orders", { headers: { Authorization: `Bearer ${token}` } })  // Ajusta la URL según tu backend
+      .then(res => setNotifications(res.data))
+      .catch(err => console.error("Error al cargar notificaciones", err));
+  }, []);
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -116,7 +119,7 @@ export default function OrderNotifications() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className={`font-semibold ${notif.read ? 'text-gray-600' : 'text-gray-900'}`}>
-                            Pedido {notif.orderId} - {notif.status}
+                            Pedido {notif.order_id} - {notif.order_state}
                           </h3>
                           {!notif.read && (
                             <span className="inline-block h-2 w-2 rounded-full bg-[#EFB8C8]"></span>
@@ -124,7 +127,7 @@ export default function OrderNotifications() {
                         </div>
                         <p className="text-gray-600">{notif.customer}</p>
                         <p className="text-sm text-gray-500 mt-1">
-                          <span className="font-medium">{notif.date}</span> • Total: {notif.amount}
+                          <span className="font-medium">{notif.date}</span> • Total: {notif.pay_amount}
                         </p>
                       </div>
                     </div>
@@ -160,7 +163,7 @@ export default function OrderNotifications() {
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
             <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>
             <p className="text-2xl font-Title text-yellow-600">
-              {notifications.filter(n => n.status === "Procesando").length}
+              {notifications.filter(n => n.status === "procesando").length}
             </p>
           </div>
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
