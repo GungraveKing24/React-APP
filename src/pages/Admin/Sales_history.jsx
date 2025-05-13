@@ -13,7 +13,7 @@ export default function SalesHistory(){
 
     useEffect(() => {
         if (location.pathname === "/orders") {
-            setStatusFilter(["pendiente", "procesado"]);
+            setStatusFilter(["pendiente", "procesado", "aprobado"]);
         }
         fetchOrders();
     }, [location.pathname]);
@@ -73,7 +73,7 @@ export default function SalesHistory(){
             </Link>
 
             <div className="flex flex-wrap gap-2 mb-5 mt-3 font-Title">
-                    {["procesado", "pendiente", "completado", "cancelado"].map(filter => (
+                    {["procesado", "pendiente", "completado", "cancelado", "aprobado"].map(filter => (
                         <button
                         key={filter}
                         onClick={() => handleStatusChange(filter)}
@@ -207,16 +207,22 @@ export default function SalesHistory(){
                             <p className="text-2xl font-Title text-rose-900">{orders.length}</p>
                         </div>
                         <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-                        <h3 className="text-gray-500 font-Title text-sm">Procesado</h3>
-                        <p className="text-2xl font-Title text-yellow-600">
+                          <h3 className="text-gray-500 font-Title text-sm">Procesado</h3>
+                          <p className="text-2xl font-Title text-yellow-600">
                             {orders.filter(o => o.status === "procesado").length}
-                        </p>
+                          </p>
                         </div>
                         <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-                        <h3 className="text-gray-500 font-Title text-sm">Pendiente</h3>
-                        <p className="text-2xl font-Title text-blue-600">
+                          <h3 className="text-gray-500 font-Title text-sm">Pendiente</h3>
+                          <p className="text-2xl font-Title text-blue-600">
                             {orders.filter(o => o.status === "pendiente").length}
-                        </p>
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
+                          <h3 className="text-gray-500 font-Title text-sm">Aprobado</h3>
+                          <p className="text-2xl font-Title text-gray-600">
+                            {orders.filter(o => o.status === "aprobado").length}
+                          </p>
                         </div>
                     </div>
         </div>

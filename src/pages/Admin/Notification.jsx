@@ -26,13 +26,13 @@ export default function OrderNotifications() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "Procesando":
+      case "procesado":
         return <FaInfoCircle className="text-yellow-500 text-xl" />;
-      case "En camino":
+      case "pendiente":
         return <FaTruck className="text-blue-500 text-xl" />;
-      case "Completado":
+      case "completado":
         return <FaCheckCircle className="text-green-500 text-xl" />;
-      case "Cancelado":
+      case "cancelado":
         return <FaTimesCircle className="text-red-500 text-xl" />;
       default:
         return <FaInfoCircle className="text-gray-500 text-xl" />;
@@ -41,22 +41,22 @@ export default function OrderNotifications() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Procesando":
+      case "procesado":
         return "bg-yellow-100 text-yellow-800";
-      case "En camino":
+      case "pendiente":
         return "bg-blue-100 text-blue-800";
-      case "Completado":
+      case "completado":
         return "bg-green-100 text-green-800";
-      case "Cancelado":
+      case "cancelado":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
-  };
+  };console.log(notifications)
 
   const filteredNotifications = activeFilter === "Todas" 
     ? notifications 
-    : notifications.filter(n => n.status === activeFilter);
+    : notifications.filter(n => n.order_state === activeFilter);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white  p-6">
@@ -66,7 +66,7 @@ export default function OrderNotifications() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
                 <span className="ml-1 font-Title">Volver</span>
-            </Link>
+      </Link>
 
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -86,7 +86,7 @@ export default function OrderNotifications() {
         </div>
 
         <div className="flex flex-wrap gap-2 mb-6 font-Title">
-          {["Todas", "Procesando", "En camino", "Completado", "Cancelado"].map(filter => (
+          {["Todas", "procesado", "pendiente", "completado", "cancelado", "aprobado"].map(filter => (
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
@@ -113,8 +113,8 @@ export default function OrderNotifications() {
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex items-start gap-4">
-                      <div className={`mt-1 p-2 rounded-lg ${getStatusColor(notif.status)}`}>
-                        {getStatusIcon(notif.status)}
+                      <div className={`mt-1 p-2 rounded-lg ${getStatusColor(notif.order_state)}`}>
+                        {getStatusIcon(notif.order_state)}
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
@@ -134,7 +134,7 @@ export default function OrderNotifications() {
                     
                     <div className="flex flex-col sm:flex-row gap-3">
                       <a 
-                        href={`/OrderDetails`} 
+                        href={`/OrderDetails/${notif.order_id}`} 
                         className="px-4 py-2 bg-[#EFB8C8] text-rose-800 rounded-lg hover:bg-rose-200 transition-colors text-center"
                       >
                         Ver detalles
@@ -161,15 +161,15 @@ export default function OrderNotifications() {
             <p className="text-2xl font-Title text-rose-900">{notifications.length}</p>
           </div>
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-            <h3 className="text-gray-500 font-Title text-sm">Por Procesar</h3>
+            <h3 className="text-gray-500 font-Title text-sm">Procesado</h3>
             <p className="text-2xl font-Title text-yellow-600">
-              {notifications.filter(n => n.status === "procesando").length}
+              {notifications.filter(n => n.order_state === "procesado").length}
             </p>
           </div>
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
-            <h3 className="text-gray-500 font-Title text-sm">En Camino</h3>
+            <h3 className="text-gray-500 font-Title text-sm">Pendiente</h3>
             <p className="text-2xl font-Title text-blue-600">
-              {notifications.filter(n => n.status === "En camino").length}
+              {notifications.filter(n => n.order_state === "pendiente").length}
             </p>
           </div>
           <div className="bg-white p-4 rounded-xl shadow border border-rose-100">
