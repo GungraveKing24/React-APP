@@ -3,6 +3,7 @@ import { FaCheckCircle, FaTruck, FaInfoCircle, FaChevronDown, FaChevronUp } from
 import { Link, useLocation, useParams } from "react-router-dom";
 import { axiosInstance } from "../../Axios/Axios";
 import { formatDate } from "../../components/CardUtil";
+import Swal from "sweetalert2";
 
 export default function OrderDetails() {
   const { id } = useParams();
@@ -60,10 +61,56 @@ export default function OrderDetails() {
     }
   };
 
-  const handleStatusChange = (newStatus) => {
-    setOrder({ ...order, state: newStatus });
-    setShowStatusDropdown(false);
-  };console.log(order)
+  const handleCancel = async () => {
+    const result = await Swal.fire({
+      title: `Cancelar`,
+      text: `¿Estas seguro de querer cancelar el pedido #${id}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Sí`,
+      cancelButtonText: "No"
+    });
+
+    if(result.isConfirmed){
+      try {
+        const res = await axiosInstance.post(`/orders/order/cancel/${id}`, {}, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        })
+
+        if(res.status === 200 || res.status === 201){
+          Swal.fire(
+            `cancelado`,
+            `Pedido #${id} ha sido cancelado`, 
+            "success"
+          );
+          setOrder({...order, order_state: "cancelado"})
+        } else{
+          Swal.fire(`Error`, `Lo sentimos, hubo un error al cancelar`, "error");
+        }
+      } catch (error) {
+        Swal.fire(`Error`, `Lo sentimos, hubo un error al cancelar`, "error");
+      }
+    }
+  }
+
+  const handleStatusChange = async (newStatus) => {
+    const res = await axiosInstance.post(`/orders/change/order_state/${id}?new_state=${newStatus}`, {}, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+
+    if(res.status === 200 || res.status === 201){
+      setOrder({ ...order, order_state: newStatus });
+      setShowStatusDropdown(false);
+    } else{
+      Swal.fire(`Error`, `Hubo un error al actualizar el estado`, "error");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 to-amber-50 flex justify-center items-center p-6">
@@ -171,7 +218,13 @@ export default function OrderDetails() {
             >
               {showNumber ? `Numero: 12345678` : "Contactar al cliente"}
             </button>
-          ) : <></>}
+          ) : (
+              <button
+                className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title"
+                onClick={() => handleCancel()}>
+                Cancelar orden
+              </button>
+            )}
         </div>
       </div>
     </div>
