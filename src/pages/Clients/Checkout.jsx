@@ -13,7 +13,7 @@ export default function CheckoutForm() {
     direccion: "",
     telefono: "",
     notas: "",
-    metodoPago: "Contra Entrega", // Valor por defecto
+    metodoPago: "Efectivo", // Valor por defecto
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -153,7 +153,7 @@ export default function CheckoutForm() {
           direccion: "",
           telefono: "",
           notas: "",
-          metodoPago: "Contra Entrega",
+          metodoPago: "Efectivo",
         });
       }
     } catch (error) {
@@ -275,8 +275,8 @@ export default function CheckoutForm() {
               <input
                 type="radio"
                 name="metodoPago"
-                value="Contra Entrega"
-                checked={form.metodoPago === "Contra Entrega"}
+                value="Efectivo"
+                checked={form.metodoPago === "Efectivo"}
                 onChange={handleChange}
                 className="h-5 w-5 text-pink-600"
               />

@@ -206,7 +206,7 @@ export default function OrderDetails() {
 
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <Link
-            to={isDisabled ? "/order_History" : "/Orders"}
+            to={isDisabled ? "/profile" : "/Orders"}
             className="px-6 py-3 bg-rose-100 text-rose-800 rounded-lg hover:bg-rose-200 transition-colors text-center font-Title"
           >
             Volver
@@ -218,13 +218,20 @@ export default function OrderDetails() {
             >
               {showNumber ? `Numero: 12345678` : "Contactar al cliente"}
             </button>
+          ) : order.payment_method === "Efectivo" ? (
+            <button
+              className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title"
+              onClick={handleCancel}>
+              Cancelar orden
+            </button>
           ) : (
-              <button
-                className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title"
-                onClick={() => handleCancel()}>
-                Cancelar orden
-              </button>
-            )}
+            <button
+              className="px-6 py-3 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed font-Title"
+              disabled
+            >
+              No se puede cancelar
+            </button>
+          )}
         </div>
       </div>
     </div>
