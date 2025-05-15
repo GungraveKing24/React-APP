@@ -12,14 +12,14 @@ const developers = [
   {
     name: "Jorge Francisco",
     image: Dev1,
-    email: "Jorge@example.com",
+    email: "Gungraveheat123@gmail.com",
     phone: "+50375566175",
     whatsapp: "75566175",
   },
   {
     name: "Fernando Gómez",
     image: Dev2,
-    email: "Fernando@example.com",
+    email: "fer.devcraft@gmail.com",
     phone: "+5036001205",
     whatsapp: "60013205",
   },
