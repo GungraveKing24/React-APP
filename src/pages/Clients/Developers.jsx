@@ -33,7 +33,7 @@ const developers = [
   {
     name: "Tatiana Galicia",
     image: Dev4,
-    email: "Tatiana@example.com",
+    email: "tatigalicia2@gmail.com",
     phone: "+50370460494",
     whatsapp: "70460494",
   },
