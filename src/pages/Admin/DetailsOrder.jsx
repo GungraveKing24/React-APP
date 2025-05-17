@@ -24,7 +24,6 @@ export default function OrderDetails() {
         })
         setOrder(res.data)
       } catch (error) {
-        console.log("error", error)
       }
     }
 

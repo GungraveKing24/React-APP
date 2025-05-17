@@ -27,7 +27,7 @@ export default function CreateProduct() {
         const res = await axiosInstance.get("/categories")
         setCategories(res.data);
       } catch (error) {
-        console.error("Error al obtener categorías:", error);
+        Swal.fire("Error", "No se pudieron cargar las categorias", "error");
       }
     };
     fetchCategories();
@@ -98,7 +98,7 @@ export default function CreateProduct() {
       Swal.fire("Éxito", response.data.message || "Exito", "success");
       // navegar hasta la zona de abajo
       window.scrollTo(0, document.body.scrollHeight);
-      navigate("/Catalog2");
+      navigate("/admin/products");
     } catch (error) {
       Swal.fire("Error", error.response?.data?.detail || "Error al guardar", "error");
     } finally {

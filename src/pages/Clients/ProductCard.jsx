@@ -84,7 +84,6 @@ export default function ProductCard({ product }) {
                 updateCartCount();
             }
         } catch (error) {
-            console.error("Error al agregar al carrito:", error);
             setError(handleCartError(error));
             
             if (error.response?.status === 401) {

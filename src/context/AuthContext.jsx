@@ -18,7 +18,6 @@ export function AuthProvider({ children }) {
                 setUser(response.data);
             }
         } catch (error) {
-            console.error("Error al obtener datos del usuario:", error);
             logout();
         }
     };
@@ -35,7 +34,6 @@ export function AuthProvider({ children }) {
                 // Luego obtener los datos completos del servidor
                 fetchUserData();
             } catch (error) {
-                console.error("Error al procesar el token:", error);
                 logout();
             }
         }

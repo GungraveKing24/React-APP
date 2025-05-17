@@ -42,7 +42,6 @@ export default function details() {
         const res2 = await axiosInstance.get(`/Comments/${id}`)
         setComments(res2.data)
       } catch (error) {
-        console.log(error)
       }
      }
 
@@ -112,7 +111,6 @@ export default function details() {
                 updateCartCount();
             }
         } catch (error) {
-            console.error("Error al agregar al carrito:", error);
             setError(handleCartError(error));
             
             if (error.response?.status === 401) {
@@ -162,7 +160,6 @@ export default function details() {
         const { data, status } = await postData(`/Comments/${id}`, form ,true);
         if (status === 200 || status === 201){
           toast.success("Comentario enviado")
-          console.log("Creacion exitosa")
           setComments(prev => [
             ...prev,
             data
@@ -171,7 +168,6 @@ export default function details() {
           toast.error("Error al enviar comentario")
         }
       } catch (error) {
-        console.log(error)
         toast.error("Error al enviar comentario")
       } finally{
         setIsSubmitting(false)

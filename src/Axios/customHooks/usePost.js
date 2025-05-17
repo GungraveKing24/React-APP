@@ -22,7 +22,6 @@ export const usePost = () => {
         status: res.status,
       };
     } catch (err) {
-      console.error('Error en POST:', err);
       setError(err);
       return {
         data: null,

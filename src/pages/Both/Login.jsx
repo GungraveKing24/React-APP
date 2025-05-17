@@ -28,7 +28,6 @@ export default function Login() {
           navigate("/profile");
         }
       } catch (error) {
-        console.error("Error decodificando el token", error)
         localStorage.removeItem("token");
       }
     }
@@ -105,7 +104,6 @@ export default function Login() {
     } catch (error) {
       toast.error("Error al iniciar sesión");
       setIsSubmitting(false);
-      console.error("Error:", error);
     }
   }
 

@@ -50,7 +50,6 @@ export default function EditProduct() {
           });
         }
       } catch (error) {
-        console.error("Error loading data:", error);
         Swal.fire("Error", "No se pudieron cargar los datos", "error");
       } finally {
         setLoading(false);

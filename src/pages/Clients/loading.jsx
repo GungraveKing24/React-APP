@@ -18,7 +18,6 @@ const Loading = () => {
         // Verificar estado del pago
         const checkPaymentStatus = async () => {
             if (!reference) {
-                console.error("No reference found in URL");
                 navigate("/"); // Redirige a home si no hay reference
                 return;
             }

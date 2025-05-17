@@ -23,7 +23,6 @@ export default function Catalog2() {
       const data = await response.json();
       setProducts(data.map(p => ({ ...p, arr_is_active: p.arr_availability })));
     } catch (error) {
-      console.error("Error:", error);
       Swal.fire("Error", "No se pudieron cargar los productos", "error");
     } finally { 
       setLoading(false);
@@ -72,7 +71,6 @@ export default function Catalog2() {
           p.id === id ? { ...p, arr_is_active: !isCurrentlyActive } : p
         ));
       } catch (error) {
-        console.error("Error:", error);
         Swal.fire("Error", `No se pudo ${action} el producto`, "error");
       }
     }

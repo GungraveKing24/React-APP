@@ -24,7 +24,6 @@ export function CartProvider({ children }) {
                 setCartCount(count);
             }
         } catch (error) {
-            console.error("Error al actualizar carrito:", error);
             setCartCount(0);
         }
     };

@@ -19,7 +19,6 @@ export const useFetch = (endpoint, withAuth = false) => {
         setData(response.data);
         setStatus(response.status)
       } catch (err) {
-        console.error('Error fetching data:', err);
         setError(err);
       } finally {
         setLoading(false);

@@ -45,19 +45,15 @@ function ModalCategories({category, toastEvent}) {
   async function AddCategory() {
     try {
       const { status } = await postData("/categories", formData, true); 
-      console.log(status)
       closeModal();
       if (status === 200 || status === 201){
         toastEvent("Creacion exitosa", "success")
-        console.log("Creacion exitosa")
       } else{
         toastEvent("Ocurrio un error", "error")
-        console.log("ERROR")
       }
     } catch (error) {
       closeModal();
       toastEvent("Ocurrio un error", "error")
-      console.log("ERROR")
     }
   }
 
@@ -75,16 +71,13 @@ function ModalCategories({category, toastEvent}) {
         closeModal();
         if (res.status === 200 || res.status === 201){
           toastEvent("Edicion exitosa", "success")
-          console.log("Edicion exitosa")
         } else{
           toastEvent("Ocurrio un error", "error")
-          console.log("ERROR")
         }
       }
     } catch (error) {
       closeModal();
       toastEvent("Ocurrio un error", "error")
-      console.error(error)
     }
   }
 

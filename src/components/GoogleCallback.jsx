@@ -29,7 +29,6 @@ export default function GoogleCallback() {
                     navigate('/profile');
                 }   
             } catch (e) {
-                console.error('Error decodificando token:', e);
                 toast.error('Error procesando la autenticación');
                 navigate('/login');
             }
