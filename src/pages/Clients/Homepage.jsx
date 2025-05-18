@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaLeaf, FaGift, FaTruck, FaCreditCard } from "react-icons/fa";
 import Insta1 from "../../assets/Insta1.jpeg"
 import insta2 from "../../assets/insta2.jpeg"
@@ -18,10 +18,39 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
+import { axiosInstance } from "../../Axios/Axios";
 
 const flowers = [F1, F2, F3, F4, F5, F6, F7, F8];
+const reviewMockups = [{
+  user_name: "Carlos Martínez",
+  comment_text: "Pedí un arreglo floral para sorprender a mi esposa en nuestro aniversario y fue un éxito total. Ella quedó encantada con el diseño y la combinación de flores. El proceso de compra en línea fue rápido y sencillo. ¡Gracias por hacer ese día aún más especial!",
+}, {
+  user_name: "Rosa Pineda",
+  comment_text: "Hice un pedido de último minuto para el cumpleaños de mi mamá y no solo llegó a tiempo, ¡sino que el arreglo estaba precioso! Las flores súper frescas, los colores vibrantes. Definitivamente volveré a comprar aquí.",
+}, {
+  user_name: "Ana Morales",
+  comment_text: "¡Súper recomendada! Pedí un ramo para una amiga que estaba enferma y quedó encantada. El empaque, el aroma, la presentación... todo se nota que está hecho con cuidado.",
+}]
 
 const Homepage = () => {
+  const [reviews, setReviews] = useState(reviewMockups)
+
+  useEffect(() => {
+    fetchReviews()
+  }, [])
+
+  async function fetchReviews() {
+    try {
+      const res = await axiosInstance.get(`/Comments/${Math.floor(Math.random() * 10) + 1}`);
+      if (res.status === 200 && res.data.length >= 3) {
+        setReviews(res.data);
+      } else {
+        setReviews(reviewMockups);
+      }
+    } catch (error) {
+      setReviews(reviewMockups)
+    }
+  }
 
   return (
     <div className="bg-gray-100 min-h-screen">
@@ -78,7 +107,6 @@ const Homepage = () => {
         {/* Productos más solicitados */}
           <section className="mt-10 px-4">
             <h2 className="text-2xl font-Title text-gray-800 text-center mb-8">Las más solicitadas</h2>
-            
             <Slider
               dots={true}
               infinite={true}
@@ -144,46 +172,47 @@ const Homepage = () => {
           </div>
         </section>
 
-      
-
-        {/* Testimonios: Propuesta -> FERNANDO */}
-        <section className="bg-white">
-          <div className="container px-6 py-10 mx-auto">
-              <h1 className="text-2xl font-Title text-center text-gray-800 capitalize lg:text-3xl">
-                  Mira lo que nuestros <span className="text-pink-400 ">Clientes</span> dicen
-              </h1>
-
-              <p className="max-w-2xl mx-auto mt-6 text-center text-gray-500">
-                  Esto es una propuesta para la sección de los testimonios de los clientes
-              </p>
-
-              <section className="grid grid-cols-1 gap-8 mt-8 xl:mt-12 lg:grid-cols-2 xl:grid-cols-3">
-                {["Beatriz M.", "Juan R.", "Andrea T."].map((name, index) => (
-                  <div className="p-8 rounded-lg shadow hover:shadow-lg transition duration-300" key={index}>
-                      <p className="leading-loose text-gray-500">
-                          “Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore quibusdam ducimus libero ad
-                          tempora doloribus expedita laborum saepe voluptas perferendis delectus assumenda rerum, culpa
-                          aperiam dolorum, obcaecati corrupti aspernatur a.”.
-                      </p>
-
-                      <div className="flex items-center mt-8 -mx-2">
-                          <img className="object-cover mx-2 rounded-full w-14 shrink-0 h-14 ring-4 ring-blue-300" src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt={name}/>
-
-                          <div className="mx-2">
-                              <h1 className="font-semibold text-gray-800">{name}</h1>
-                              <span className="text-sm text-gray-500">Cliente Frecuente</span>
-                          </div>
-                      </div>
+        {/* Testimonios */}
+        <section className="mt-10 px-4">
+            <h2 className="text-2xl font-Title text-center text-gray-800 capitalize lg:text-3xl">Mira lo que nuestros <span className="text-pink-400 ">Clientes</span> dicen</h2>
+          <Slider
+            dots={true}
+            infinite={true}
+            speed={500}
+            slidesToShow={3}
+            slidesToScroll={1}
+            responsive={[
+              {
+                breakpoint: 1024,
+                settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 1,
+                  }
+              },
+              {
+                breakpoint: 768,
+                settings: {
+                  slidesToShow: 1,
+                  slidesToScroll: 1
+                }
+              }
+            ]}>
+              {reviews.map((review, index) => (
+                <div className="px-4 mt-2" key={index}>
+                  <div className="bg-white p-6 rounded-lg shadow hover:shadow-md transition duration-300 h-full flex flex-col justify-between min-h-[300px]">
+                    <p className="leading-loose text-gray-600">{review.comment_text}</p>
+                    <div className="mt-4">
+                      <h1 className="font-semibold text-gray-800">{review.user_name}</h1>
+                    </div>
                   </div>
-                ))}
-              </section>
-          </div>
+                </div>
+              ))}
+          </Slider>
         </section>
 
         {/* Instagram Gallery */}
         <section className="mt-10 text-center">
           <h2 className="text-2xl font-Title text-gray-800">Síguenos en Instagram</h2>
-  
               <div className="mt-10 grid grid-cols-3 gap-2">
                 <img
                   src={Insta1}
@@ -200,19 +229,11 @@ const Homepage = () => {
                   alt="Ramo"
                   className="rounded-lg shadow-md mx-auto w-[350px] h-[350px] object-cover"
                 />
-                 
               </div>
-            
         </section>
       </main>
-
-
-    
     </div>
-
   );
 };
-
-
 
 export default Homepage;

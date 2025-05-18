@@ -21,7 +21,7 @@ export default function OrderNotifications() {
   useEffect(() => {
     axios.get(url +"orders/notifications/orders", { headers: { Authorization: `Bearer ${token}` } })  // Ajusta la URL según tu backend
       .then(res => setNotifications(res.data))
-      .catch(err => console.error("Error al cargar notificaciones", err));
+      .catch();
   }, []);
 
   const getStatusIcon = (status) => {
@@ -52,7 +52,7 @@ export default function OrderNotifications() {
       default:
         return "bg-gray-100 text-gray-800";
     }
-  };console.log(notifications)
+  };
 
   const filteredNotifications = activeFilter === "Todas" 
     ? notifications 

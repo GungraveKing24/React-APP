@@ -31,7 +31,6 @@ export default function SignIn() {
         const userInfo = JSON.parse(atob(token.split(".")[1]));
         navigate("/profile", { replace: true });
       } catch (error) {
-        console.error("Error al decodificar el token", error);
         localStorage.removeItem("token");
       }
     }
@@ -203,7 +202,6 @@ export default function SignIn() {
         setTimeout(() => navigate("/profile"), 1500);
       }
     } catch (error) {
-      console.error("Error:", error);
       toast.error(error.message || "Error al registrar. Intenta nuevamente.");
     } finally {
       setIsSubmitting(false);

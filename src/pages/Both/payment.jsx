@@ -40,7 +40,6 @@ const PaymentPage = () => {
           toast("El pago está pendiente de confirmación");
         }
       } catch (error) {
-        console.error("Error verifying payment:", error);
         toast.error("Error al verificar el pago");
       } finally {
         setLoading(false);

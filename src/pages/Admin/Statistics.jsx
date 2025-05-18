@@ -91,7 +91,7 @@ const Statistics = () => {
       { mes: 'May', ventas: 4900 },
       { mes: 'Jun', ventas: 6000 }
     ]
-  };console.log(monthlySales, weeklySales, cancelledOrders, users, topCategories, topArragements)
+  };
 
   return (
     <div className="min-h-screen bg-white p-6">

@@ -35,7 +35,6 @@ const Loading = () => {
                     }, 2000);
                 }
             } catch (error) {
-                console.error("Error checking payment status:", error);
             }
         };
 

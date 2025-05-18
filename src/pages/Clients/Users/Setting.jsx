@@ -117,7 +117,6 @@ function Settings() {
       }
     } catch (error) {
       toast.error("Error al actualizar el perfil");
-      console.error(error);
     } finally {
       setLoading(false);
     }

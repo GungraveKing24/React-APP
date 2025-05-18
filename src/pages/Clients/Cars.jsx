@@ -37,7 +37,6 @@ export default function ShoppingCart() {
       })
       setCart(response.data);
     } catch (error) {
-      console.error("Error al obtener detalles del carrito", error);
     }
   };
 
@@ -79,7 +78,6 @@ export default function ShoppingCart() {
       // RECARGAR EL CARRITO DESDE EL BACKEND
       await HandleGetDetailsUser();
     } catch (error) {
-      console.error("Error al actualizar cantidad", error);
     }
   };
 
@@ -95,7 +93,6 @@ export default function ShoppingCart() {
         )
       );
     } catch (error) {
-      console.error("Error agregando al carrito", error);
     }
   }
 
@@ -111,7 +108,6 @@ export default function ShoppingCart() {
         )
       );
     } catch (error) {
-      console.error("Error quitando del carrito", error);
     }
   }
 
@@ -137,11 +133,8 @@ export default function ShoppingCart() {
     });
 
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-
-      console.log(res)
-      updateCartCount();
+    updateCartCount();
     } catch(error) {
-      console.log("Error quitando del carrito")
     }
   };
 

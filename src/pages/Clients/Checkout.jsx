@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { axiosInstance } from "../../Axios/Axios";
 import { useCart } from "../../context/CarContext"
+import { useNavigate } from "react-router-dom";
 
 export default function CheckoutForm() {
   const { updateCartCount } = useCart();
@@ -16,6 +17,7 @@ export default function CheckoutForm() {
     metodoPago: "Efectivo", // Valor por defecto
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate()
 
   useEffect(() => {
     HandleVerify();
@@ -44,7 +46,6 @@ export default function CheckoutForm() {
           direccion: payload.user_direction || "",
         }));
       } catch (error) {
-        console.error("Error al leer el token:", error);
       }
     }
   };
@@ -58,7 +59,6 @@ export default function CheckoutForm() {
       });
       setCart(response.data);
     } catch (error) {
-      console.error("Error al obtener detalles del carrito", error);
     }
   };
 
@@ -155,9 +155,16 @@ export default function CheckoutForm() {
           notas: "",
           metodoPago: "Efectivo",
         });
+
+        setTimeout(() => {
+          if(token){
+            navigate("/profile")
+          } else{
+            navigate("/")
+          }
+        }, 1000);
       }
     } catch (error) {
-      console.error("Error al procesar el pedido:", error);
       toast.error(error.response?.data?.detail || "Error al procesar el pedido");
     } finally {
       setIsSubmitting(false);
@@ -200,9 +207,6 @@ export default function CheckoutForm() {
           >
             <option value="" disabled>Seleccione Departamento</option>
             <option value="Santa Ana">Santa Ana</option>
-            <option value="San Salvador">San Salvador</option>
-            <option value="La Libertad">La Libertad</option>
-
           </select>
           <input
             type="text"

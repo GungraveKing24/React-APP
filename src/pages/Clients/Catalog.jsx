@@ -50,7 +50,6 @@ export default function Catalog() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error al obtener productos:", error);
         setLoading(false);
       });
   }, [searchTerm, selectedCategory]);

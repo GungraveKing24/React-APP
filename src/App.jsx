@@ -74,7 +74,7 @@ function App() {
               <Route element={<ProtectedRoute allowedRoles={['Cliente']} />}>
                 <Route path="/profile" element={<User_Dashboard />} />
                 <Route path='/order_Details/:id' element={<OrderDetails />} />
-                <Route path='/order_History' element={<Order_History />} />
+                <Route path='/order_History/' element={<Order_History />} />
                 <Route path='/settings' element={<Settings />} />
               </Route>
 
@@ -91,6 +91,7 @@ function App() {
                 <Route path='/orders' element={<SalesHistory />} />
                 <Route path='/SalesHistory' element={<SalesHistory />} />
                 <Route path='/UserManagement' element={<UserManagement />} />
+                <Route path='/userHistory/:id' element={<Order_History />} />
               </Route>
             </Routes>
           </Layout>

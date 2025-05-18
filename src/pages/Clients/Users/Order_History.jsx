@@ -1,34 +1,54 @@
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { formatDate } from "../../../components/CardUtil";
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { CgDetailsMore } from "react-icons/cg";
+import { axiosInstance } from "../../../Axios/Axios";
 
 function Order_History(){
   const [orders, setOrders] = useState([])
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
+  const { id } = useParams();
 
   useEffect(() => {
-    async function fetchOrders(){
-      try {
-        const url = import.meta.env.VITE_API_URL + "orders/cart/";
-        const res = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        });
-        // Filtrar pedidos que NO sean del estado "carrito"
-        const filteredOrders = res.data.filter(order => order.order_state !== "carrito")
-        setOrders(filteredOrders);
-      } catch (error) {
-            console.error("Error al obtener los pedidos:", error);
-      }
+    if(id){
+      fetchOrdersByID()
+    } else{
+      fetchOrders()
     }
-
-    fetchOrders()
   }, [])
+  
+  async function fetchOrders(){
+    try {
+      const url = import.meta.env.VITE_API_URL + "orders/cart/";
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+        // Filtrar pedidos que NO sean del estado "carrito"
+      const filteredOrders = res.data.filter(order => order.order_state !== "carrito")
+      setOrders(filteredOrders);
+    } catch (error) {}
+  }
+
+  async function fetchOrdersByID() {
+  try {
+    const res = await axiosInstance.get("/order/user_orders", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      },
+      params: {
+        user_id: id
+      }
+    });
+
+    const filteredOrders = res.data.filter(order => order.order_state !== "carrito");
+    setOrders(filteredOrders);
+  } catch (error) {}
+};
 
   const filteredOrders = useMemo(() => {
     return orders
@@ -72,11 +92,11 @@ function Order_History(){
               <tbody className="bg-white divide-y divide-gray-100">
                 {currentOrders.length > 0 ? (
                   currentOrders.map((order) => (
-                    <tr key={order.id} className="hover:bg-rose-50 transition-colors">
+                    <tr key={order.id ? order.id : order.order_id} className="hover:bg-rose-50 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 h-10 w-10 rounded-full bg-rose-100 flex items-center justify-center text-rose-800">
-                            #{order.id}
+                            #{order.id ? order.id : order.order_id}
                           </div>
                         </div>
                       </td>
@@ -88,7 +108,7 @@ function Order_History(){
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">
-                          ${order.order_total.toFixed(2)}
+                          ${order.order_total ? order.order_total.toFixed(2) : order.total_paid.toFixed(2)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -98,7 +118,7 @@ function Order_History(){
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <Link to={`/order_Details/${order.id}`} className="flex space-x-3">
+                        <Link to={order.id ? `/order_Details/${order.id}` : `/OrderDetails/${order.order_id}`} className="flex space-x-3">
                           <CgDetailsMore size={24}/>
                         </Link>
                       </td>

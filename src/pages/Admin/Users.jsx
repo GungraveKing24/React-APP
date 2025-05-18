@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { FaUsers, FaSearch, FaRegEnvelope, FaPhone, FaRegCalendarAlt } from 'react-icons/fa';
+import { CgDetailsMore } from "react-icons/cg";
 import { axiosInstance } from '../../Axios/Axios';
 import { formatDate } from '../../components/CardUtil';
+import { Link } from 'react-router-dom';
 
 // HighlightText.jsx
 export function HighlightText({ text, highlight }) {
@@ -145,7 +147,9 @@ export default function UserManagement() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <p>Historial</p>
+                        <Link to={`/userHistory/${user.id}`} className="flex space-x-3">
+                          <CgDetailsMore size={24}/>
+                        </Link>
                       </td>
                     </tr>
                   ))

@@ -54,7 +54,6 @@ function User_Dashboard() {
             .slice(0,5);
             setOrders(filteredOrders);
         } catch (error) {
-            console.error("Error al obtener los pedidos:", error);
         }
     }
 
@@ -72,7 +71,6 @@ function User_Dashboard() {
             }
             setUser(userData);
         } catch (error) {
-            console.error("Error al obtener los datos del usuario:", error);
             localStorage.removeItem("token");
         }
     }    
