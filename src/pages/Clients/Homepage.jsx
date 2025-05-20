@@ -13,6 +13,8 @@ import F5 from "../../assets/FAV5.jpeg"
 import F6 from "../../assets/FAV6.jpeg"
 import F7 from "../../assets/FAV7.jpeg"
 import F8 from "../../assets/FAV8.jpeg"
+import Ilumina from "../../assets/Ilumina.jpeg"
+import Flor from "../../assets/Flor.jpeg"
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -58,7 +60,7 @@ const Homepage = () => {
         <section className="bg-[#FAF6F0] p-6 rounded-lg shadow-md text-center relative overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div className="relative">
-              <img src={Insta1} alt="Ramo de rosas" className="w-full h-96 object-cover rounded-lg" />
+              <img src={Ilumina} alt="Ramo de rosas" className="w-full h-96 object-cover rounded-lg" />
               <div className="absolute inset-0 bg-gradient-to-r from-white to-transparent flex flex-col justify-center p-6">
                 <h1 className="text-4xl font-bold text-gray-800">ILUMINA <br /> TUS DÍAS</h1>
               </div>
@@ -67,8 +69,8 @@ const Homepage = () => {
             <div className="grid grid-cols-1 gap-4">
               <img src={lluvia} alt="Flores variadas" className="w-full h-48 object-cover rounded-lg shadow-lg" />
               <div className="relative">
-                <img src={insta2} alt="Ramos de flores" className="w-full h-48 object-cover rounded-lg shadow-lg" />
-                <p className="absolute bottom-2 left-2 bg-white px-4 py-1 rounded-lg shadow-md font-Title text-gray-800">UNA FLOR</p>
+                <img src={Flor} alt="Ramos de flores" className="w-full h-48 object-cover rounded-lg shadow-lg" />
+                <p className="absolute bottom-2 left-2 bg-white px-4 py-1 rounded-lg shadow-md font-Title text-gray-800">ALEGRÍA EN FORMA DE FLORES</p>
               </div>
             </div>
           </div>
@@ -92,12 +94,16 @@ const Homepage = () => {
               <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-blue-300">
                 <FaTruck className="text-blue-300 text-6xl mx-auto mb-4 stroke-current" />
                 <h3 className="text-xl font-title text-gray-700">Envío rápido y seguro</h3>
-                <p className="text-gray-600 mt-2">Garantizamos la entrega en tiempo y forma para que tus flores lleguen perfectas.</p>
+                <p className="text-gray-600 mt-2">Garantizamos la entrega en tiempo y forma para que tus flores lleguen perfectas.
+                  Envios a Santa Ana
+                </p>
               </div>
               <div className="bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transition duration-300 border border-purple-300">
                 <FaCreditCard className="text-purple-300 text-6xl mx-auto mb-4 stroke-current" />
                 <h3 className="text-xl font-title text-gray-700">Pago seguro y fácil</h3>
-                <p className="text-gray-600 mt-2">Aceptamos múltiples métodos de pago para mayor comodidad y seguridad.</p>
+                <p className="text-gray-600 mt-2">Aceptamos múltiples métodos de pago para mayor comodidad y seguridad.
+                  Desploquea los pagos con tarjeta al Registrarte en el Sitio. 
+                </p>
               </div>
             </div>
           </div>
