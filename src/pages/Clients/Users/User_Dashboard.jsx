@@ -5,6 +5,7 @@ import axios from 'axios';
 import { formatDate } from '../../../components/CardUtil.jsx';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { CgDetailsMore } from "react-icons/cg";
+import Swal from "sweetalert2";
 
 function User_Dashboard() {
     const [user, setUser] = useState(null);
@@ -97,6 +98,19 @@ function User_Dashboard() {
                 return "bg-gray-100 text-gray-800";
         }
     };
+
+    if(user.user_direction === ""){
+      Swal.fire({
+        title: 'Completa tus datos',
+        text: 'Ya estas registrado en nuestro sistema, porfavor, a continuacion llena tus datos',
+        icon: 'info',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.isConfirmed){
+          navigate("/settings")
+        }
+      })
+    }
 
     return (
         <div className="max-w-5xl mx-auto mt-16">

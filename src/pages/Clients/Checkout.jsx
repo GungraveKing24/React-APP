@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { axiosInstance } from "../../Axios/Axios";
 import { useCart } from "../../context/CarContext"
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function CheckoutForm() {
+export default function CheckoutForm() { 
+  const token = localStorage.getItem("token");
   const { updateCartCount } = useCart();
   const [cart, setCart] = useState([]);
   const [form, setForm] = useState({
@@ -25,7 +26,6 @@ export default function CheckoutForm() {
   }, []);
 
   const HandleVerify = () => {
-    const token = localStorage.getItem("token");
     if (!token) {
       HandleGetDetailsGuest();
     } else {
@@ -34,7 +34,6 @@ export default function CheckoutForm() {
   };
 
   const HandleUserData = () => {
-    const token = localStorage.getItem("token");
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
@@ -178,7 +177,16 @@ export default function CheckoutForm() {
       <Toaster />
       
       <div className="flex-1">
-        <h2 className="text-2xl font-bold text-gray-700 mb-6">Información</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-bold text-gray-700 mb-6">Información</h2>
+          <Link to="/ShoppingCart" className="flex items-center text-[#B9A387] hover:text-[#9c8568] transition-colors">
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            <span className="ml-1 font-Title">Volver</span>
+          </Link>
+        </div>
+
         <form onSubmit={handleSubmit} className="grid gap-6">
           <input
             type="text"
@@ -290,20 +298,22 @@ export default function CheckoutForm() {
               </div>
             </label>
             
-            <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
-              <input
-                type="radio"
-                name="metodoPago"
-                value="Tarjeta"
-                checked={form.metodoPago === "Tarjeta"}
-                onChange={handleChange}
-                className="h-5 w-5 text-pink-600"
-              />
-              <div>
-                <span className="font-medium">Tarjeta de Crédito/Débito</span>
-                <p className="text-sm text-gray-500">Pago seguro con Wompi</p>
-              </div>
-            </label>
+            {token &&
+              <label className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-100 cursor-pointer">
+                <input
+                  type="radio"
+                  name="metodoPago"
+                  value="Tarjeta"
+                  checked={form.metodoPago === "Tarjeta"}
+                  onChange={handleChange}
+                  className="h-5 w-5 text-pink-600"
+                />
+                <div>
+                  <span className="font-medium">Tarjeta de Crédito/Débito</span>
+                  <p className="text-sm text-gray-500">Pago seguro con Wompi</p>
+                </div>
+              </label>
+            }
           </div>
 
           {form.metodoPago === "Tarjeta" && (

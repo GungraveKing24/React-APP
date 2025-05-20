@@ -9,7 +9,6 @@ export default function OrderDetails() {
   const { id } = useParams();
   const location = useLocation()
   const isDisabled = location.pathname.includes("/order_Details"); // Desactiva en "/order_Details"
-  const [showNumber, setShowNumber] = useState(false)
   const [order, setOrder] = useState({})
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const statusOptions = ["procesado", "pendiente", "completado", "cancelado"];
@@ -59,42 +58,6 @@ export default function OrderDetails() {
         return "bg-gray-100 text-gray-800";
     }
   };
-
-  const handleCancel = async () => {
-    const result = await Swal.fire({
-      title: `Cancelar`,
-      text: `¿Estas seguro de querer cancelar el pedido #${id}`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: `Sí`,
-      cancelButtonText: "No"
-    });
-
-    if(result.isConfirmed){
-      try {
-        const res = await axiosInstance.post(`/orders/order/cancel/${id}`, {}, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        })
-
-        if(res.status === 200 || res.status === 201){
-          Swal.fire(
-            `cancelado`,
-            `Pedido #${id} ha sido cancelado`, 
-            "success"
-          );
-          setOrder({...order, order_state: "cancelado"})
-        } else{
-          Swal.fire(`Error`, `Lo sentimos, hubo un error al cancelar`, "error");
-        }
-      } catch (error) {
-        Swal.fire(`Error`, `Lo sentimos, hubo un error al cancelar`, "error");
-      }
-    }
-  }
 
   const handleStatusChange = async (newStatus) => {
     const res = await axiosInstance.post(`/orders/change/order_state/${id}?new_state=${newStatus}`, {}, {
@@ -210,27 +173,6 @@ export default function OrderDetails() {
           >
             Volver
           </Link>
-          {!isDisabled ? (
-            <button 
-              className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title"
-              onClick={() => setShowNumber(prev => !prev)}
-            >
-              {showNumber ? `Numero: 12345678` : "Contactar al cliente"}
-            </button>
-          ) : order.payment_method === "Efectivo" ? (
-            <button
-              className="px-6 py-3 bg-rose-600 text-white rounded-lg hover:bg-rose-700 transition-colors font-Title"
-              onClick={handleCancel}>
-              Cancelar orden
-            </button>
-          ) : (
-            <button
-              className="px-6 py-3 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed font-Title"
-              disabled
-            >
-              No se puede cancelar
-            </button>
-          )}
         </div>
       </div>
     </div>

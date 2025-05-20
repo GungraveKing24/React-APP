@@ -50,7 +50,7 @@ export default function details() {
 
     const handleAddToCart = () => {
         if (user) {
-            handleAddToCartUser();
+          handleAddToCartUser();
         } else {
             handleAddToCartGuest();
         }
@@ -282,20 +282,22 @@ export default function details() {
 
             <div>
               <p className="mb-2 text-gray-700 font-semibold">Calificación:</p>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex gap-2">
                 {[...Array(10)].map((_, index) => {
                   const ratingValue = index + 1;
                   return (
-                    <button
-                      type="button"
-                      key={ratingValue}
-                      onClick={() => handleRating(ratingValue)}
-                      className={`p-2 rounded-full ${
+                    <div key={ratingValue} className="flex flex-col items-center">
+                      <button
+                        type="button"
+                        onClick={() => handleRating(ratingValue)}
+                        className={`p-2 rounded-full ${
                         ratingValue <= form.comment_rating ? "text-pink-400" : "text-gray-300"
-                      } hover:scale-110 transition`}
-                    >
-                      🌸
-                    </button>
+                          } hover:scale-110 transition`}
+                      >
+                        🌸
+                      </button>
+                      <span className="text-xs text-gray-500">{ratingValue}</span>
+                    </div>
                   );
                 })}
               </div>

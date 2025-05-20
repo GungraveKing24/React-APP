@@ -6,7 +6,7 @@ import { axiosInstance } from '../../../Axios/Axios';
 // Necesario para accesibilidad (sólo una vez, en tu app principal o layout)
 Modal.setAppElement('#root');
 
-function ModalCategories({category, toastEvent}) {
+function ModalCategories({category, toastEvent, setCategories}) {
     const { postData } = usePost();
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [formData, setFormData] = useState({});
@@ -44,10 +44,11 @@ function ModalCategories({category, toastEvent}) {
 
   async function AddCategory() {
     try {
-      const { status } = await postData("/categories", formData, true); 
+      const { status, data } = await postData("/categories", formData, true); 
       closeModal();
       if (status === 200 || status === 201){
         toastEvent("Creacion exitosa", "success")
+        setCategories(prev => [...prev, data])
       } else{
         toastEvent("Ocurrio un error", "error")
       }
@@ -70,6 +71,11 @@ function ModalCategories({category, toastEvent}) {
         });
         closeModal();
         if (res.status === 200 || res.status === 201){
+          setCategories(prev =>
+            prev.map(cat =>
+              cat.id === category.id ? res.data : cat
+            )
+          );
           toastEvent("Edicion exitosa", "success")
         } else{
           toastEvent("Ocurrio un error", "error")
