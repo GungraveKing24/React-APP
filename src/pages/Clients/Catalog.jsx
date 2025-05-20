@@ -32,7 +32,9 @@ export default function Catalog() {
         // Filtrar por nombre y categoría
         let filteredProducts = data.filter((product) => {
           const matchesName = product.arr_name.toLowerCase().includes(searchTerm.toLowerCase());
-          const matchesCategory = selectedCategory ? product.arr_id_cat === parseInt(selectedCategory) : true;
+          const matchesCategory = selectedCategory
+          ? product.categories.some(cat => cat.id === parseInt(selectedCategory))
+          : true;
           return matchesName && matchesCategory;
         });
   

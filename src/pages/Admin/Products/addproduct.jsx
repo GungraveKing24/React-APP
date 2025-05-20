@@ -14,7 +14,7 @@ export default function CreateProduct() {
     arr_discount: 0,
     arr_img_url: "",
     arr_stock: 0,
-    arr_id_cat: 0,
+    arr_id_cat: [],
     arr_is_active: true,
     image: null
   });
@@ -24,7 +24,7 @@ export default function CreateProduct() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axiosInstance.get("/categories")
+        const res = await axiosInstance.get("/categories");
         setCategories(res.data);
       } catch (error) {
         Swal.fire("Error", "No se pudieron cargar las categorias", "error");
@@ -48,8 +48,27 @@ export default function CreateProduct() {
     setFormData(prev => ({
       ...prev,
       image: file,
-      arr_img_url: URL.createObjectURL(file) // vista previa
+      arr_img_url: URL.createObjectURL(file)
     }));
+  };
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    const categoryId = parseInt(value);
+    
+    setFormData(prev => {
+      if (checked) {
+        return {
+          ...prev,
+          arr_id_cat: [...prev.arr_id_cat, categoryId]
+        };
+      } else {
+        return {
+          ...prev,
+          arr_id_cat: prev.arr_id_cat.filter(id => id !== categoryId)
+        };
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -61,7 +80,7 @@ export default function CreateProduct() {
       !formData.arr_description ||
       formData.arr_price <= 0 ||
       formData.arr_stock <= 0 ||
-      !formData.arr_id_cat ||
+      formData.arr_id_cat.length === 0 ||
       !formData.image
     ) {
       Swal.fire("Error", "Por favor complete todos los campos requeridos", "error");
@@ -76,17 +95,20 @@ export default function CreateProduct() {
       return;
     }
   
-    // 🛠 Construir FormData manualmente
     const form = new FormData();
     form.append("arr_name", formData.arr_name);
     form.append("arr_description", formData.arr_description);
     form.append("arr_price", formData.arr_price.toString());
     form.append("arr_discount", formData.arr_discount.toString());
     form.append("arr_stock", formData.arr_stock.toString());
-    form.append("arr_id_cat", formData.arr_id_cat.toString());
     form.append("arr_is_active", formData.arr_is_active.toString());
-    form.append("image", formData.image); // este es el archivo
-  
+    
+    formData.arr_id_cat.forEach(catId => {
+      form.append("arr_id_cat", catId.toString());
+    });
+    
+    form.append("image", formData.image);
+
     try {
       const response = await axiosInstance.post("/create/arrangements", form, {
         headers: {
@@ -95,12 +117,10 @@ export default function CreateProduct() {
         }
       });
   
-      Swal.fire("Éxito", response.data.message || "Exito", "success");
-      // navegar hasta la zona de abajo
-      window.scrollTo(0, document.body.scrollHeight);
+      Swal.fire("Éxito", response.data.message || "Producto creado exitosamente", "success");
       navigate("/admin/products");
     } catch (error) {
-      Swal.fire("Error", error.response?.data?.detail || "Error al guardar", "error");
+      Swal.fire("Error", error.response?.data?.detail || "Error al crear el producto", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -186,25 +206,28 @@ export default function CreateProduct() {
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-red-300 focus:border-red-300"
             />
           </div>
-
+          
           {/* Categoría */}
-          {categories.length === 0 ? (
-            <p className="text-gray-500">Cargando categorías...</p>
-          ) : (
-            <select
-              name="arr_id_cat"
-              value={formData.arr_id_cat}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-red-300 focus:border-red-300"
-            >
-              <option value="Seleccion">Seleccione una categoría</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Categorías *
+            </label>
+            {categories.map((cat) => (
+              <div key={cat.id} className="flex items-center">
+                <input
+                  type="checkbox"
+                  id={`cat-${cat.id}`}
+                  value={cat.id}
+                  checked={formData.arr_id_cat.includes(cat.id)}
+                  onChange={handleCategoryChange}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor={`cat-${cat.id}`} className="ml-2 block text-sm text-gray-700">
                   {cat.name_cat}
-                </option>
-              ))}
-            </select>
-          )}
+                </label>
+              </div>
+            ))}
+          </div>
 
           {/* Estado */}
           <div className="flex items-center">

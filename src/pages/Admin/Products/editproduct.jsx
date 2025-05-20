@@ -17,7 +17,7 @@ export default function EditProduct() {
     arr_discount: 0,
     arr_img_url: "",
     arr_stock: 0,
-    arr_id_cat: 0,
+    arr_id_cat: [],
     arr_is_active: true,
     image: null
   });
@@ -44,9 +44,9 @@ export default function EditProduct() {
             arr_discount: productData.arr_discount || 0,
             arr_img_url: productData.arr_img_url,
             arr_stock: productData.arr_stock,
-            arr_id_cat: productData.arr_id_cat,
+            arr_id_cat: productData.categories.map(cat => cat.id) || [], // Get category IDs
             arr_is_active: productData.arr_availability,
-            image: null // Initialize as null - will only change if new image uploaded
+            image: null
           });
         }
       } catch (error) {
@@ -58,6 +58,25 @@ export default function EditProduct() {
 
     fetchData();
   }, [id]);
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    const categoryId = parseInt(value);
+    
+    setFormData(prev => {
+      if (checked) {
+        return {
+          ...prev,
+          arr_id_cat: [...prev.arr_id_cat, categoryId]
+        };
+      } else {
+        return {
+          ...prev,
+          arr_id_cat: prev.arr_id_cat.filter(id => id !== categoryId)
+        };
+      }
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -96,7 +115,7 @@ export default function EditProduct() {
       !formData.arr_description ||
       formData.arr_price <= 0 ||
       formData.arr_stock <= 0 ||
-      !formData.arr_id_cat
+      formData.arr_id_cat.length === 0  // Solo verificamos que haya al menos 1 categoría
     ) {
       Swal.fire("Error", "Por favor complete todos los campos requeridos", "error");
       setIsSubmitting(false);
@@ -116,9 +135,12 @@ export default function EditProduct() {
     form.append("arr_price", formData.arr_price.toString());
     form.append("arr_discount", formData.arr_discount.toString());
     form.append("arr_stock", formData.arr_stock.toString());
-    form.append("arr_id_cat", formData.arr_id_cat.toString());
     form.append("arr_is_active", formData.arr_is_active.toString());
     
+    formData.arr_id_cat.forEach(catId => {
+      form.append("arr_id_cat", catId.toString());
+    });
+
     // Only append image if a new one was selected
     if (formData.image) {
       form.append("image", formData.image);
@@ -224,25 +246,26 @@ export default function EditProduct() {
           </div>
 
           {/* Categoría */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Categoría *
+          <div className="space-y-2">
+    <label className="block text-sm font-medium text-gray-700 mb-1">
+        Categorías *
+    </label>
+    {categories.map((cat) => (
+        <div key={cat.id} className="flex items-center">
+            <input
+                type="checkbox"
+                id={`cat-${cat.id}`}
+                value={cat.id}
+                checked={formData.arr_id_cat.includes(cat.id)}
+                onChange={handleCategoryChange}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor={`cat-${cat.id}`} className="ml-2 block text-sm text-gray-700">
+                {cat.name_cat}
             </label>
-            <select
-              name="arr_id_cat"
-              value={formData.arr_id_cat}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-red-300 focus:border-red-300"
-              required
-            >
-              <option value="">Seleccione una categoría</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name_cat}
-                </option>
-              ))}
-            </select>
-          </div>
+        </div>
+    ))}
+</div>
 
           {/* Estado */}
           <div className="flex items-center">
