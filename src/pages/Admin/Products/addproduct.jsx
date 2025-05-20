@@ -35,9 +35,16 @@ export default function CreateProduct() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+  
     setFormData(prev => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : type === "number" ? parseFloat(value) : value
+      [name]: type === "checkbox"
+        ? checked
+        : type === "number"
+          ? name === "arr_discount" && value === ""
+            ? 0
+            : parseFloat(value)
+          : value
     }));
   };
 
@@ -94,12 +101,14 @@ export default function CreateProduct() {
       setIsSubmitting(false);
       return;
     }
+
+    const discount = formData.arr_discount || 0;
   
     const form = new FormData();
     form.append("arr_name", formData.arr_name);
     form.append("arr_description", formData.arr_description);
     form.append("arr_price", formData.arr_price.toString());
-    form.append("arr_discount", formData.arr_discount.toString());
+    form.append("arr_discount", discount.toString());
     form.append("arr_stock", formData.arr_stock.toString());
     form.append("arr_is_active", formData.arr_is_active.toString());
     
@@ -184,7 +193,7 @@ export default function CreateProduct() {
             <input
               type="number"
               name="arr_discount"
-              value={formData.arr_discount}
+              value={formData.arr_discount === 0 ? "" : formData.arr_discount}
               onChange={handleChange}
               min="0"
               max="100"
