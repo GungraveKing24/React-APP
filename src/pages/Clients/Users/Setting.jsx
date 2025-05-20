@@ -5,12 +5,11 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { Toaster, toast } from "react-hot-toast";
 import SmartSpinner from "../../Both/SmartSpinner";
 import { useAuth } from "../../../context/AuthContext";
 
 function Settings() {
-  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const fileInputRef = useRef(null);
   const url = import.meta.env.VITE_API_URL;
@@ -181,6 +180,7 @@ function Settings() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      <Toaster />
       <h1 className="text-3xl font-bold text-gray-900 mb-8">Configuración de Cuenta</h1>
 
       {/* Perfil */}
