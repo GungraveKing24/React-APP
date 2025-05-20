@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaDatabase, FaShoppingCart, FaBell, FaUser, FaChartBar, FaDollarSign, FaHome, FaBox, FaChartLine, FaSignOutAlt, FaBars } from "react-icons/fa";
-import { FaSquareCaretRight } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 const menuItems = [
@@ -70,7 +69,7 @@ export default function AdminDashboard() {
           </li>
           <li>
             <Link
-              to="/Catalog2"
+              to="/admin/products"
               className="flex items-center space-x-3 p-3 rounded-lg text-white hover:bg-white hover:text-[#e75cad] transition-all duration-300"
             >
               <FaBox size={24} className="text-white" />
