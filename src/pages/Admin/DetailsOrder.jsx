@@ -155,7 +155,6 @@ export default function OrderDetails() {
           </div>
         </div>
 
-  
         <div className="bg-gray-50 p-6 rounded-xl mb-8">
           <h3 className="text-xl font-Title text-[#B9A387] mb-4">Resumen del Pago</h3>
           <div className="space-y-3">
@@ -165,6 +164,17 @@ export default function OrderDetails() {
             </div>
           </div>
         </div>
+        
+        {order.order_comments?.trim() && (
+          <div className="bg-gray-50 p-6 rounded-xl mb-8">
+            <h3 className="text-xl font-Title text-[#B9A387] mb-4">Notas</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <p className="font-Title text-rose-900 text-lg">{order.order_comments}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <Link
