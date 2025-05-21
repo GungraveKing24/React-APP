@@ -11,7 +11,6 @@ export default function CheckoutForm() {
   const [form, setForm] = useState({
     nombre: "",
     email: "",
-    departamento: "",
     direccion: "",
     telefono: "",
     notas: "",
@@ -148,7 +147,6 @@ export default function CheckoutForm() {
         setForm({
           nombre: "",
           email: "",
-          departamento: "",
           direccion: "",
           telefono: "",
           notas: "",
@@ -206,16 +204,6 @@ export default function CheckoutForm() {
             value={form.email}
             required
           />
-          <select
-            name="departamento"
-            className="input border border-gray-300 p-3 rounded-lg"
-            onChange={handleChange}
-            value={form.departamento}
-            required
-          >
-            <option value="" disabled>Seleccione Departamento</option>
-            <option value="Santa Ana">Santa Ana</option>
-          </select>
           <input
             type="text"
             name="direccion"
