@@ -29,15 +29,19 @@ export default function Catalog() {
         return response.json();
       })
       .then((data) => {
-        // Filtrar por nombre y categoría
+        // Filtrar por nombre, categoría y disponibilidad
         let filteredProducts = data.filter((product) => {
           const matchesName = product.arr_name.toLowerCase().includes(searchTerm.toLowerCase());
+
           const matchesCategory = selectedCategory
-          ? product.categories.some(cat => cat.id === parseInt(selectedCategory))
-          : true;
-          return matchesName && matchesCategory;
-        });
-  
+            ? product.categories.some(cat => cat.id === parseInt(selectedCategory))
+            : true;
+
+          const isAvailable = product.arr_availability !== false; // solo deja pasar los productos disponibles
+
+          return matchesName && matchesCategory && isAvailable;
+        }); 
+
         // Ordenar: primero los que tienen descuento
         filteredProducts.sort((a, b) => {
           const aHasDiscount = a.arr_discount > 0;
@@ -60,7 +64,6 @@ export default function Catalog() {
     
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <Toaster position="top-center"/>
-
 
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
