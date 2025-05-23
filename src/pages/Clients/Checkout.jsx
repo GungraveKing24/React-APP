@@ -236,7 +236,7 @@ export default function CheckoutForm() {
             disabled={isSubmitting}
           >
             {isSubmitting ? "Procesando..." : 
-              form.metodoPago === "Tarjeta" ? "Pagar con Tarjeta" : "Finalizar Pedido"}
+            form.metodoPago === "Tarjeta" ? "Pagar con Tarjeta" : "Finalizar Pedido"}
           </button>
         </form>
       </div>
@@ -303,9 +303,15 @@ export default function CheckoutForm() {
               </label>
             }
           </div>
+            
+          <div className="mt-2 p-4 rounded-lg">
+            <p className="font-semibold text-sm">
+              Se hacen pedidos únicamente con 24 horas de anticipación
+            </p>
+          </div>
 
           {form.metodoPago === "Tarjeta" && (
-            <div className="mt-4 p-4 bg-pink-50 rounded-lg">
+            <div className="mt-2 p-4 bg-pink-50 rounded-lg">
               <p className="text-pink-700 text-sm">
                 Serás redirigido a Wompi para completar el pago de forma segura.
               </p>

@@ -235,6 +235,10 @@ export default function ShoppingCart() {
             >
               Procesar Compra
             </button>
+
+            <div className="flex justify-between mt-4 pt-2">
+              <span className="text-gray-800">Se hacen pedidos únicamente con 24 horas de anticipación</span>
+            </div>
           </div>
         </div>
       </div>
