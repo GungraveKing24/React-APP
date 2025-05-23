@@ -5,12 +5,12 @@ import { FaTrash, FaPlus, FaEdit, FaUndo } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 
-
 export default function Catalog2() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const url = import.meta.env.VITE_API_URL;
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchProducts();
@@ -82,6 +82,10 @@ export default function Catalog2() {
 
   if (loading) return <SmartSpinner />;
 
+  const filteredProducts = products.filter(product =>
+    product.arr_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-8">
@@ -92,6 +96,14 @@ export default function Catalog2() {
                 <span className="ml-1 font-Title">Volver</span>
             </Link>
         <h1 className="text-3xl font-bold text-gray-800">Catálogo de Productos</h1>
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border border-gray-300 rounded-md px-4 py-2 w-full max-w-sm mt-4"
+          aria-label="Buscar productos por nombre"
+        />
         <button
           onClick={() => navigate("/CreateProduct")}
           className="bg-[#EFB8C8] hover:bg-red-300 text-white px-6 py-2 rounded-lg transition-colors flex items-center"
@@ -100,13 +112,13 @@ export default function Catalog2() {
         </button>
       </div>
 
-      {products.length === 0 ? (
+      {filteredProducts.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No hay productos disponibles</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <div
               key={product.id}
               className={`bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:scale-105 ${
