@@ -15,6 +15,8 @@ import F7 from "../../assets/FAV7.jpeg"
 import F8 from "../../assets/FAV8.jpeg"
 import Ilumina from "../../assets/Ilumina.jpeg"
 import Flor from "../../assets/Flor.jpeg"
+import G1 from "../../assets/G1.jpeg"
+import G2 from "../../assets/G2.jpeg"
 
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -238,13 +240,13 @@ const Homepage = () => {
                   className="rounded-lg shadow-md mx-auto w-[350px] h-[350px] object-cover"
                 />
                 <img
-                  src={insta}
-                  alt="Azul"
+                  src={G2}
+                  alt="G1"
                   className="rounded-lg shadow-md mx-auto w-[350px] h-[350px] object-cover"
                 />
                 <img
-                  src={insta3}
-                  alt="Ramo"
+                  src={G1}
+                  alt="G2"
                   className="rounded-lg shadow-md mx-auto w-[350px] h-[350px] object-cover"
                 />
               </div>
