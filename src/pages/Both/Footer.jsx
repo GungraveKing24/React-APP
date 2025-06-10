@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { FaInstagram } from "react-icons/fa";
+
 
 export default function Footer() {
   const { user } = useAuth();
@@ -9,7 +11,17 @@ export default function Footer() {
       {/* Footer Secundario */}
       <footer className="bg-[#EFB8C8] py-8 px-6 text-center text-white">
         <p className="text-lg font-Title">Somos una floristería en línea</p>
-        <p className="text-sm mt-2">Síguenos por medio de Instagram</p>
+        <div className="mt-4 flex justify-center items-center gap-3">
+          <span className="text-sm">Síguenos en</span>
+          <a
+            href="https://www.instagram.com/arreglitosv/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-200 transition-transform transform hover:scale-110"
+          >
+            <FaInstagram size={36} />
+          </a>
+        </div>
       </footer>
 
       <footer className="bg-[#B9A387] text-white p-8">
@@ -43,10 +55,21 @@ export default function Footer() {
   return (
     <>
       {/* Footer Secundario */}
-      <footer className="bg-[#EFB8C8] py-8 px-6 text-center text-white">
+       <footer className="bg-[#EFB8C8] py-8 px-6 text-center text-white">
         <p className="text-lg font-Title">Somos una floristería en línea</p>
-        <p className="text-sm mt-2">Síguenos por medio de Instagram</p>
+        <div className="mt-4 flex justify-center items-center gap-3">
+          <span className="text-sm">Síguenos en instragram <br/>arreglitosv</span>
+          <a
+            href="https://www.instagram.com/arreglitosv/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-gray-200 transition-transform transform hover:scale-110"
+          >
+            <FaInstagram size={36} />
+          </a>
+        </div>
       </footer>
+
 
       {/* Footer Principal */}
       <footer className="bg-[#B9A387] text-white p-8">

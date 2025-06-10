@@ -52,19 +52,34 @@ export default function ContactDevelopers() {
 
       <div className="flex flex-wrap justify-center gap-6 mb-10">
         <div className="bg-white shadow-md p-6 rounded-lg w-80 text-center">
-          <p className="text-gray-600 mb-2">
-            <span className="font-Title">📍 Dirección: </span>
-            Santa Ana, El Salvador
-          </p>
-          <p className="text-gray-600 mb-2">
-            <span className="font-Title">✉️ Correo Electrónico: </span>
-            <a
-              href="mailto:smartenterpricesv@gmail.com"
-              className="text-blue-500 hover:underline"
-            >
-              smartenterpricesv@gmail.com
-            </a>
-          </p>
+         <div className="flex flex-wrap justify-center gap-6 mb-10">
+          <div className="bg-white shadow-md p-6 rounded-lg w-80 text-center">
+            <p className="text-gray-600 mb-2">
+              <span className="font-Title">📍 Dirección: </span>
+              Santa Ana, El Salvador
+            </p>
+            <p className="text-gray-600 mb-2">
+              <span className="font-Title">✉️ Correo Electrónico: </span>
+              <a
+                href="mailto:smartenterpricesv@gmail.com"
+                className="text-blue-500 hover:underline"
+              >
+                smartenterpricesv@gmail.com
+              </a>
+            </p>
+            <p className="text-gray-600 mb-2">
+              <span className="font-Title">📸 Instagram: </span>
+              <a
+                href="https://www.instagram.com/smartenterprisesv/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-pink-500 hover:underline"
+              >
+                @smartenterprisesv
+              </a>
+            </p>
+          </div>
+        </div>
           
         </div>
 

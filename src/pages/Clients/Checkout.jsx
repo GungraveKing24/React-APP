@@ -304,11 +304,15 @@ export default function CheckoutForm() {
             }
           </div>
             
-          <div className="mt-2 p-4 rounded-lg">
-            <p className="font-semibold text-sm">
-              Se hacen pedidos únicamente con 24 horas de anticipación
-            </p>
-          </div>
+            {/* Mensaje decorado */}
+            <div className="mt-5 bg-pink-100 border-l-4 border-pink-400 p-4 rounded-xl shadow-inner">
+              <p className="text-pink-700 font-semibold text-sm sm:text-base leading-relaxed">
+                🚨 Los pedidos se toman con <span className="underline decoration-wavy decoration-pink-500">24 horas de anticipación</span>.
+              </p>
+              <p className="text-pink-600 text-xs sm:text-sm mt-1">
+                📝 Recuerda colocar <strong>día y hora</strong> en la sección de <span className="italic">notas adicionales</span>.
+              </p>
+            </div>
 
           {form.metodoPago === "Tarjeta" && (
             <div className="mt-2 p-4 bg-pink-50 rounded-lg">

@@ -221,8 +221,12 @@ export default function ShoppingCart() {
                 <span className="font-semibold">${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Envío:</span>
-                <span className="font-semibold">Gratis</span>
+                <div className="flex flex-col">
+                  <span className="text-gray-600 font-medium mb-1">Envío:</span>
+                  <span className="text-sm text-gray-700 bg-yellow-50 border border-yellow-300 rounded-md p-2 shadow-sm">
+                    🚚 Dependiendo de la zona, el costo se cobrará en la entrega.
+                  </span>
+                </div>
               </div>
               <div className="border-t pt-2 flex justify-between">
                 <span className="text-gray-800 font-bold">Total:</span>
@@ -236,9 +240,17 @@ export default function ShoppingCart() {
               Procesar Compra
             </button>
 
-            <div className="flex justify-between mt-4 pt-2">
-              <span className="text-gray-800">Se hacen pedidos únicamente con 24 horas de anticipación</span>
+             {/* Mensaje decorado */}
+            <div className="mt-5 bg-pink-100 border-l-4 border-pink-400 p-4 rounded-xl shadow-inner">
+              <p className="text-pink-700 font-semibold text-sm sm:text-base leading-relaxed">
+                🚨 Los pedidos se toman con <span className="underline decoration-wavy decoration-pink-500">24 horas de anticipación</span>.
+              </p>
+              <p className="text-pink-600 text-xs sm:text-sm mt-1">
+                📝 Recuerda colocar <strong>día y hora</strong> en la sección de <span className="italic">notas adicionales</span>.
+              </p>
             </div>
+
+
           </div>
         </div>
       </div>

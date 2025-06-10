@@ -108,6 +108,18 @@ const Homepage = () => {
             </div>
           </div>
         </section>  
+
+
+        <section className="mt-10 px-4">
+          <div className="bg-gradient-to-r from-pink-200 to-pink-300 p-8 rounded-2xl shadow-xl text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+              Los Pedidos se toman con 24 horas de anticipación
+            </h2>
+            <p className="text-sm md:text-base text-gray-700 italic">
+              Colocar día y hora en la sección de notas adicionales
+            </p>
+          </div>
+        </section>
         
 
         {/* Productos más solicitados */}
